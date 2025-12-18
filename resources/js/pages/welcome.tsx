@@ -1,8 +1,8 @@
+import Developers from '@/components/developers/developers';
+import Header from '@/components/header/header';
 import { login } from '@/routes';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import Header from '@/components/header/header'
-
 export default function Welcome({
     canRegister = true,
 }: {
@@ -19,8 +19,7 @@ export default function Welcome({
                     rel="stylesheet"
                 />
             </Head>
-            <main className="landing-page h-screen">
-
+            <main className="landing-page relative h-screen">
                 <Header />
 
                 <div className="mt-20 flex items-center justify-center">
@@ -39,7 +38,6 @@ export default function Welcome({
                                 </div>
 
                                 <div>
-
                                     <p className="my-3 text-base text-gray-700">
                                         A centralized system that enables
                                         efficient submission, tracking, and
@@ -50,7 +48,6 @@ export default function Welcome({
                                     <Link
                                         href={login()}
                                         className="inline-flex items-center gap-2 rounded bg-blue-500 px-8 py-3 text-white"
-
                                     >
                                         Login
                                         <img
@@ -73,9 +70,8 @@ export default function Welcome({
                         </div>
                     </section>
                 </div>
+                <Developers />
             </main>
         </>
     );
 }
-
-

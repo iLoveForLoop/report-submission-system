@@ -21,8 +21,10 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         Login:
           "bg-[#1E40AF] text-white shadow-xs hover:bg-blue-700 focus-visible:ring-blue-500/20 dark:focus-visible:ring-blue-500/40 cursor-pointer",
+        developers: "bg-gray-500 text-gray-300 hover:bg-gray-600 hover:transform hover:scale-105 transition duration-300 cursor-pointer",
       },
       size: {
+        xs: "h-6 px-2 py-1 text-xs",
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
         sm: "h-8 rounded-md px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",

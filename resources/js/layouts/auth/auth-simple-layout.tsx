@@ -3,6 +3,7 @@ import { home } from '@/routes';
 import { Link } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
+import Developers from '@/components/developers/developers';
 
 interface AuthLayoutProps {
     name?: string;
@@ -15,7 +16,7 @@ export default function AuthSimpleLayout({
     title,
 }: PropsWithChildren<AuthLayoutProps>) {
     return (
-        <div className="login-page relative flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+        <div className="login-page flex min-h-svh flex-col items-center justify-center gap-6 p-6 relative">
             <div className="absolute top-5 left-5 flex items-center gap-1 duration-300 hover:translate-x-1">
                 <ArrowLeft className="h-5 w-5 cursor-pointer font-semibold text-blue-900" />
                 <Link href={home()} className="font-semibold text-blue-900">
@@ -88,6 +89,7 @@ export default function AuthSimpleLayout({
                     </div>
                 </div>
             </div>
+            <Developers />
         </div>
     );
 }

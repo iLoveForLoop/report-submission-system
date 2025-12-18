@@ -145,7 +145,7 @@
 .landing-page, .login-page {
     position: relative;
     overflow: hidden;
-    background: #ffffff; /* Clean white base */
+
     isolation: isolate; /* Helps with stacking if needed */
 }
 

@@ -1,30 +1,31 @@
 import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
+// import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import AuthLayout from '@/layouts/auth-layout';
-import { register } from '@/routes';
+// import { register } from '@/routes';
 import { store } from '@/routes/login';
-import { request } from '@/routes/password';
+// import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
+import  { Mail, Key } from 'lucide-react';
 
 interface LoginProps {
     status?: string;
-    canResetPassword: boolean;
-    canRegister: boolean;
+    // canResetPassword: boolean;
+    // canRegister: boolean;
 }
 
 export default function Login({
     status,
-    canResetPassword,
-    canRegister,
+    // canResetPassword,
+    // canRegister,
 }: LoginProps) {
     return (
         <AuthLayout
-            title="Log in to your account"
+            title="Department of the Interior and Local Government"
             description="Enter your email and password below to log in"
         >
             <Head title="Log in" />
@@ -38,22 +39,26 @@ export default function Login({
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    required
-                                    autoFocus
-                                    tabIndex={1}
-                                    autoComplete="email"
-                                    placeholder="email@example.com"
-                                />
+                                <Label htmlFor="email">Email</Label>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        name="email"
+                                        required
+                                        autoFocus
+                                        tabIndex={1}
+                                        autoComplete="email"
+                                        placeholder="Enter your email"
+                                        className="pl-10"
+                                    />
+                                </div>
                                 <InputError message={errors.email} />
                             </div>
 
                             <div className="grid gap-2">
-                                <div className="flex items-center">
+                                {/* <div className="flex items-center">
                                     <Label htmlFor="password">Password</Label>
                                     {canResetPassword && (
                                         <TextLink
@@ -64,16 +69,22 @@ export default function Login({
                                             Forgot password?
                                         </TextLink>
                                     )}
+                                </div> */}
+                                <Label htmlFor="password">Password</Label>
+
+                                <div className="relative">
+                                    <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        name="password"
+                                        required
+                                        tabIndex={2}
+                                        autoComplete="current-password"
+                                        placeholder="Enter your password"
+                                        className="pl-10"
+                                    />
                                 </div>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    name="password"
-                                    required
-                                    tabIndex={2}
-                                    autoComplete="current-password"
-                                    placeholder="Password"
-                                />
                                 <InputError message={errors.password} />
                             </div>
 
@@ -83,7 +94,7 @@ export default function Login({
                                     name="remember"
                                     tabIndex={3}
                                 />
-                                <Label htmlFor="remember">Remember me</Label>
+                                <Label htmlFor="remember" className='font-light'>Remember me</Label>
                             </div>
 
                             <Button
@@ -92,20 +103,21 @@ export default function Login({
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
+                                variant="Login"
                             >
                                 {processing && <Spinner />}
                                 Log in
                             </Button>
                         </div>
 
-                        {canRegister && (
+                        {/* {canRegister && (
                             <div className="text-center text-sm text-muted-foreground">
                                 Don't have an account?{' '}
                                 <TextLink href={register()} tabIndex={5}>
                                     Sign up
                                 </TextLink>
                             </div>
-                        )}
+                        )} */}
                     </>
                 )}
             </Form>

@@ -145,22 +145,24 @@
 .landing-page, .login-page {
     position: relative;
     overflow: hidden;
-
-    isolation: isolate; /* Helps with stacking if needed */
+    background: var(--background);
+    isolation: isolate;
 }
 
-.landing-page::before {
+.landing-page::before, .login-page::before {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: -2;
 
+    /* Adaptive line grid: uses foreground color with low opacity */
     background-image: 
         linear-gradient(oklch(from var(--foreground) l c h / 0.13) 1px, transparent 1px),
         linear-gradient(to right, oklch(from var(--foreground) l c h / 0.13) 1px, transparent 1px);
     background-size: 40px 40px;
 
+    /* Adaptive vignette: fades to background color (white in light, dark in dark) */
     background: 
         radial-gradient(ellipse 85% 75% at center, transparent 40%, var(--background) 90%),
         linear-gradient(oklch(from var(--foreground) l c h / 0.13) 1px, transparent 1px),

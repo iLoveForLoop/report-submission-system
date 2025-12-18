@@ -44,11 +44,8 @@ export default function Welcome({
                                 </div>
 
                                 <div>
-                                    <p className="my-3 text-base text-gray-700">
-                                        A centralized system that enables
-                                        efficient submission, tracking, and
-                                        management of DTRs and official reports
-                                        for DILG field operations.
+                                    <p className="my-3 text-base text-gray-900 dark:text-gray-300">
+                                        { description }
                                     </p>
 
                                     <Link

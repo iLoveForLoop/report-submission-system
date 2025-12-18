@@ -23,14 +23,14 @@ export default function AuthSimpleLayout({
                     Back
                 </Link>
             </div>
-            <div className="w-full max-w-4xl rounded-xl bg-white px-8 py-8 shadow-2xl">
+            <div className="w-full max-w-4xl rounded-xl bg-white dark:bg-accent px-8 py-8 shadow-2xl">
                 <div className="flex gap-8">
                     {/* Left side - Logo and Dialog Title */}
                     <div className="hidden flex-1 flex-col items-center justify-center p-8 md:flex">
                         <div className="flex flex-col items-center gap-6 text-center">
                             <AppLogoIcon className="h-32 w-32 fill-current text-[var(--foreground)] dark:text-white" />
                             <div className="space-y-4">
-                                <h1 className="text-3xl font-semibold text-gray-800">
+                                <h1 className="text-3xl font-semibold text-gray-800 dark:text-neutral-100">
                                     {title}
                                 </h1>
 
@@ -64,10 +64,10 @@ export default function AuthSimpleLayout({
 
                             {/* Welcome text for desktop */}
                             <div className="hidden space-y-2 md:block">
-                                <h1 className="text-3xl font-semibold text-gray-800">
+                                <h1 className="text-3xl font-semibold text-gray-800 dark:text-neutral-100">
                                     Welcome back!
                                 </h1>
-                                <p className="text-lg text-gray-600">
+                                <p className="text-lg text-gray-600 dark:text-neutral-100">
                                     Sign in to your account to continue.
 
                                 </p>

@@ -39,6 +39,7 @@ export default function Welcome({
                                 </div>
 
                                 <div>
+
                                     <p className="my-3 text-base text-gray-700">
                                         A centralized system that enables
                                         efficient submission, tracking, and
@@ -49,6 +50,7 @@ export default function Welcome({
                                     <Link
                                         href={login()}
                                         className="inline-flex items-center gap-2 rounded bg-blue-500 px-8 py-3 text-white"
+
                                     >
                                         Login
                                         <img
@@ -75,3 +77,5 @@ export default function Welcome({
         </>
     );
 }
+
+

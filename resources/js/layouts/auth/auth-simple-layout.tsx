@@ -1,6 +1,6 @@
 import AppLogoIcon from '@/components/app-logo-icon';
 import { home } from '@/routes';
-import { Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 import Developers from '@/components/developers/developers';
@@ -16,6 +16,14 @@ export default function AuthSimpleLayout({
     title,
 }: PropsWithChildren<AuthLayoutProps>) {
     return (
+        <>
+        <Head title="Login">
+                <link rel="preconnect" href="https://fonts.bunny.net" />
+                <link
+                    href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600"
+                    rel="stylesheet"
+                />
+            </Head>
         <div className="login-page flex min-h-svh flex-col items-center justify-center gap-6 p-6 relative">
             <div className="absolute top-5 left-5 flex items-center gap-1 duration-300 hover:translate-x-1">
                 <ArrowLeft className="h-5 w-5 cursor-pointer font-semibold text-blue-900" />
@@ -91,5 +99,6 @@ export default function AuthSimpleLayout({
             </div>
             <Developers />
         </div>
+        </>
     );
 }

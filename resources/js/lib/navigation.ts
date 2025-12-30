@@ -23,8 +23,8 @@ export function mainNavigationPath(role: string): NavItem[] {
                     icon: LayoutGrid,
                 },
                 {
-                    title: 'Reports',
-                    href: FocalPersonNavigationPath.reports().url,
+                    title: 'Programs',
+                    href: FocalPersonNavigationPath.programs().url,
                     icon: File,
                 },
             ];

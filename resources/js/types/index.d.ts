@@ -26,7 +26,7 @@ export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
-    sidebarOpen: boolean;   
+    sidebarOpen: boolean;
     [key: string]: unknown;
 }
 
@@ -48,6 +48,18 @@ export interface Program {
     name: string;
     description: string;
     coordinator: User;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Report {
+    id: string;
+    title: string;
+    description?: string;
+    program: Program<Pick<Program, 'id' | 'name' | 'description'>>;
+    created_by: User<Pick<User, 'id' | 'name' | 'email' | 'avatar'>>;
+    deadline: Date;
+    final_deadline: Date;
     created_at: string;
     updated_at: string;
 }

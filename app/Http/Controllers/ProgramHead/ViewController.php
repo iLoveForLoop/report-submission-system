@@ -15,29 +15,6 @@ class ViewController extends Controller
 
     public function programs()
     {
-    // $programs = auth()->user()
-    //     ->programsAsCoordinator()
-    //     ->with('coordinator')
-    //     ->get()
-    //     ->map(fn ($program) => [
-    //         'id' => $program->id,
-    //         'name' => $program->name,
-    //         'description' => $program->description,
-    //         'created_at' => $program->created_at->toISOString(),
-    //         'updated_at' => $program->updated_at->toISOString(),
-    //         'coordinator' => [
-    //             'id' => $program->coordinator->id,
-    //             'name' => $program->coordinator->name,
-    //             'email' => $program->coordinator->email,
-    //             'avatar' => $program->coordinator->avatar,
-    //             'email_verified_at' => $program->coordinator->email_verified_at,
-    //             'two_factor_enabled' => $program->coordinator->two_factor_enabled ?? false,
-    //             'created_at' => $program->coordinator->created_at->toISOString(),
-    //             'updated_at' => $program->coordinator->updated_at->toISOString(),
-    //             'role' => $program->coordinator->role,
-    //         ],
-    //     ]);
-
     $programs = Program::with('coordinator')
                     ->get()
                     ->map(fn ($program) => [

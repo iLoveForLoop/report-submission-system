@@ -3,8 +3,9 @@ import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { Program, User, type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { EllipsisVertical, Folder } from 'lucide-react';
+import { Folder } from 'lucide-react';
 import { Activity, useState } from 'react';
+import EllipsisVerticalCard from './components/ellipsis-vertival';
 import EmptyProgram from './components/empty-programs';
 import ProgramDialog from './components/program-dialog';
 
@@ -63,10 +64,12 @@ export default function Programs() {
                                         </p>
                                     </div>
                                     <div>
-                                        <EllipsisVertical className="transition-colors hover:text-muted-foreground" />
+                                        <EllipsisVerticalCard
+                                            program={program}
+                                        />
                                     </div>
                                 </div>
-                            </div>
+                            </div>  
                         ))}
                     </div>
                 </Activity>

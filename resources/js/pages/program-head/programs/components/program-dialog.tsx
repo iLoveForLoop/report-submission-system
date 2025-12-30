@@ -58,6 +58,7 @@ export default function ProgramDialog({
                     resetOnSuccess={['name', 'description', 'coordinator_id']}
                     onSuccess={() => {
                         router.visit(ViewController.programs());
+                        setOpen(false);
                     }}
                 >
                     {({ processing, errors }) => (
@@ -115,7 +116,7 @@ export default function ProgramDialog({
                         </div>
                     )}
                 </Form>
-            </DialogContent>            
+            </DialogContent>
         </Dialog>
     );
 }

@@ -26,7 +26,7 @@ export interface SharedData {
     name: string;
     quote: { message: string; author: string };
     auth: Auth;
-    sidebarOpen: boolean;
+    sidebarOpen: boolean;   
     [key: string]: unknown;
 }
 

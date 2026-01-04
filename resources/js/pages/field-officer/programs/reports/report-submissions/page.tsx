@@ -1,44 +1,48 @@
-import ViewController from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
+import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewController';
 import AppLayout from '@/layouts/app-layout';
-import { Program, Report } from '@/types';
+import { Program, Report, ReportSubmission } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { EllipsisVertical, Folder } from 'lucide-react';
 import { Activity, useState } from 'react';
-import { breadcrumbs } from '../../dashboard/page';
-import EmptyReport from '../components/empty-report';
-import ReportDialog from '../components/report-dialog';
+import ReportSubmissionDialog from './components/report-submission-dialog';
 
-export default function CreateReport() {
+export default function page() {
     const [open, setOpen] = useState<boolean>(false);
-    const { program } = usePage<{ program: Program }>().props;
-    const { reports } = usePage<{ reports: Report[] }>().props;
+
+    const { program, report, reportSubmissions, hasSubmitted } = usePage<{
+        program: Program;
+        report: Report;
+        reportSubmissions: ReportSubmission[];
+        hasSubmitted: boolean;
+    }>().props;
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex items-center justify-between">
-                    <Link href={ViewController.programs()}>Back</Link>
-                    <h1 className="text-xl font-semibold">{program.name}</h1>
-                    <ReportDialog
-                        program={program}
+                    <Link href={ViewController.reports(program)}>Back</Link>
+                    <h1 className="text-xl font-semibold">{report.title}</h1>
+                    <ReportSubmissionDialog
                         open={open}
+                        hasSubmitted={hasSubmitted}
                         setOpen={setOpen}
+                        report={report}
                     />
                 </div>
 
-                <Activity mode={reports.length === 0 ? 'visible' : 'hidden'}>
-                    <EmptyReport setIsOpen={setOpen} />
+                <Activity
+                    mode={reportSubmissions.length === 0 ? 'visible' : 'hidden'}
+                >
+                    No Submissions yet
                 </Activity>
 
-                <Activity mode={reports.length > 0 ? 'visible' : 'hidden'}>
+                <Activity
+                    mode={reportSubmissions.length > 0 ? 'visible' : 'hidden'}
+                >
                     <div className="grid grid-cols-3 gap-5">
-                        {reports.map((report, index) => (
-                            <Link
-                                href={ViewController.reportSubmissions([
-                                    program,
-                                    report,
-                                ])}
-                                key={index}
+                        {reportSubmissions.map((submission) => (
+                            <div
+                                key={submission.id}
                                 className="flex items-center gap-5 rounded-xl border bg-background/50 px-4 py-2"
                             >
                                 <div>
@@ -47,12 +51,12 @@ export default function CreateReport() {
                                 <div className="flex w-full items-center justify-between">
                                     <div>
                                         <h2 className="truncate text-lg font-semibold">
-                                            {report.title}
+                                            {submission.field_officer?.name}
                                         </h2>
                                         <p className="text-sm text-muted-foreground">
                                             Deadline:{' '}
                                             {new Date(
-                                                report.created_at,
+                                                submission.created_at,
                                             ).toLocaleDateString()}
                                         </p>
                                     </div>
@@ -60,7 +64,7 @@ export default function CreateReport() {
                                         <EllipsisVertical className="transition-colors hover:text-muted-foreground" />
                                     </div>
                                 </div>
-                            </Link>
+                            </div>
                         ))}
                     </div>
                 </Activity>

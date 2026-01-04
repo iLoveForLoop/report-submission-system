@@ -58,4 +58,11 @@ class Report extends Model
     {
         return $this->hasMany(ReportSubmission::class);
     }
+
+    public function hasSubmissionFromUser(int $userId): bool
+    {
+        return $this->submissions()
+            ->where('field_officer_id', $userId)
+            ->exists();
+    }
 }

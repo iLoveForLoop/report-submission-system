@@ -1,5 +1,4 @@
 import ProgramController from '@/actions/App/Http/Controllers/ProgramController';
-import ViewController from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import { Button } from '@/components/ui/button';
 import {
     HoverCard,
@@ -7,7 +6,7 @@ import {
     HoverCardTrigger,
 } from '@/components/ui/hover-card';
 import { Program } from '@/types';
-import { Form, Link, router } from '@inertiajs/react';
+import { Form, Link } from '@inertiajs/react';
 import { EllipsisVertical } from 'lucide-react';
 import { useState } from 'react';
 
@@ -36,7 +35,6 @@ export default function EllipsisVerticalCard({
                         <Form
                             {...ProgramController.destroy.form(program)}
                             onSuccess={() => {
-                                router.visit(ViewController.programs());
                                 setOpen(false);
                             }}
                         >

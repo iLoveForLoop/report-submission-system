@@ -11,14 +11,16 @@ import ProgramDialog from './components/program-dialog';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Programs',
         href: dashboard().url,
     },
 ];
 
 export default function Programs() {
     const [open, setOpen] = useState<boolean>(false);
+
     const { programs } = usePage<{ programs: Program[] }>().props;
+
     const { coordinators } = usePage<{
         coordinators: Pick<User, 'id' | 'name' | 'email' | 'avatar'>[];
     }>().props;
@@ -29,6 +31,7 @@ export default function Programs() {
             <Head title="Programs" />
 
             <FlashToaster />
+
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div>
                     <ProgramDialog
@@ -37,9 +40,11 @@ export default function Programs() {
                         setOpen={setOpen}
                     />
                 </div>
+
                 <Activity mode={programs.length === 0 ? 'visible' : 'hidden'}>
                     <EmptyProgram setIsOpen={setOpen} />
                 </Activity>
+
                 <Activity mode={programs.length > 0 ? 'visible' : 'hidden'}>
                     <div className="grid grid-cols-3 gap-5">
                         {programs.map((program, index) => (
@@ -69,7 +74,7 @@ export default function Programs() {
                                         />
                                     </div>
                                 </div>
-                            </div>  
+                            </div>
                         ))}
                     </div>
                 </Activity>

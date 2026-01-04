@@ -10,9 +10,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import { store } from '@/routes/login';
 // import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
-import  { Mail, Key } from 'lucide-react';
-
-
+import { Key, Mail } from 'lucide-react';
 
 interface LoginProps {
     status?: string;
@@ -43,7 +41,7 @@ export default function Login({
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email</Label>
                                 <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                     <Input
                                         id="email"
                                         type="email"
@@ -75,7 +73,7 @@ export default function Login({
                                 <Label htmlFor="password">Password</Label>
 
                                 <div className="relative">
-                                    <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Key className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                     <Input
                                         id="password"
                                         type="password"
@@ -96,7 +94,12 @@ export default function Login({
                                     name="remember"
                                     tabIndex={3}
                                 />
-                                <Label htmlFor="remember" className='font-light'>Remember me</Label>
+                                <Label
+                                    htmlFor="remember"
+                                    className="font-light"
+                                >
+                                    Remember me
+                                </Label>
                             </div>
 
                             <Button

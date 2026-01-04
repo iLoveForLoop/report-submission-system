@@ -63,3 +63,16 @@ export interface Report {
     created_at: string;
     updated_at: string;
 }
+
+
+export interface ReportSubmission {
+  id: string;
+  report_id: string;
+  field_officer_id: number;
+  status: 'draft' | 'submitted';
+  created_at: string;
+  updated_at: string;
+
+  report?: Report;
+  field_officer?: User;
+}

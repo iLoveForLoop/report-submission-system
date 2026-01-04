@@ -1,24 +1,15 @@
-import ViewController from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
+import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewController';
 import AppLayout from '@/layouts/app-layout';
 import { Program } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { EllipsisVertical, Folder } from 'lucide-react';
-import { Activity, useState } from 'react';
-import { breadcrumbs } from '../dashboard/page';
+import { Activity } from 'react';
 
-interface Report {
-    title: string;
-    deadline: Date;
-    final_deadline: Date;
-}
-
-export default function programs() {
-    const [open, setOpen] = useState<boolean>(false);
-
+export default function page() {
     const { programs } = usePage<{ programs: Program[] }>().props;
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <Activity mode={programs.length <= 0 ? 'visible' : 'hidden'}>
                     <h1>No programs yet</h1>

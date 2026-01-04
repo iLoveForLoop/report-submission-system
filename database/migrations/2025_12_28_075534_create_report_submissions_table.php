@@ -12,20 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('report_submissions', function (Blueprint $table) {
-    $table->uuid('id')->primary();
-    $table->uuid('report_id');
-    $table->unsignedBigInteger('field_officer_id');
-    $table->string('status')->default('draft'); // draft | submitted
-    $table->timestamps();
+            $table->uuid('id')->primary();
+            $table->uuid('report_id');
+            $table->unsignedBigInteger('field_officer_id');
+            $table->string('status')->default('draft'); // draft | submitted
+            $table->timestamps();
 
-    $table->foreign('report_id')
-        ->references('id')->on('reports')
-        ->onDelete('cascade');
+            $table->foreign('report_id')
+                ->references('id')->on('reports')
+                ->onDelete('cascade');
 
-    $table->foreign('field_officer_id')
-        ->references('id')->on('users')
-        ->onDelete('cascade');
-});
+            $table->foreign('field_officer_id')
+                ->references('id')->on('users')
+                ->onDelete('cascade');
+        });
 
     }
 

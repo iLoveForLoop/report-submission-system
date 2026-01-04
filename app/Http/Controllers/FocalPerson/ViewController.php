@@ -4,6 +4,7 @@ namespace App\Http\Controllers\FocalPerson;
 
 use App\Http\Controllers\Controller;
 use App\Models\Program;
+use App\Models\Report;
 use Illuminate\Http\Request;
 
 class ViewController extends Controller
@@ -72,5 +73,17 @@ class ViewController extends Controller
             "program" => $program,
             "reports" => $reports,
         ]);
+    }
+
+    public function reportSubmissions(Program $program, Report $report){
+
+        $report->load('submissions');
+
+        return inertia('focal-person/programs/reports/report-submissions/page', [
+            'program' => $program,
+            'reportSubmissions' => $report->submissions,
+            'report' => $report
+        ]);
+
     }
 }

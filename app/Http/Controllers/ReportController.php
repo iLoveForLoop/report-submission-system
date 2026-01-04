@@ -18,10 +18,6 @@ class ReportController extends Controller
 
         $report = auth()->user()->createdReports()->create($validated);
 
-        // return response()->json([
-        //     'message' => 'Report created successfully',
-        //     'report' => $report,
-        // ], 201);
         return redirect()->back()->with('success', 'Report created successfully.');
     }
 }

@@ -1,5 +1,4 @@
 import ProgramController from '@/actions/App/Http/Controllers/ProgramController';
-import ViewController from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import {
@@ -22,7 +21,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { User } from '@/types';
-import { Form, router } from '@inertiajs/react';
+import { Form } from '@inertiajs/react';
 import { Folder } from 'lucide-react';
 
 type Coordinator = Pick<User, 'id' | 'name' | 'email' | 'avatar'>;
@@ -57,7 +56,6 @@ export default function ProgramDialog({
                     {...ProgramController.store.form()}
                     resetOnSuccess={['name', 'description', 'coordinator_id']}
                     onSuccess={() => {
-                        router.visit(ViewController.programs());
                         setOpen(false);
                     }}
                 >

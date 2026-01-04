@@ -27,8 +27,8 @@ return new class extends Migration
 
                 $table->foreign('created_by')
                 ->references('id')->on('users')
-                                                                                                ->onDelete('cascade');
-});
+                ->onDelete('cascade');
+        });
     }
 
     /**

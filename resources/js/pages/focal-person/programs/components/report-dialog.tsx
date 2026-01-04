@@ -1,4 +1,3 @@
-import ViewController from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
 import ReportController from '@/actions/App/Http/Controllers/ReportController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -14,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Program } from '@/types';
-import { Form, router } from '@inertiajs/react';
+import { Form } from '@inertiajs/react';
 import { Folder } from 'lucide-react';
 
 interface Report {
@@ -54,7 +53,6 @@ export default function ReportDialog({
                 <Form
                     {...ReportController.store.form()}
                     onSuccess={() => {
-                        router.visit(ViewController.reports(program));
                         setOpen(false);
                     }}
                 >

@@ -1,8 +1,9 @@
+import ViewController from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import { FlashToaster } from '@/components/flash-toaster';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { Program, User, type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { Folder } from 'lucide-react';
 import { Activity, useState } from 'react';
 import EllipsisVerticalCard from './components/ellipsis-vertival';
@@ -25,7 +26,6 @@ export default function Programs() {
         coordinators: Pick<User, 'id' | 'name' | 'email' | 'avatar'>[];
     }>().props;
 
-    console.log({ programs });
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Programs" />
@@ -48,33 +48,35 @@ export default function Programs() {
                 <Activity mode={programs.length > 0 ? 'visible' : 'hidden'}>
                     <div className="grid grid-cols-3 gap-5">
                         {programs.map((program, index) => (
-                            <div
+                            <Link
                                 key={index}
-                                className="flex items-center gap-5 rounded-xl border bg-background/50 px-4 py-2"
+                                href={ViewController.reports(program)}
                             >
-                                <div>
-                                    <Folder />
-                                </div>
-                                <div className="flex w-full items-center justify-between">
+                                <div className="flex items-center gap-5 rounded-xl border bg-background/50 px-4 py-2">
                                     <div>
-                                        <h2 className="truncate text-lg font-semibold">
-                                            {program.name}
-                                        </h2>
-                                        <p className="text-sm text-muted-foreground">
-                                            {program.description}
-                                        </p>
-                                        <p className="text-sm text-muted-foreground">
-                                            Coordinator:{' '}
-                                            {program.coordinator.name}
-                                        </p>
+                                        <Folder />
                                     </div>
-                                    <div>
-                                        <EllipsisVerticalCard
-                                            program={program}
-                                        />
+                                    <div className="flex w-full items-center justify-between">
+                                        <div>
+                                            <h2 className="truncate text-lg font-semibold">
+                                                {program.name}
+                                            </h2>
+                                            <p className="text-sm text-muted-foreground">
+                                                {program.description}
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                                Coordinator:{' '}
+                                                {program.coordinator.name}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <EllipsisVerticalCard
+                                                program={program}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 </Activity>

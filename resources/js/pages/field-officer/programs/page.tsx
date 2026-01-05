@@ -11,6 +11,9 @@ export default function page() {
     return (
         <AppLayout>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+                <h1 className="text-center text-2xl font-semibold">
+                    All Programs
+                </h1>
                 <Activity mode={programs.length <= 0 ? 'visible' : 'hidden'}>
                     <h1>No programs yet</h1>
                 </Activity>

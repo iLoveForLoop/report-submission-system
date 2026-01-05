@@ -81,7 +81,7 @@ export default function ProgramDialog({
                                     htmlFor="type"
                                     className="text-sm font-medium"
                                 >
-                                    Report Type{' '}
+                                    Program Coordinator{' '}
                                     <span className="text-destructive">*</span>
                                 </Label>
                                 <Select name="coordinator_id">

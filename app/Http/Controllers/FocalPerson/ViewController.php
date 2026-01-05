@@ -44,7 +44,6 @@ class ViewController extends Controller
 
     public function reports(Program $program)
     {
-
         $reports = auth()->user()
         ->createdReports()
         ->where('program_id', $program->id)
@@ -77,7 +76,7 @@ class ViewController extends Controller
 
     public function reportSubmissions(Program $program, Report $report){
 
-        $report->load('submissions');
+        $report->load('submissions.fieldOfficer');
 
         return inertia('focal-person/programs/reports/report-submissions/page', [
             'program' => $program,

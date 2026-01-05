@@ -1,4 +1,5 @@
 import ViewController from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
+import Back from '@/components/back';
 import AppLayout from '@/layouts/app-layout';
 import { Program, Report } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
@@ -10,14 +11,17 @@ import ReportDialog from '../components/report-dialog';
 
 export default function CreateReport() {
     const [open, setOpen] = useState<boolean>(false);
-    const { program } = usePage<{ program: Program }>().props;
-    const { reports } = usePage<{ reports: Report[] }>().props;
+    const { program, reports } = usePage<{
+        program: Program;
+        reports: Report[];
+    }>().props;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex items-center justify-between">
-                    <Link href={ViewController.programs()}>Back</Link>
+                    <Back link={ViewController.programs()} />
+
                     <h1 className="text-xl font-semibold">{program.name}</h1>
                     <ReportDialog
                         program={program}
@@ -25,6 +29,7 @@ export default function CreateReport() {
                         setOpen={setOpen}
                     />
                 </div>
+                <h1>All Reports</h1>
 
                 <Activity mode={reports.length === 0 ? 'visible' : 'hidden'}>
                     <EmptyReport setIsOpen={setOpen} />

@@ -1,8 +1,9 @@
 import ViewController from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
+import Back from '@/components/back';
 import AppLayout from '@/layouts/app-layout';
 import { breadcrumbs } from '@/pages/focal-person/dashboard/page';
 import { Program, Report, ReportSubmission } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import { EllipsisVertical, Folder } from 'lucide-react';
 import { Activity } from 'react';
 
@@ -17,8 +18,10 @@ export default function page() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex items-center justify-between">
-                    <Link href={ViewController.reports(program)}>Back</Link>
+                    <Back link={ViewController.reports(program)} />
+
                     <h1 className="text-xl font-semibold">{report.title}</h1>
+                    <div></div>
                 </div>
 
                 <Activity

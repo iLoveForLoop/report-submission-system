@@ -15,7 +15,7 @@ class ViewController extends Controller
 
     public function programs()
     {
-    $programs = Program::with('coordinator')
+        $programs = Program::with('coordinator')
                     ->get()
                     ->map(fn ($program) => [
                         'id' => $program->id,
@@ -45,6 +45,16 @@ class ViewController extends Controller
         return inertia('program-head/programs/page', [
             'programs' => $programs,
             'coordinators' => $coordinators,
+        ]);
+    }
+
+    public function reports(Program $program)
+    {
+        $reports = $program->load("reports");
+
+        return inertia('program-head/programs/reports/page', [
+            'program' => $program,
+            'reports' => $reports->reports,
         ]);
     }
 

@@ -1,11 +1,11 @@
-import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewController';
+import ViewController from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import Back from '@/components/back';
 import AppLayout from '@/layouts/app-layout';
+import { breadcrumbs } from '@/pages/field-officer/dashboard/page';
 import { Program, Report } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { EllipsisVertical, Folder } from 'lucide-react';
 import { Activity } from 'react';
-import { breadcrumbs } from '../../dashboard/page';
 
 export default function Reports() {
     const { reports, program } = usePage<{
@@ -30,10 +30,7 @@ export default function Reports() {
                     <div className="grid grid-cols-3 gap-5">
                         {reports.map((report, index) => (
                             <Link
-                                href={ViewController.reportSubmissions([
-                                    program,
-                                    report,
-                                ])}
+                                href={'#'}
                                 key={index}
                                 className="flex items-center gap-5 rounded-xl border bg-background/50 px-4 py-2"
                             >

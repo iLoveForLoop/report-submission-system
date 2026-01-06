@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -11,49 +12,67 @@ use Illuminate\Support\Str;
  */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
     protected static ?string $password;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
+{
+    $firstName = fake()->firstName();
+    $lastName  = fake()->lastName();
+
+    return [
+        'employee_code' => 'EMP-' . fake()->unique()->numberBetween(1000, 9999),
+        'name'          => "{$firstName} {$lastName}",
+        'first_name'    => $firstName,
+        'middle_name'   => null,
+        'last_name'     => $lastName,
+
+        'gender'     => fake()->randomElement(['Male', 'Female']),
+        'department' => 'DILG',
+        'position'   => fake()->randomElement([
+            'Program Focal Person',
+            'Field Officer',
+        ]),
+        'birthday' => fake()->optional()->date(),
+
+        'email'             => fake()->unique()->safeEmail(),
+        'email_verified_at' => now(),
+        'password'          => static::$password ??= Hash::make('password'),
+        'remember_token'    => Str::random(10),
+    ];
+}
+
+
+    /**
+     * ----------------------------
+     * Role States
+     * ----------------------------
+     */
+
+    public function focalPerson(): static
     {
-        return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
-            'two_factor_secret' => Str::random(10),
-            'two_factor_recovery_codes' => Str::random(10),
-            'two_factor_confirmed_at' => now(),
-        ];
+        return $this->state(fn () => [
+            'position' => 'Program Focal Person',
+        ])->afterCreating(function (User $user) {
+            $user->syncRoles(['focal_person']);
+        });
+    }
+
+    public function fieldOfficer(): static
+    {
+        return $this->state(fn () => [
+            'position' => 'Field Officer',
+        ])->afterCreating(function (User $user) {
+            $user->syncRoles(['field_officer']);
+        });
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Email not verified
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn () => [
             'email_verified_at' => null,
-        ]);
-    }
-
-    /**
-     * Indicate that the model does not have two-factor authentication configured.
-     */
-    public function withoutTwoFactor(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'two_factor_secret' => null,
-            'two_factor_recovery_codes' => null,
-            'two_factor_confirmed_at' => null,
         ]);
     }
 }

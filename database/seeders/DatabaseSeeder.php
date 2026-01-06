@@ -19,5 +19,9 @@ class DatabaseSeeder extends Seeder
             ClusterSeeder::class
         ]);
 
+          // 2. Seed users WITH roles (via factory states)
+        User::factory()->count(50)->focalPerson()->create();
+        User::factory()->count(50)->fieldOfficer()->create();
+
     }
 }

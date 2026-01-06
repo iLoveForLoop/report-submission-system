@@ -32,7 +32,15 @@ export interface SharedData {
 
 export interface User {
     id: number;
+    employee_code?: string;
     name: string;
+    first_name: string;
+    middle_name?: string;
+    last_name: string;
+    gender: string;
+    department: string;
+    position: string;
+    birthday: Date | null;
     email: string;
     avatar?: string;
     email_verified_at: string | null;
@@ -64,15 +72,34 @@ export interface Report {
     updated_at: string;
 }
 
-
 export interface ReportSubmission {
-  id: string;
-  report_id: string;
-  field_officer_id: number;
-  status: 'draft' | 'submitted';
-  created_at: string;
-  updated_at: string;
+    id: string;
+    report_id: string;
+    field_officer_id: number;
+    status: 'draft' | 'submitted';
+    created_at: string;
+    updated_at: string;
 
-  report?: Report;
-  field_officer?: User;
+    report?: Report;
+    field_officer?: User;
+}
+
+export interface LaravelPaginator<T> {
+    data: T[];
+    current_page: number;
+    first_page_url: string;
+    from: number | null;
+    last_page: number;
+    last_page_url: string;
+    links: {
+        url: string | null;
+        label: string;
+        active: boolean;
+    }[];
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number | null;
+    total: number;
 }

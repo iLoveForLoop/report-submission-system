@@ -3,7 +3,7 @@ import FocalPersonNavigationPath from '@/actions/App/Http/Controllers/FocalPerso
 import ProgramHeadNavigationPath from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import ProvincialDirectorNavigationPath from '@/actions/App/Http/Controllers/ProvincialDirector/ViewController';
 import { NavItem } from '@/types';
-import { File, FileText, Layers, LayoutGrid } from 'lucide-react';
+import { File, FileText, Layers, LayoutGrid, Users } from 'lucide-react';
 
 export function mainNavigationPath(role: string): NavItem[] {
     switch (role) {
@@ -44,6 +44,11 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Programs',
                     href: ProgramHeadNavigationPath.programs().url,
                     icon: Layers,
+                },
+                {
+                    title: 'User management',
+                    href: ProgramHeadNavigationPath.manageUsers().url,
+                    icon: Users,
                 },
             ];
 

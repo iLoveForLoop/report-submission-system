@@ -32,7 +32,7 @@ class ViewController extends Controller
 
         $hasSubmitted = $report->hasSubmissionFromUser(Auth::id());
 
-        $report->load('submissions');
+        $report->load('submissions.fieldOfficer');
 
         return inertia('field-officer/programs/reports/report-submissions/page', [
             'program' => $program,

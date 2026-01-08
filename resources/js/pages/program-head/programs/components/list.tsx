@@ -4,7 +4,7 @@ import { Program } from '@/types';
 import { router } from '@inertiajs/react';
 import { Folders } from 'lucide-react';
 import { Dispatch, SetStateAction } from 'react';
-import EllipsisVerticalCard from './ellipsis-vertival';
+import EllipsisPopover from './ellipsis-popover';
 
 interface Props {
     programs: Program[];
@@ -42,7 +42,7 @@ export default function ListView({
                             <h2 className="">{program.name}</h2>
                         </div>
                         <div>
-                            <EllipsisVerticalCard program={program} />
+                            <EllipsisPopover program={program} />
                         </div>
                     </div>
                 </div>

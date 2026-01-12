@@ -6,9 +6,11 @@ import { usePage } from '@inertiajs/react';
 import {
     AlertCircle,
     Calendar,
+    CheckCircle2,
     Clock,
-    EllipsisVertical,
-    Folder,
+    FileText,
+    Upload,
+    User,
 } from 'lucide-react';
 import { Activity, useState } from 'react';
 import EmptyReportSubmission from './components/empty-submission';
@@ -18,10 +20,10 @@ import SampleTemplate from './components/sample-template';
 export default function page() {
     const [open, setOpen] = useState<boolean>(false);
 
-    const { program, report, reportSubmissions, hasSubmitted } = usePage<{
+    const { program, report, reportSubmission, hasSubmitted } = usePage<{
         program: Program;
         report: Report;
-        reportSubmissions: ReportSubmission[];
+        reportSubmission: ReportSubmission;
         hasSubmitted: boolean;
     }>().props;
 
@@ -33,6 +35,8 @@ export default function page() {
     const daysUntilDeadline = Math.ceil(
         (deadline - now) / (1000 * 60 * 60 * 24),
     );
+
+    console.log({ report });
 
     return (
         <AppLayout>
@@ -60,15 +64,17 @@ export default function page() {
                                     {report.title}
                                 </h1>
                                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <Calendar className="h-4 w-4" />
-                                    <span>Report Submissions</span>
-                                    <span className="mx-2">•</span>
-                                    <span className="font-medium text-foreground">
-                                        {reportSubmissions.length} submission
-                                        {reportSubmissions.length !== 1
-                                            ? 's'
-                                            : ''}
-                                    </span>
+                                    <FileText className="h-4 w-4" />
+                                    <span>Report Submission</span>
+                                    {hasSubmitted && (
+                                        <>
+                                            <span className="mx-2">•</span>
+                                            <div className="flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400">
+                                                <CheckCircle2 className="h-4 w-4" />
+                                                <span>Submitted</span>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
 
@@ -82,8 +88,9 @@ export default function page() {
                                           : 'border-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-emerald-500/10 dark:text-emerald-400'
                                 }`}
                             >
+                                {/* Icon */}
                                 <div
-                                    className={`rounded-full p-1.5 ${
+                                    className={`rounded-full p-2 ${
                                         isOverdue
                                             ? 'bg-destructive/20'
                                             : daysUntilDeadline <= 3
@@ -97,35 +104,28 @@ export default function page() {
                                         <Clock className="h-4 w-4" />
                                     )}
                                 </div>
-                                <div className="flex flex-col">
+
+                                {/* Text */}
+                                <div className="flex flex-col leading-tight">
                                     <span className="text-xs font-medium opacity-80">
                                         {isOverdue ? 'Overdue' : 'Deadline'}
                                     </span>
+
                                     <span className="text-sm font-bold">
-                                        {isOverdue ? (
-                                            new Date(
-                                                report.deadline,
-                                            ).toLocaleDateString('en-US', {
-                                                month: 'short',
-                                                day: 'numeric',
-                                                year: 'numeric',
-                                            })
-                                        ) : (
-                                            <>
-                                                {new Date(
-                                                    report.deadline,
-                                                ).toLocaleDateString('en-US', {
-                                                    month: 'short',
-                                                    day: 'numeric',
-                                                    year: 'numeric',
-                                                })}
-                                                {daysUntilDeadline <= 3 && (
-                                                    <span className="ml-1.5 text-xs">
-                                                        ({daysUntilDeadline}d)
-                                                    </span>
-                                                )}
-                                            </>
-                                        )}
+                                        {new Date(
+                                            report.deadline,
+                                        ).toLocaleDateString('en-US', {
+                                            month: 'short',
+                                            day: 'numeric',
+                                            year: 'numeric',
+                                        })}
+
+                                        {!isOverdue &&
+                                            daysUntilDeadline <= 3 && (
+                                                <span className="ml-1.5 text-xs font-medium opacity-80">
+                                                    ({daysUntilDeadline}d left)
+                                                </span>
+                                            )}
                                     </span>
                                 </div>
                             </div>
@@ -137,60 +137,119 @@ export default function page() {
                 <SampleTemplate templates={report.templates} />
 
                 {/* Empty State */}
-                <Activity
-                    mode={reportSubmissions.length === 0 ? 'visible' : 'hidden'}
-                >
+                <Activity mode={!reportSubmission ? 'visible' : 'hidden'}>
                     <EmptyReportSubmission setIsOpen={setOpen} />
                 </Activity>
 
-                {/* Submissions Grid */}
-                <Activity
-                    mode={reportSubmissions.length > 0 ? 'visible' : 'hidden'}
-                >
+                {/* Single Submission Card */}
+                <Activity mode={reportSubmission ? 'visible' : 'hidden'}>
                     <div className="space-y-4">
-                        <h2 className="text-lg font-semibold text-foreground/90">
-                            Submissions
-                        </h2>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                            {reportSubmissions.map((submission) => (
-                                <div
-                                    key={submission.id}
-                                    className="group relative overflow-hidden rounded-xl border bg-card shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-md"
-                                >
-                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-semibold text-foreground/90">
+                                Your Submission
+                            </h2>
+                            <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 px-3 py-1.5 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                                <CheckCircle2 className="h-4 w-4" />
+                                <span>Submitted</span>
+                            </div>
+                        </div>
 
-                                    <div className="relative flex items-center gap-4 p-5">
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-                                            <Folder className="h-6 w-6 text-primary" />
+                        <div className="group relative overflow-hidden rounded-2xl border bg-card shadow-md transition-all duration-300 hover:shadow-lg">
+                            {/* Decorative Background */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent" />
+                            <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
+
+                            <div className="relative p-6">
+                                {/* Main Content */}
+                                <div className="flex items-start gap-6">
+                                    {/* Icon Section */}
+                                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/25">
+                                        <FileText className="h-8 w-8 text-primary-foreground" />
+                                    </div>
+
+                                    {/* Details Section */}
+                                    <div className="flex-1 space-y-4">
+                                        <div>
+                                            <h3 className="text-xl font-bold text-foreground">
+                                                Report Submitted
+                                            </h3>
+                                            <p className="mt-1 text-sm text-muted-foreground">
+                                                Your report has been
+                                                successfully submitted and is
+                                                under review
+                                            </p>
                                         </div>
 
-                                        <div className="flex flex-1 flex-col gap-1">
-                                            <h3 className="truncate font-semibold text-foreground">
-                                                {submission.field_officer?.name}
-                                            </h3>
-                                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                                                <Calendar className="h-3 w-3" />
-                                                <span>
-                                                    {new Date(
-                                                        submission.created_at,
-                                                    ).toLocaleDateString(
-                                                        'en-US',
-                                                        {
-                                                            month: 'short',
-                                                            day: 'numeric',
-                                                            year: 'numeric',
-                                                        },
-                                                    )}
-                                                </span>
+                                        {/* Info Grid */}
+                                        <div className="grid gap-4 sm:grid-cols-2">
+                                            {/* Submitted By */}
+                                            <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm">
+                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                                                    <User className="h-5 w-5 text-primary" />
+                                                </div>
+                                                <div className="flex flex-col gap-1">
+                                                    <span className="text-xs font-medium text-muted-foreground">
+                                                        Submitted By
+                                                    </span>
+                                                    <span className="font-semibold text-foreground">
+                                                        {reportSubmission
+                                                            ?.field_officer
+                                                            ?.name || 'N/A'}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Submission Date */}
+                                            <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm">
+                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                                                    <Calendar className="h-5 w-5 text-primary" />
+                                                </div>
+                                                <div className="flex flex-col gap-1">
+                                                    <span className="text-xs font-medium text-muted-foreground">
+                                                        Submission Date
+                                                    </span>
+                                                    <span className="font-semibold text-foreground">
+                                                        {reportSubmission?.created_at
+                                                            ? new Date(
+                                                                  reportSubmission.created_at,
+                                                              ).toLocaleDateString(
+                                                                  'en-US',
+                                                                  {
+                                                                      month: 'long',
+                                                                      day: 'numeric',
+                                                                      year: 'numeric',
+                                                                  },
+                                                              )
+                                                            : 'N/A'}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-
-                                        <button className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-muted">
-                                            <EllipsisVertical className="h-4 w-4 text-muted-foreground transition-colors hover:text-foreground" />
-                                        </button>
                                     </div>
                                 </div>
-                            ))}
+
+                                {/* Footer Actions */}
+                                <div className="mt-6 flex items-center justify-between border-t pt-4">
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <Upload className="h-4 w-4" />
+                                        <span>
+                                            Uploaded{' '}
+                                            {reportSubmission?.created_at
+                                                ? new Date(
+                                                      reportSubmission.created_at,
+                                                  ).toLocaleTimeString(
+                                                      'en-US',
+                                                      {
+                                                          hour: 'numeric',
+                                                          minute: '2-digit',
+                                                          hour12: true,
+                                                      },
+                                                  )
+                                                : ''}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </Activity>

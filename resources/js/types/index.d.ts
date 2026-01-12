@@ -88,8 +88,9 @@ export interface Media {
 export interface ReportSubmission {
     id: string;
     report_id: string;
-    field_officer_id: number;
+    field_officer: User<Pick<User, 'id' | 'name' | 'email' | 'avatar'>>;
     status: 'draft' | 'submitted';
+    media: Media[]
     created_at: string;
     updated_at: string;
 

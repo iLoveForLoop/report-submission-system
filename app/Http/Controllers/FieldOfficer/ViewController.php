@@ -5,6 +5,7 @@ namespace App\Http\Controllers\FieldOfficer;
 use App\Http\Controllers\Controller;
 use App\Models\Program;
 use App\Models\Report;
+use App\Models\ReportSubmission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -42,6 +43,8 @@ class ViewController extends Controller
         'id' => $report->id,
         'title' => $report->title,
         'content' => $report->content,
+        'deadline' => $report->deadline,
+        'final_deadline' => $report->final_deadline,
         'form_schema' => $report->form_schema,  
 
         'program' => [
@@ -72,10 +75,18 @@ class ViewController extends Controller
         'updated_at' => $report->updated_at->toISOString(),
     ];
 
+    $submission = $report->submissions()
+    ->select('id', 'report_id', 'field_officer_id', 'status', 'created_at', 'updated_at')
+    ->whereBelongsTo(auth()->user(), 'fieldOfficer')
+    ->with([
+        'fieldOfficer:id,name,email,avatar', 'media'
+    ])
+    ->first();
+
         return inertia('field-officer/programs/reports/report-submissions/page', [
             'program' => $program,
             'report' => $serializedReport,
-            'reportSubmissions' => $report->submissions,
+            'reportSubmission' => $submission  ,
             'hasSubmitted' => $hasSubmitted
         ]);
     }

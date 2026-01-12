@@ -95,9 +95,11 @@ class ViewController extends Controller
 
         $report->load('submissions.fieldOfficer');
 
+        $submissions = $report->submissions()->with(['fieldOfficer:id,name,email,avatar', 'media'])->get();
+
         return inertia('focal-person/programs/reports/report-submissions/page', [
             'program' => $program,
-            'reportSubmissions' => $report->submissions,
+            'reportSubmissions' => $submissions,
             'report' => $report
         ]);
 

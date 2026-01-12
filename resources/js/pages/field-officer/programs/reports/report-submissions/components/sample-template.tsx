@@ -23,7 +23,7 @@ export default function SampleTemplate({ templates }: Props) {
                             {temp.mime_type.startsWith('image/') ? (
                                 <div className="relative aspect-video overflow-hidden">
                                     <img
-                                        src={temp.url}
+                                        src={temp.original_url}
                                         alt={temp.name}
                                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                     />
@@ -56,7 +56,7 @@ export default function SampleTemplate({ templates }: Props) {
                                             size="sm"
                                             className="h-7 gap-1 text-xs"
                                         >
-                                            <a href={temp.url} download>
+                                            <a href={temp.original_url} download>
                                                 <Download className="h-3 w-3" />
                                                 Download
                                             </a>

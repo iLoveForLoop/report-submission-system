@@ -3,7 +3,7 @@ import FocalPersonNavigationPath from '@/actions/App/Http/Controllers/FocalPerso
 import ProgramHeadNavigationPath from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import ProvincialDirectorNavigationPath from '@/actions/App/Http/Controllers/ProvincialDirector/ViewController';
 import { NavItem } from '@/types';
-import { File, FileText, Layers, LayoutGrid, Users } from 'lucide-react';
+import { File, Folder, Layers, LayoutGrid, Users } from 'lucide-react';
 
 export function mainNavigationPath(role: string): NavItem[] {
     switch (role) {
@@ -17,7 +17,12 @@ export function mainNavigationPath(role: string): NavItem[] {
                 {
                     title: 'Programs',
                     href: FieldOfficerNavigationPath.programs().url,
-                    icon: FileText,
+                    icon: Layers,
+                },
+                {
+                    title: 'My Report Submissions',
+                    href: FieldOfficerNavigationPath.myReportSubmissions().url,
+                    icon: Folder,
                 },
             ];
         case 'focal_person':

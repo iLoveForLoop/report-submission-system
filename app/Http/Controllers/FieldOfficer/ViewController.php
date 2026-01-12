@@ -11,25 +11,29 @@ use Illuminate\Http\Request;
 
 class ViewController extends Controller
 {
-    public function dashboard(){
+    public function dashboard()
+    {
         return inertia('field-officer/dashboard/page');
     }
 
-    public function programs(){
+    public function programs()
+    {
 
         $programs = Program::with('coordinator')->get();
 
         return inertia('field-officer/programs/page', compact('programs'));
     }
 
-    public function reports(Program $program){
+    public function reports(Program $program)
+    {
 
         $reports = $program->reports()->get();
 
         return inertia('field-officer/programs/reports/page', compact('reports', 'program'));
     }
 
-    public function reportSubmissions(Program $program, Report $report){
+    public function reportSubmissions(Program $program, Report $report)
+    {
 
         $hasSubmitted = $report->hasSubmissionFromUser(Auth::id());
 
@@ -68,26 +72,44 @@ class ViewController extends Controller
                 'file_name' => $media->file_name,
                 'mime_type' => $media->mime_type,
                 'size' => $media->size,
-                'url' => $media->getFullUrl(),
+                'original_url' => $media->original_url,
             ]),
 
         'created_at' => $report->created_at->toISOString(),
         'updated_at' => $report->updated_at->toISOString(),
-    ];
+        ];
 
-    $submission = $report->submissions()
-    ->select('id', 'report_id', 'field_officer_id', 'status', 'created_at', 'updated_at')
-    ->whereBelongsTo(auth()->user(), 'fieldOfficer')
-    ->with([
-        'fieldOfficer:id,name,email,avatar', 'media'
-    ])
-    ->first();
+        $submission = $report->submissions()
+        ->select('id', 'report_id', 'field_officer_id', 'status', 'created_at', 'updated_at')
+        ->whereBelongsTo(auth()->user(), 'fieldOfficer')
+        ->with([
+            'fieldOfficer:id,name,email,avatar', 'media'
+        ])
+        ->first();
 
-        return inertia('field-officer/programs/reports/report-submissions/page', [
-            'program' => $program,
-            'report' => $serializedReport,
-            'reportSubmission' => $submission  ,
-            'hasSubmitted' => $hasSubmitted
+            return inertia('field-officer/programs/reports/report-submissions/page', [
+                'program' => $program,
+                'report' => $serializedReport,
+                'reportSubmission' => $submission  ,
+                'hasSubmitted' => $hasSubmitted
+            ]);
+    }
+
+    public function myReportSubmissions()
+    {
+
+        $submissions = ReportSubmission::query()
+        ->select('id', 'report_id', 'field_officer_id', 'status', 'created_at', 'updated_at')
+        ->whereBelongsTo(auth()->user(), 'fieldOfficer')
+        ->with([
+            'fieldOfficer:id,name,email,avatar', 'media'
+        ])
+        ->get();
+
+
+
+        return inertia('field-officer/my-report-submissions/page',[
+            'mySubmissions' => $submissions 
         ]);
     }
 }

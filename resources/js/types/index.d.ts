@@ -121,3 +121,5 @@ export interface LaravelPaginator<T> {
     to: number | null;
     total: number;
 }
+
+export type FilterType = 'all' | 'pending' | 'rejected' | 'accepted';

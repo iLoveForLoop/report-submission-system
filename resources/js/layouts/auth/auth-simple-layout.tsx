@@ -98,11 +98,11 @@ export default function AuthSimpleLayout({
     return (
         <>
             <Head title="Login">
-                <link rel="preconnect" href="https://fonts.bunny.net" />
+                {/* <link rel="preconnect" href="https://fonts.bunny.net" />
                 <link
                     href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600"
                     rel="stylesheet"
-                />
+                /> */}
             </Head>
             <motion.div
                 className="login-page relative flex min-h-svh flex-col items-center justify-center gap-6 p-6"

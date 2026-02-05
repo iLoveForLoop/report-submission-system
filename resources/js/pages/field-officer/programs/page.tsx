@@ -1,30 +1,61 @@
+// field-officer/page.tsx
 import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewController';
+import { Pagination } from '@/components/ui/pagination';
 import { useViewMode } from '@/hooks/use-view-mode';
 import AppLayout from '@/layouts/app-layout';
-import { Program } from '@/types';
+import { LaravelPaginator, Program } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { EllipsisVertical, Folders, Grid2x2, List } from 'lucide-react';
+import {
+
+    EllipsisVertical,
+    Folders,
+    Grid2x2,
+    List,
+
+} from 'lucide-react';
 import { Activity } from 'react';
 
 export default function Page() {
-    const { programs } = usePage<{ programs: Program[] }>().props;
-
+    const { programs } = usePage<{ programs: LaravelPaginator<Program> }>()
+        .props;
     const { mode: viewMode, updateMode: setViewMode } = useViewMode();
+
+    // Handle pagination
+    // const handlePageChange = (page: number) => {
+    //     if (
+    //         page === programs.current_page ||
+    //         page < 1 ||
+    //         page > programs.last_page
+    //     )
+    //         return;
+
+    //     router.get(window.location.pathname, { page });
+    // };
 
     return (
         <AppLayout>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">All Programs</h1>
+                    <div>
+                        <h1 className="text-2xl font-semibold text-foreground">
+                            All Programs
+                        </h1>
+                        {programs.data.length > 0 && (
+                            <p className="mt-1 text-sm text-muted-foreground">
+                                Showing {programs.from} to {programs.to} of{' '}
+                                {programs.total} programs
+                            </p>
+                        )}
+                    </div>
 
-                    {programs.length > 0 && (
-                        <div className="flex items-center gap-1 rounded-lg border bg-background p-1">
+                    {programs.data.length > 0 && (
+                        <div className="flex items-center gap-1 rounded-lg border bg-card p-1">
                             <button
                                 onClick={() => setViewMode('grid')}
                                 className={`rounded p-2 transition-colors ${
                                     viewMode === 'grid'
                                         ? 'bg-primary text-primary-foreground'
-                                        : 'hover:bg-muted'
+                                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                                 }`}
                                 title="Grid view"
                             >
@@ -35,7 +66,7 @@ export default function Page() {
                                 className={`rounded p-2 transition-colors ${
                                     viewMode === 'list'
                                         ? 'bg-primary text-primary-foreground'
-                                        : 'hover:bg-muted'
+                                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                                 }`}
                                 title="List view"
                             >
@@ -45,7 +76,9 @@ export default function Page() {
                     )}
                 </div>
 
-                <Activity mode={programs.length <= 0 ? 'visible' : 'hidden'}>
+                <Activity
+                    mode={programs.data.length <= 0 ? 'visible' : 'hidden'}
+                >
                     <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
                         <Folders className="h-16 w-16 text-muted-foreground/50" />
                         <h2 className="text-xl font-medium text-muted-foreground">
@@ -57,21 +90,23 @@ export default function Page() {
                     </div>
                 </Activity>
 
-                <Activity mode={programs.length > 0 ? 'visible' : 'hidden'}>
+                <Activity
+                    mode={programs.data.length > 0 ? 'visible' : 'hidden'}
+                >
                     {viewMode === 'grid' ? (
                         <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-                            {programs.map((program, index) => (
+                            {programs.data.map((program, index) => (
                                 <Link
                                     key={index}
                                     href={ViewController.reports(program)}
                                     className="group"
                                 >
-                                    <div className="flex items-center gap-3 rounded-lg border bg-background/50 p-3 transition-colors hover:bg-muted/50">
+                                    <div className="flex items-center gap-3 rounded-lg border bg-card p-3 transition-all hover:border-primary/20 hover:shadow">
                                         <div className="flex-shrink-0">
                                             <Folders className="h-6 w-6 text-muted-foreground" />
                                         </div>
                                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                                            <h2 className="truncate font-medium">
+                                            <h2 className="truncate font-medium text-foreground">
                                                 {program.name}
                                             </h2>
                                             <p className="truncate text-sm text-muted-foreground">
@@ -83,7 +118,7 @@ export default function Page() {
                                         </div>
                                         <button
                                             onClick={(e) => e.preventDefault()}
-                                            className="flex-shrink-0 rounded p-1 opacity-0 transition-all group-hover:opacity-100 hover:bg-muted"
+                                            className="flex-shrink-0 rounded p-1 opacity-0 transition-all group-hover:opacity-100 hover:bg-accent"
                                         >
                                             <EllipsisVertical className="h-4 w-4" />
                                         </button>
@@ -99,16 +134,16 @@ export default function Page() {
                                 <div className="col-span-3">Description</div>
                                 <div className="col-span-1"></div>
                             </div>
-                            {programs.map((program, index) => (
+                            {programs.data.map((program, index) => (
                                 <Link
                                     key={index}
                                     href={ViewController.reports(program)}
                                     className="group"
                                 >
-                                    <div className="grid grid-cols-12 items-center gap-4 border-b px-4 py-3 transition-colors hover:bg-muted/50">
+                                    <div className="grid grid-cols-12 items-center gap-4 border-b px-4 py-3 transition-colors hover:bg-accent/50">
                                         <div className="col-span-5 flex min-w-0 items-center gap-3">
                                             <Folders className="h-5 w-5 flex-shrink-0 text-muted-foreground" />
-                                            <h2 className="truncate font-medium">
+                                            <h2 className="truncate font-medium text-foreground">
                                                 {program.name}
                                             </h2>
                                         </div>
@@ -123,7 +158,7 @@ export default function Page() {
                                                 onClick={(e) =>
                                                     e.preventDefault()
                                                 }
-                                                className="rounded p-1 opacity-0 transition-all group-hover:opacity-100 hover:bg-muted"
+                                                className="rounded p-1 opacity-0 transition-all group-hover:opacity-100 hover:bg-accent"
                                             >
                                                 <EllipsisVertical className="h-4 w-4" />
                                             </button>
@@ -133,6 +168,9 @@ export default function Page() {
                             ))}
                         </div>
                     )}
+
+                    {/* Pagination */}
+                    <Pagination paginator={programs} />
                 </Activity>
             </div>
         </AppLayout>

@@ -1,9 +1,8 @@
-//welcome.tsx
 import Developers from '@/components/developers/developers';
 import Header from '@/components/header/header';
 import { login } from '@/routes';
-import { type SharedData } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
+// import { type SharedData } from '@/types';
+import { Head, Link} from '@inertiajs/react';
 import { motion } from 'framer-motion';
 
 // Animation variants
@@ -59,7 +58,7 @@ const pulseDotVariants = {
 };
 
 export default function Welcome({
-    canRegister = true,
+
     department = 'DILG Region VII - Bohol',
     headline = 'Report Submission System',
     description = 'A centralized system that enables efficient submission, tracking, and management of DTRs and official reports for DILG field operations.',
@@ -70,16 +69,12 @@ export default function Welcome({
     subtitle?: string;
     description?: string;
 }) {
-    const { auth } = usePage<SharedData>().props;
+    // const { auth } = usePage<SharedData>().props;
 
     return (
         <>
             <Head title="Welcome">
-                <link rel="preconnect" href="https://fonts.bunny.net" />
-                <link
-                    href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600"
-                    rel="stylesheet"
-                />
+
             </Head>
             <motion.main
                 className="landing-page relative min-h-screen"
@@ -91,7 +86,7 @@ export default function Welcome({
 
                 <motion.div
                     className="flex items-center justify-center py-8 sm:py-12 md:h-[85vh] md:py-0"
-                    variants={itemVariants}
+                    // variants={itemVariants}
                 >
                     <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-20">
                         <div className="flex flex-col items-center justify-between gap-8 md:flex-row md:gap-0">
@@ -99,7 +94,7 @@ export default function Welcome({
                             <div className="order-2 w-full md:order-1 md:w-1/2">
                                 <motion.div
                                     className=""
-                                    variants={itemVariants}
+                                    // variants={itemVariants}
                                 >
                                     {/* Changed from <p> to <div> to fix hydration error */}
                                     <div className="mb-4 inline-flex items-center gap-2 rounded-md border border-blue-500 bg-blue-100 px-3 py-1 text-xs font-medium text-blue-600 sm:text-sm">

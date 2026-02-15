@@ -13,7 +13,7 @@ const header = () => {
                     /> */}
                 <div className="flex items-center gap-2">
                     <AppLogoIcon className="" />
-                    <p className="text-lg font-bold">DILG RSR</p>
+                    <p className="text-lg font-bold">DILG RSS</p>
                 </div>
                 <DarkModeToggle />
             </header>

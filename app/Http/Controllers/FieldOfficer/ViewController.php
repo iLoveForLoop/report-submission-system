@@ -16,7 +16,7 @@ class ViewController extends Controller
         return inertia('field-officer/dashboard/page');
     }
 
-     public function programs(Request $request)
+    public function programs(Request $request)
     {
         $perPage = $request->get('per_page', 12);
 

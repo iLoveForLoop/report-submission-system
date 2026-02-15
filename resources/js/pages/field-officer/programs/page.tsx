@@ -101,8 +101,8 @@ export default function Page() {
                                     href={ViewController.reports(program)}
                                     className="group"
                                 >
-                                    <div className="flex items-center gap-3 rounded-lg border bg-card p-3 transition-all hover:border-primary/20 hover:shadow">
-                                        <div className="flex-shrink-0">
+                                    <div className="flex gap-3 rounded-lg border bg-card p-3 transition-all hover:border-primary/20 hover:shadow">
+                                        {/* <div className="flex-shrink-0">
                                             <Folders className="h-6 w-6 text-muted-foreground" />
                                         </div>
                                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -115,13 +115,43 @@ export default function Page() {
                                             <p className="truncate text-xs text-muted-foreground">
                                                 {program.coordinator.name}
                                             </p>
+                                        </div> */}
+                                        {/* <div className=''>
+                                            <div className='bg-[#f3f4f6] p-3 rounded-md'>
+                                                <Folders className="h-5 text-muted-foreground" />
+                                            </div>
+                                        </div> */}
+                                        <div className='flex min-w-0 flex-1 flex-col gap-4'>
+                                            <div className='flex items-center gap-3'>
+                                                <div className='bg-muted p-3 rounded-md'>
+                                                    <Folders className="h-5 text-muted-foreground" />
+                                                </div>
+                                                <div className='flex flex-col min-w-0'>
+                                                    <div>
+                                                        <h1 className='truncate font-medium text-foreground'>
+                                                            {program.name}
+                                                        </h1>
+                                                        <p className='truncate text-sm text-muted-foreground'>
+                                                            {program.description}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className='flex flex-col gap-3 pl-15'>
+                                                <p className='truncate text-xs text-gray-500 font-lighter'>
+                                                    {program.coordinator.name}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <button
-                                            onClick={(e) => e.preventDefault()}
-                                            className="flex-shrink-0 rounded p-1 opacity-0 transition-all group-hover:opacity-100 hover:bg-accent"
-                                        >
-                                            <EllipsisVertical className="h-4 w-4" />
-                                        </button>
+                                        <div className='flex items-center'>
+                                            <button
+                                                onClick={(e) => e.preventDefault()}
+                                                className="flex-shrink-0 rounded p-1 opacity-0 transition-all group-hover:opacity-100 hover:bg-accent"
+                                            >
+                                                <EllipsisVertical className="h-4 w-4" />
+                                            </button>
+                                        </div>
+
                                     </div>
                                 </Link>
                             ))}

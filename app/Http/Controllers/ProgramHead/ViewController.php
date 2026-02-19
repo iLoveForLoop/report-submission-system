@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ProgramHead;
 
 use App\Http\Controllers\Controller;
 use App\Models\Program;
+use App\Models\Report;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -59,6 +60,47 @@ class ViewController extends Controller
         ]);
     }
 
+    public function submissions(Report $report)
+{
+    // Load submissions with relationships
+    $report->load(['submissions' => function($query) {
+        $query->with([
+            'fieldOfficer',
+            'media' // Load Spatie media
+        ])->latest();
+    }]);
+
+    // Format the submissions to ensure media matches your interface
+    $formattedSubmissions = $report->submissions->map(function ($submission) {
+        return [
+            'id' => $submission->id,
+            'report_id' => $submission->report_id,
+            'field_officer' => $submission->fieldOfficer,
+            'status' => $submission->status,
+            'timeliness' => $submission->timeliness,
+            'description' => $submission->description,
+            'remarks' => $submission->remarks,
+            'created_at' => $submission->created_at,
+            'updated_at' => $submission->updated_at,
+            'media' => $submission->media->map(function ($media) {
+                return [
+                    'id' => (string) $media->id,
+                    'name' => $media->name,
+                    'file_name' => $media->file_name,
+                    'mime_type' => $media->mime_type,
+                    'size' => $media->size,
+                    'original_url' => $media->getUrl(),
+                ];
+            }),
+        ];
+    });
+
+    return Inertia::render('program-head/programs/reports/submissions/page', [
+        'report' => $report,
+        'submissions' => Inertia::defer(fn () => $formattedSubmissions)
+    ]);
+}
+
     public function manageUsers()
     {
            $users = User::query()
@@ -104,6 +146,12 @@ class ViewController extends Controller
     return inertia('program-head/manage-users/page', [
         'users' => $users,
     ]);
+    }
+
+    public function viewUser(User $user){
+        return inertia('program-head/manage-users/view', [
+            'user' => $user,
+        ]);
     }
 
     public function notifications(){

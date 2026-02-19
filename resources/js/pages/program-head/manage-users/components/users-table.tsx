@@ -132,7 +132,7 @@ export default function UsersTable({
                             )}
                         </TableCell>
                         <TableCell>
-                            <EllipsisDropdown />
+                            <EllipsisDropdown user={user} />
                         </TableCell>
                     </TableRow>
                 ))}

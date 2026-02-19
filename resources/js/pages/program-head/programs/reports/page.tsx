@@ -33,7 +33,7 @@ export default function Reports() {
                         <div className="grid grid-cols-3 gap-5">
                             {reports?.map((report, index) => (
                                 <Link
-                                    href={'#'}
+                                    href={ViewController.submissions(report)}
                                     key={index}
                                     className="flex items-center gap-5 rounded-xl border bg-background/50 px-4 py-2"
                                 >
@@ -43,7 +43,7 @@ export default function Reports() {
                                     <div className="flex w-full items-center justify-between">
                                         <div>
                                             <h2 className="truncate text-lg font-semibold">
-                                                {report.title}
+                                                {report.title} with bipop
                                             </h2>
                                             <p className="text-sm text-muted-foreground">
                                                 Deadline:{' '}

@@ -176,15 +176,15 @@ export default function Reports() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+                <Back link={ViewController.programs()} />
                 <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
-                        <Back link={ViewController.programs()} />
                         <div>
-                            <h1 className="text-2xl leading-tight font-semibold">
+                            <h1 className="text-lg lg:text-2xl leading-tight font-semibold">
                                 {program.name}
                             </h1>
                             {hasReports && (
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-xs lg:text-sm text-muted-foreground">
                                     {reports.total} report
                                     {reports.total !== 1 ? 's' : ''}
                                 </p>
@@ -203,7 +203,7 @@ export default function Reports() {
                                 }`}
                                 title="Grid view"
                             >
-                                <Grid2x2 className="h-4 w-4" />
+                                <Grid2x2 className="h-3 w-3 lg:h-4 lg:w-4" />
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
@@ -214,7 +214,7 @@ export default function Reports() {
                                 }`}
                                 title="List view"
                             >
-                                <List className="h-4 w-4" />
+                                <List className="h-3 w-3 lg:h-4 lg:w-4" />
                             </button>
                         </div>
                     )}

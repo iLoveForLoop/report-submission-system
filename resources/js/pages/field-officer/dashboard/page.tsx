@@ -249,37 +249,71 @@ return (
 
         <div className="flex-1 space-y-8 p-6 md:p-8 bg-background">
             {/* Welcome Header */}
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-                <h1 className="text-2xl lg:text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                Field Officer Dashboard
-                </h1>
-
-                <div className="text-muted-foreground mt-1 flex items-center gap-2">
-                    <span className='text-sm'>Welcome back, Field Officer</span>
-                    <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                        <Bell className="w-3 h-3" />
-                        3 new notifications
-                    </span>
+            <div className="landing-page relative overflow-hidden rounded-xl border border-border bg-card p-8">
+                <div className="relative z-10">
+                    <div className="grid grid-rows-1 lg:grid-cols-2">
+                        <div>
+                            <h1 className="text-2xl lg:text-3xl font-bold text-foreground">
+                                Field Officer Dashboard
+                            </h1>
+                            <div className="text-muted-foreground mt-1 flex items-center gap-2">
+                                <span className='text-xs lg:text-sm'>Welcome back, Field Officer</span>
+                                <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                                    <Bell className="w-3 h-3" />
+                                    3 new notifications
+                                </span>
+                            </div>
+                        </div>
+                        <div className="flex items-center lg:justify-end gap-3 mt-5 lg:mt-0">
+                            <Link
+                                href="/field-officer/programs"
+                                className="inline-flex items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-xs lg:text-sm font-medium hover:bg-accent transition-colors"
+                            >
+                                <FolderOpen className="w-4 h-4" />
+                                View Programs
+                            </Link>
+                            <Link
+                                href="/field-officer/my-report-submissions"
+                                className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs lg:text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                            >
+                                <Upload className="w-4 h-4" />
+                                New Submission
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className="flex items-center gap-3">
-                <Link
-                    href="/field-officer/programs"
-                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-xs lg:text-sm font-medium hover:bg-accent transition-colors"
-                >
-                    <FolderOpen className="w-4 h-4" />
-                    View Programs
-                </Link>
-                <Link
-                    href="/field-officer/my-report-submissions"
-                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs lg:text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-                >
-                    <Upload className="w-4 h-4" />
-                    New Submission
-                </Link>
-            </div>
-            </div>
+            {/* <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 className="text-2xl lg:text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                    Field Officer Dashboard
+                    </h1>
+
+                    <div className="text-muted-foreground mt-1 flex items-center gap-2">
+                        <span className='text-sm'>Welcome back, Field Officer</span>
+                        <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                            <Bell className="w-3 h-3" />
+                            3 new notifications
+                        </span>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3">
+                    <Link
+                        href="/field-officer/programs"
+                        className="inline-flex items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-xs lg:text-sm font-medium hover:bg-accent transition-colors"
+                    >
+                        <FolderOpen className="w-4 h-4" />
+                        View Programs
+                    </Link>
+                    <Link
+                        href="/field-officer/my-report-submissions"
+                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs lg:text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                    >
+                        <Upload className="w-4 h-4" />
+                        New Submission
+                    </Link>
+                </div>
+            </div> */}
 
             {/* Stats Grid */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

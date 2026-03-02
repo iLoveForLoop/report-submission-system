@@ -4,6 +4,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import {
+    Activity,
     ArrowDown,
     ArrowUp,
     Award,
@@ -21,6 +22,8 @@ import {
     HeartPulse,
     Hourglass,
     MapPin,
+    PieChart,
+    TrendingUp,
     Users,
     Utensils,
     XCircle,
@@ -44,7 +47,11 @@ import {
     Bar,
     BarChart,
     CartesianGrid,
+    Cell,
     LabelList,
+    Line,
+    Pie,
+    LineChart as ReLineChart,
     XAxis,
     YAxis,
 } from 'recharts';
@@ -177,6 +184,8 @@ const rejectedChartConfig = {
     },
 } satisfies ChartConfig;
 
+
+
 export default function Dashboard() {
     const getStatusBadge = (status: string) => {
         const styles = {
@@ -208,16 +217,16 @@ export default function Dashboard() {
                 {/* Header */}
                 <div className="landing-page relative overflow-hidden rounded-xl border border-border bg-card p-8">
                     <div className="relative z-10">
-                        <div className="flex items-center justify-between">
+                        <div className="grid grid-rows-1 lg:grid-cols-2">
                             <div>
-                                <h1 className="text-3xl font-bold text-foreground">
-                                    Program Head Dashboard
+                                <h1 className="text-2xl lg:text-3xl font-bold text-foreground">
+                                    Provicial Director Dashboard
                                 </h1>
                                 <p className="mt-2 text-muted-foreground">
                                     Welcome back! Here's your program overview
                                 </p>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center lg:justify-end gap-3 mt-3 lg:mt-0 ">
                                 <button className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm transition-colors hover:bg-accent">
                                     <Calendar className="h-4 w-4 text-muted-foreground" />
                                     <span>Last 30 days</span>
@@ -536,6 +545,7 @@ export default function Dashboard() {
 
                 {/* Second Row - Monthly Trends and Status Distribution */}
 
+
                 {/* Program Performance Cards */}
                 <Card>
                     <CardHeader>
@@ -631,7 +641,7 @@ export default function Dashboard() {
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
-                            <table className="w-full">
+                            <table className="w-full min-w-[640px] md:min-w-full">
                                 <thead>
                                     <tr className="border-b border-border">
                                         <th className="py-3 text-left text-xs font-medium tracking-wider text-muted-foreground uppercase">
@@ -663,26 +673,24 @@ export default function Dashboard() {
                                                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
                                                         {submission.avatar}
                                                     </div>
-                                                    <span className="font-medium text-foreground">
+                                                    <span className="text-xs lg:text-sm font-medium text-foreground whitespace-nowrap">
                                                         {submission.officer}
                                                     </span>
                                                 </div>
                                             </td>
                                             <td className="py-3">
-                                                <div className="flex items-center gap-1 text-muted-foreground">
-                                                    <MapPin className="h-3 w-3" />
+                                                <div className="text-xs lg:text-sm flex items-center gap-1 text-muted-foreground whitespace-nowrap">
+                                                    <MapPin className="h-3 w-3 flex-shrink-0" />
                                                     {submission.cluster}
                                                 </div>
                                             </td>
-                                            <td className="py-3 text-muted-foreground">
+                                            <td className="text-xs lg:text-sm py-3 text-muted-foreground whitespace-nowrap">
                                                 {submission.program}
                                             </td>
-                                            <td className="py-3">
-                                                {getStatusBadge(
-                                                    submission.status,
-                                                )}
+                                            <td className="py-3 text-xs lg:text-sm whitespace-nowrap">
+                                                {getStatusBadge(submission.status)}
                                             </td>
-                                            <td className="py-3 text-sm text-muted-foreground">
+                                            <td className="py-3 text-xs lg:text-sm text-muted-foreground whitespace-nowrap">
                                                 {submission.time}
                                             </td>
                                             <td className="py-3">

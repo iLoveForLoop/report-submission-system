@@ -20,7 +20,7 @@ export function Pagination({ paginator, filters = {} }: PaginationProps) {
         });
     };
 
-    if (last_page <= 1) return null;
+    // if (last_page <= 1) return null;
 
     return (
         <div className="mt-8 border-t border-border pt-6">

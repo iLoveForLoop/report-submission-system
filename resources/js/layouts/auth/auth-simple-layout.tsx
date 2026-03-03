@@ -120,10 +120,10 @@ export default function AuthSimpleLayout({
                         variants={backButtonVariants}
                         className="flex items-center gap-1"
                     >
-                        <ArrowLeft className="h-5 w-5 cursor-pointer font-semibold text-blue-900" />
+                        <ArrowLeft className="h-5 w-5 cursor-pointer font-semibold text-blue-500" />
                         <Link
                             href={home()}
-                            className="font-semibold text-blue-900"
+                            className="font-semibold text-blue-500"
                         >
                             Back
                         </Link>

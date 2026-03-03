@@ -46,7 +46,7 @@ export interface User {
     position: string;
     cluster: 'M&M' | "D'ONE" | null;
     email: string;
-    avatar?: string;
+    avatar_url: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
     created_at: string;

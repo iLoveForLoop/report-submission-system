@@ -153,10 +153,10 @@ export default function NotificationsPage() {
             <Head title="Notifications" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 {/* Header Card */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                            <h1 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+                            <h1 className="flex items-center gap-2 text-xl font-semibold text-card-foreground">
                                 <BellRing className="h-5 w-5 text-primary" />
                                 Notifications
                             </h1>
@@ -168,16 +168,16 @@ export default function NotificationsPage() {
                         <button
                             onClick={markAllNotificationsAsRead}
                             disabled={unreadCount === 0}
-                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-accent hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-primary/5 hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <CheckCheck className="h-4 w-4" />
                             Mark all as read
                         </button>
                     </div>
 
-                    {/* Stats */}
+                    {/* Stats Cards */}
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-lg border border-border bg-muted/50 px-4 py-3">
+                        <div className="rounded-lg border border-border bg-muted px-4 py-3">
                             <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Total
                             </p>
@@ -185,16 +185,16 @@ export default function NotificationsPage() {
                                 {normalized.length}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
-                            <p className="text-xs font-medium tracking-wide text-primary uppercase">
+                        <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-800 dark:bg-blue-950/30">
+                            <p className="text-xs font-medium tracking-wide text-blue-600 dark:text-blue-400 uppercase">
                                 Unread
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-primary">
+                            <p className="mt-1 text-lg font-semibold text-blue-700 dark:text-blue-300">
                                 {unreadCount}
                             </p>
                         </div>
                         <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 dark:border-emerald-800 dark:bg-emerald-950/30">
-                            <p className="text-xs font-medium tracking-wide text-emerald-600 uppercase dark:text-emerald-400">
+                            <p className="text-xs font-medium tracking-wide text-emerald-600 dark:text-emerald-400 uppercase">
                                 Read
                             </p>
                             <p className="mt-1 text-lg font-semibold text-emerald-700 dark:text-emerald-300">
@@ -204,9 +204,8 @@ export default function NotificationsPage() {
                     </div>
                 </div>
 
-                {/* List Card */}
-                <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                    {/* Filter Row */}
+                {/* Notifications List Card */}
+                <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
                     <div className="mb-4 flex items-center gap-2">
                         <Filter className="h-4 w-4 text-muted-foreground" />
                         <p className="text-sm font-medium text-foreground">
@@ -214,27 +213,30 @@ export default function NotificationsPage() {
                         </p>
                         <div className="ml-2 flex flex-wrap gap-2">
                             {(['all', 'unread', 'read'] as const).map(
-                                (value) => (
-                                    <button
-                                        key={value}
-                                        onClick={() => setFilter(value)}
-                                        className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
-                                            filter === value
-                                                ? 'bg-indigo-100 text-indigo-700'
-                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                        }`}
-                                    >
-                                        {value}
-                                    </button>
-                                ),
+                                (value) => {
+                                    const active = filter === value;
+                                    return (
+                                        <button
+                                            key={value}
+                                            onClick={() => setFilter(value)}
+                                            className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
+                                                active
+                                                    ? 'bg-primary text-primary-foreground'
+                                                    : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
+                                            }`}
+                                        >
+                                            {value}
+                                        </button>
+                                    );
+                                },
                             )}
                         </div>
                     </div>
 
                     {/* Notification List */}
                     {filtered.length === 0 ? (
-                        <div className="rounded-lg border border-dashed border-border bg-muted/20 px-4 py-12 text-center">
-                            <Bell className="mx-auto h-9 w-9 text-muted-foreground/40" />
+                        <div className="rounded-lg border border-dashed border-border px-4 py-12 text-center">
+                            <Bell className="mx-auto h-9 w-9 text-muted-foreground" />
                             <p className="mt-3 text-sm font-medium text-foreground">
                                 No notifications found
                             </p>
@@ -244,117 +246,51 @@ export default function NotificationsPage() {
                         </div>
                     ) : (
                         <div className="space-y-3">
-                            {filtered.map((item) => {
-                                const theme = getNotificationTheme(item.title);
-                                const isClickable = !!item.action_url;
-
-                                return (
-                                    <div
-                                        key={item.id}
-                                        onClick={() =>
-                                            isClickable && handleCardClick(item)
-                                        }
-                                        className={`group rounded-lg border px-4 py-3 transition-all ${
-                                            item.isRead
-                                                ? 'border-gray-200 bg-white'
-                                                : `${theme.unreadBorder} ${theme.unreadBg}`
-                                        } ${
-                                            isClickable
-                                                ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-md'
-                                                : 'cursor-default'
-                                        } `}
-                                    >
-                                        <div className="flex flex-wrap items-start justify-between gap-2">
-                                            {/* Left: title + message */}
-                                            <div className="min-w-0 flex-1">
-                                                <div className="flex flex-wrap items-center gap-2">
-                                                    {/* Unread dot */}
-                                                    {!item.isRead && (
-                                                        <span className="h-2 w-2 flex-shrink-0 rounded-full bg-indigo-500" />
-                                                    )}
-                                                    <p className="text-sm font-semibold text-gray-900">
-                                                        {item.title}
-                                                    </p>
-                                                    {!item.isRead && (
-                                                        <span
-                                                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${theme.badge}`}
-                                                        >
-                                                            New
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <p className="mt-1 text-sm text-gray-600">
-                                                    {item.message}
-                                                </p>
-                                            </div>
-
-                                            {/* Right: timestamp + dismiss */}
+                            {filtered.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className={`rounded-lg border px-4 py-3 transition-colors ${
+                                        item.isRead
+                                            ? 'border-border bg-card'
+                                            : 'border-primary/20 bg-primary/5'
+                                    }`}
+                                >
+                                    <div className="flex flex-wrap items-start justify-between gap-2">
+                                        <div className="min-w-0 flex-1">
                                             <div className="flex items-center gap-2">
-                                                <div className="flex items-center gap-1 text-xs text-gray-400">
-                                                    <Clock3 className="h-3.5 w-3.5" />
-                                                    {formatDateTime(
-                                                        item.created_at,
-                                                    )}
-                                                </div>
-                                                {/* Dismiss button — appears on hover */}
-                                                <button
-                                                    onClick={(e) =>
-                                                        handleRemove(e, item.id)
-                                                    }
-                                                    className="rounded p-1 text-gray-300 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-50 hover:text-red-400"
-                                                    title="Dismiss notification"
-                                                >
-                                                    <Trash2 className="h-3.5 w-3.5" />
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Action row — only for unread */}
-                                        {!item.isRead && (
-                                            <div className="mt-3 flex items-center gap-2">
-                                                <button
-                                                    onClick={(e) =>
-                                                        handleMarkAsRead(
-                                                            e,
-                                                            item.id,
-                                                        )
-                                                    }
-                                                    className={`inline-flex cursor-pointer items-center gap-1 rounded-md border bg-white px-2.5 py-1.5 text-xs font-medium transition-colors ${theme.markReadBtn}`}
-                                                >
-                                                    <CheckCheck className="h-3.5 w-3.5" />
-                                                    Mark as read
-                                                </button>
-
-                                                {/* View button — only if action_URL exists */}
-                                                {item.action_url && (
-                                                    <button
-                                                        onClick={(e) =>
-                                                            handleViewClick(
-                                                                e,
-                                                                item,
-                                                            )
-                                                        }
-                                                        className={`inline-flex cursor-pointer items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-white transition-colors ${theme.viewBtn}`}
-                                                    >
-                                                        <ExternalLink className="h-3.5 w-3.5" />
-                                                        View Report
-                                                    </button>
+                                                <p className="text-sm font-semibold text-foreground">
+                                                    {item.title}
+                                                </p>
+                                                {!item.isRead && (
+                                                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-primary uppercase">
+                                                        New
+                                                    </span>
                                                 )}
                                             </div>
-                                        )}
-
-                                        {/* If already read but has action_URL — show subtle link */}
-                                        {item.isRead && item.action_url && (
-                                            <div className="mt-2">
-                                                <span className="inline-flex items-center gap-1 text-xs text-gray-400 transition-colors group-hover:text-indigo-500">
-                                                    <ExternalLink className="h-3 w-3" />
-                                                    Click to view report
-                                                </span>
-                                            </div>
-                                        )}
+                                            <p className="mt-1 text-sm text-muted-foreground">
+                                                {item.message}
+                                            </p>
+                                        </div>
+                                        <div className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
+                                            <Clock3 className="h-3.5 w-3.5" />
+                                            {formatDateTime(item.created_at)}
+                                        </div>
                                     </div>
-                                );
-                            })}
+
+                                    {!item.isRead && (
+                                        <div className="mt-3">
+                                            <button
+                                                onClick={() =>
+                                                    markAsRead(item.id)
+                                                }
+                                                className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-primary/20 bg-background px-2.5 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/5"
+                                            >
+                                                Mark as read
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     )}
                 </div>

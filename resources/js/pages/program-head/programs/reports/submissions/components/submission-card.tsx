@@ -1,4 +1,13 @@
 import { Media, ReportSubmission } from '@/types';
+import {
+    ChevronDown,
+    Download,
+    Eye,
+    File,
+    FileSpreadsheet,
+    FileText,
+    Image,
+} from 'lucide-react';
 import { useState } from 'react';
 
 const STATUS_CONFIG: Record<
@@ -7,8 +16,8 @@ const STATUS_CONFIG: Record<
 > = {
     draft: {
         label: 'Draft',
-        badge: 'bg-gray-100 text-gray-600 border border-gray-200',
-        dot: 'bg-gray-400',
+        badge: 'bg-[var(--muted)] text-[var(--muted-foreground)] border border-[var(--border)]',
+        dot: 'bg-[var(--muted-foreground)]',
     },
     submitted: {
         label: 'Submitted',
@@ -50,11 +59,13 @@ function formatDate(dateStr: string) {
 }
 
 function getFileIcon(mimeType: string) {
-    if (mimeType.includes('word') || mimeType.includes('document')) return '📄';
-    if (mimeType.includes('pdf')) return '📕';
-    if (mimeType.includes('sheet') || mimeType.includes('excel')) return '📊';
-    if (mimeType.includes('image')) return '🖼️';
-    return '📎';
+    if (mimeType.includes('word') || mimeType.includes('document'))
+        return FileText;
+    if (mimeType.includes('pdf')) return FileText;
+    if (mimeType.includes('sheet') || mimeType.includes('excel'))
+        return FileSpreadsheet;
+    if (mimeType.includes('image')) return Image;
+    return File;
 }
 
 function StatusBadge({ status }: { status: ReportSubmission['status'] }) {
@@ -84,10 +95,10 @@ export default function SubmissionCard({
     const media: Media[] = submission.media ?? [];
 
     return (
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-0 dark:bg-[#171717]">
+        <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--background)] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
             {/* Card Header */}
             <div
-                className={`flex items-start justify-between gap-3 px-5 py-4 ${expanded ? 'border-b border-gray-100' : ''}`}
+                className={`flex items-start justify-between gap-3 px-5 py-4 ${expanded ? 'border-b border-[var(--border)]' : ''}`}
             >
                 {/* Left: Officer info */}
                 <div className="min-w-0 flex-1">
@@ -97,21 +108,21 @@ export default function SubmissionCard({
                                 '?'}{' '}
                         </div>
                         <div>
-                            <p className="text-sm font-semibold text-gray-900 dark:text-foreground">
+                            <p className="text-sm font-semibold text-[var(--foreground)]">
                                 {submission.field_officer?.name ??
                                     'Unknown Officer'}
                             </p>
                             {submission.field_officer?.employee_code && (
-                                <p className="text-xs text-gray-400">
+                                <p className="text-xs text-[var(--muted-foreground)]">
                                     {submission.field_officer.employee_code}
                                 </p>
                             )}
                         </div>
                     </div>
-                    <p className="mb-1 font-mono text-xs text-gray-400 dark:text-white">
+                    <p className="mb-1 font-mono text-xs text-[var(--muted-foreground)]">
                         #{submission.id.slice(0, 8).toUpperCase()}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-[var(--muted-foreground)]">
                         Submitted {formatDate(submission.created_at)}
                     </p>
                 </div>
@@ -131,86 +142,70 @@ export default function SubmissionCard({
 
             {/* Attachments */}
             {media.length > 0 && (
-                <div className="border-b border-gray-100 px-5 py-3">
-                    <p className="mb-2 text-xs font-semibold tracking-wider text-gray-400 uppercase">
+                <div className="border-b border-[var(--border)] px-5 py-3">
+                    <p className="mb-2 text-xs font-semibold tracking-wider text-[var(--muted-foreground)] uppercase">
                         Attachments ({media.length})
                     </p>
                     <div className="flex flex-col gap-1.5">
-                        {media.map((file) => (
-                            <a
-                                key={file.id}
-                                href={file.original_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 no-underline transition-colors hover:bg-gray-100 dark:border-gray-800 dark:bg-[#171717]"
-                            >
-                                <span className="text-lg">
-                                    {getFileIcon(file.mime_type)}
-                                </span>
-                                <div className="min-w-0 flex-1">
-                                    <p className="truncate text-sm font-medium text-gray-700">
-                                        {file.name}
-                                    </p>
-                                    <p className="text-xs text-gray-400">
-                                        {formatBytes(file.size)}
-                                    </p>
-                                </div>
-                                {/* Added: View and Download buttons */}
-                                <div className="flex shrink-0 items-center gap-1.5">
-                                    <span
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            window.open(
-                                                file.original_url,
-                                                '_blank',
-                                            );
-                                        }}
-                                        className="inline-flex items-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-600 transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-gray-800 dark:bg-[#171717] dark:text-foreground dark:hover:text-indigo-600"
-                                    >
-                                        <svg
-                                            className="h-3 w-3"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
+                        {media.map((file) => {
+                            const FileIcon = getFileIcon(file.mime_type);
+                            return (
+                                <a
+                                    key={file.id}
+                                    href={file.original_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2.5 rounded-lg border border-[var(--border)] bg-[var(--muted)] px-3 py-2 no-underline transition-colors hover:bg-[var(--accent)]"
+                                >
+                                    <FileIcon className="h-5 w-5 text-[var(--foreground)]" />
+                                    <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-medium text-[var(--foreground)]">
+                                            {file.name}
+                                        </p>
+                                        <p className="text-xs text-[var(--muted-foreground)]">
+                                            {formatBytes(file.size)}
+                                        </p>
+                                    </div>
+                                    {/* View and Download buttons */}
+                                    <div className="flex shrink-0 items-center gap-1.5">
+                                        <span
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                window.open(
+                                                    file.original_url,
+                                                    '_blank',
+                                                );
+                                            }}
+                                            className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--background)] px-2 py-1 text-xs font-medium text-[var(--foreground)] transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
                                         >
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                            <circle cx="12" cy="12" r="3" />
-                                        </svg>
-                                        View
-                                    </span>
-                                    <span
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            const link =
-                                                document.createElement('a');
-                                            link.href = file.original_url;
-                                            link.download = file.file_name;
-                                            link.click();
-                                        }}
-                                        className="inline-flex items-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-600 transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-gray-800 dark:bg-[#171717] dark:text-foreground dark:hover:text-indigo-600"
-                                    >
-                                        <svg
-                                            className="h-3 w-3"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
+                                            <Eye className="h-3 w-3" />
+                                            View
+                                        </span>
+                                        <span
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                const link =
+                                                    document.createElement('a');
+                                                link.href = file.original_url;
+                                                link.download = file.file_name;
+                                                link.click();
+                                            }}
+                                            className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--background)] px-2 py-1 text-xs font-medium text-[var(--foreground)] transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
                                         >
-                                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                                        </svg>
-                                        Download
-                                    </span>
-                                </div>
-                            </a>
-                        ))}
+                                            <Download className="h-3 w-3" />
+                                            Download
+                                        </span>
+                                    </div>
+                                </a>
+                            );
+                        })}
                     </div>
                 </div>
             )}
 
             {/* Footer */}
             <div className="flex items-center justify-between px-5 py-2.5">
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-[var(--muted-foreground)]">
                     Report ID: {submission.report_id.slice(0, 8).toUpperCase()}
                 </span>
                 <button
@@ -218,47 +213,45 @@ export default function SubmissionCard({
                     className="flex cursor-pointer items-center gap-1 rounded-md border-none bg-transparent px-2 py-1 text-xs font-medium text-indigo-500 transition-colors hover:bg-indigo-50"
                 >
                     {expanded ? 'Less' : 'Details'}
-                    <svg
+                    <ChevronDown
                         className={`h-3 w-3 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                    >
-                        <path d="M6 9l6 6 6-6" />
-                    </svg>
+                    />
                 </button>
             </div>
 
             {/* Expanded Details */}
             {expanded && (
-                <div className="border-t border-gray-100 px-5 pt-3 pb-4">
+                <div className="border-t border-[var(--border)] px-5 pt-3 pb-4">
                     <div className="grid grid-cols-2 gap-3">
                         <div>
-                            <p className="mb-1 text-xs font-semibold tracking-wider text-gray-400 uppercase">
+                            <p className="mb-1 text-xs font-semibold tracking-wider text-[var(--muted-foreground)] uppercase">
                                 Description
                             </p>
-                            <p className="text-sm text-gray-700">
+                            <p className="text-sm text-[var(--foreground)]">
                                 {submission.description ?? (
-                                    <em className="text-gray-400">None</em>
+                                    <em className="text-[var(--muted-foreground)]">
+                                        None
+                                    </em>
                                 )}
                             </p>
                         </div>
                         <div>
-                            <p className="mb-1 text-xs font-semibold tracking-wider text-gray-400 uppercase">
+                            <p className="mb-1 text-xs font-semibold tracking-wider text-[var(--muted-foreground)] uppercase">
                                 Remarks
                             </p>
-                            <p className="text-sm text-gray-700">
+                            <p className="text-sm text-[var(--foreground)]">
                                 {submission.remarks ?? (
-                                    <em className="text-gray-400">None</em>
+                                    <em className="text-[var(--muted-foreground)]">
+                                        None
+                                    </em>
                                 )}
                             </p>
                         </div>
                         <div>
-                            <p className="mb-1 text-xs font-semibold tracking-wider text-gray-400 uppercase">
+                            <p className="mb-1 text-xs font-semibold tracking-wider text-[var(--muted-foreground)] uppercase">
                                 Last Updated
                             </p>
-                            <p className="text-sm text-gray-700">
+                            <p className="text-sm text-[var(--foreground)]">
                                 {formatDate(submission.updated_at)}
                             </p>
                         </div>

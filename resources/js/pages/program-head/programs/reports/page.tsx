@@ -50,8 +50,8 @@ export default function Reports() {
                                     </div>
                                     <div className="flex w-full items-center justify-between">
                                         <div>
-                                            <h2 className="truncate lg:text-lg font-semibold">
-                                                {report.title} with bipop
+                                            <h2 className="truncate text-lg font-semibold">
+                                                {report.title}
                                             </h2>
                                             <p className="text-xs lg:text-sm text-muted-foreground">
                                                 Deadline:{' '}

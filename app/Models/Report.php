@@ -96,4 +96,6 @@ class Report extends Model implements HasMedia
         return 'submitted';
     }
 
+    
+
 }

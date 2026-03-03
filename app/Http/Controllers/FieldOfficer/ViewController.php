@@ -100,7 +100,7 @@ class ViewController extends Controller
                 'id' => $report->coordinator->id,
                 'name' => $report->coordinator->name,
                 'email' => $report->coordinator->email,
-                'avatar' => $report->coordinator->avatar,
+                // 'avatar' => $report->coordinator->avatar,
             ],
 
             'templates' => $report
@@ -202,6 +202,62 @@ class ViewController extends Controller
         ]);
     }
 
+public function pendingReports()
+{
+    $user = auth()->user();
+
+    $pendingReports = Report::with([
+            'program:id,name,description',
+            'coordinator:id,name,email',
+            'media' // Load all media at once
+        ])
+        ->where(function ($query) use ($user) {
+            $query->whereDoesntHave('submissions', function ($q) use ($user) {
+                $q->where('field_officer_id', $user->id);
+            })
+            ->orWhereHas('submissions', function ($q) use ($user) {
+                $q->where('field_officer_id', $user->id)
+                    ->where('status', 'returned');
+            });
+        })
+        ->orderBy('deadline')
+        ->get()
+        ->map(function ($report) {
+            // Filter media by collection
+            $templates = $report->media->where('collection_name', 'templates');
+            $references = $report->media->where('collection_name', 'references');
+
+            // Helper function to format media
+            $formatMedia = fn($media) => [
+                'id' => $media->id,
+                'name' => $media->name,
+                'file_name' => $media->file_name,
+                'mime_type' => $media->mime_type,
+                'size' => $media->size,
+                'original_url' => $media->original_url,
+            ];
+
+            return [
+                'id' => $report->id,
+                'title' => $report->title,
+                'description' => $report->description,
+                'program' => $report->program,
+                'created_by' => $report->coordinator,
+                'deadline' => $report->deadline->toISOString(),
+                'final_deadline' => $report->final_deadline ? $report->final_deadline->toISOString() : null,
+                'form_schema' => $report->form_schema,
+                'templates' => $templates->map($formatMedia)->values(),
+                'references' => $references->map($formatMedia)->values(),
+                'created_at' => $report->created_at,
+                'updated_at' => $report->updated_at,
+                'submission_status' => $report->submission_status
+            ];
+        });
+
+    return inertia('field-officer/pending-reports/page', [
+        'pendingReports' => $pendingReports
+    ]);
+}
     public function notifications()
     {
         $notifications = auth()->user()
@@ -223,6 +279,10 @@ class ViewController extends Controller
             'notifications' => Inertia::scroll($notifications)
         ]);
     }
+
+
+
+
 
 
 

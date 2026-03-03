@@ -21,6 +21,15 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Programs',
                     href: FieldOfficerNavigationPath.programs().url,
                     icon: Layers,
+                    // badge: {
+                    //     countKey: 'pending_reports_count',
+                    //     variant: 'warning',
+                    // },
+                },
+                {
+                    title: 'Pending Reports',
+                    href: FieldOfficerNavigationPath.pendingReports().url,
+                    icon: File,
                     badge: {
                         countKey: 'pending_reports_count',
                         variant: 'warning',
@@ -28,9 +37,10 @@ export function mainNavigationPath(role: string): NavItem[] {
                 },
 
                 {
-                    title: 'My Report Submissions',
+                    title: 'My Reports ',
                     href: FieldOfficerNavigationPath.myReportSubmissions().url,
                     icon: FileCheck,
+
                 },
 
                 {

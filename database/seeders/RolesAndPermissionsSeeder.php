@@ -28,7 +28,7 @@ class RolesAndPermissionsSeeder extends Seeder
         }
 
         /**
-         * ---------------------------------------------------------
+         * -----------------------------------------------------        ----
          * Create Users
          * ---------------------------------------------------------
          */
@@ -58,7 +58,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'position'   => 'Program Head',
             ],
             [
-                'name'       => 'Provincial Director',
+                'name'       => '   ',
                 'first_name' => 'Provincial',
                 'last_name'  => 'Director',
                 'email'      => 'provincial.director@dilg.gov.ph',

@@ -1,3 +1,4 @@
+// report-dialog.tsx
 import ReportController from '@/actions/App/Http/Controllers/ReportController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -104,12 +105,12 @@ export default function ReportDialog({
                 </div>
             </DialogTrigger>
             <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0">
-                <div className="sticky top-0 z-10 border-b bg-white px-6 py-4">
+                <div className="sticky top-0 z-10 border-b border-border bg-card px-6 py-4">
                     <DialogHeader>
-                        <DialogTitle className="text-xl">
+                        <DialogTitle className="text-xl text-foreground">
                             Create New Report
                         </DialogTitle>
-                        <DialogDescription className="text-sm text-gray-500">
+                        <DialogDescription className="text-sm text-muted-foreground">
                             Define the report details and upload any templates
                             for the officers.
                         </DialogDescription>
@@ -130,22 +131,22 @@ export default function ReportDialog({
                             {/* Basic Information Section */}
                             <div className="space-y-5">
                                 <div className="flex items-center gap-2">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100">
-                                        <FileSignature className="h-3.5 w-3.5 text-blue-600" />
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
+                                        <FileSignature className="h-3.5 w-3.5 text-primary" />
                                     </div>
-                                    <h3 className="text-sm font-semibold text-gray-900">
+                                    <h3 className="text-sm font-semibold text-foreground">
                                         Basic Information
                                     </h3>
                                 </div>
 
-                                <div className="space-y-4 rounded-xl border bg-white p-5 shadow-sm">
+                                <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-sm">
                                     <div className="space-y-2">
                                         <Label
                                             htmlFor="title"
-                                            className="text-sm font-medium text-gray-700"
+                                            className="text-sm font-medium text-foreground"
                                         >
                                             Report Title{' '}
-                                            <span className="text-red-500">
+                                            <span className="text-destructive">
                                                 *
                                             </span>
                                         </Label>
@@ -153,7 +154,7 @@ export default function ReportDialog({
                                             id="title"
                                             name="title"
                                             placeholder="e.g. Q1 Compliance Report"
-                                            className="border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-500"
+                                            className="border-input bg-background focus:border-ring focus:ring-ring"
                                         />
                                         <InputError message={errors.title} />
                                     </div>
@@ -161,7 +162,7 @@ export default function ReportDialog({
                                     <div className="space-y-2">
                                         <Label
                                             htmlFor="description"
-                                            className="text-sm font-medium text-gray-700"
+                                            className="text-sm font-medium text-foreground"
                                         >
                                             Report Description
                                         </Label>
@@ -169,9 +170,9 @@ export default function ReportDialog({
                                             id="description"
                                             name="description"
                                             placeholder="Provide instructions or context for the officers..."
-                                            className="min-h-[100px] border-gray-200 bg-white focus:border-blue-500 focus:ring-blue-500"
+                                            className="min-h-[100px] border-input bg-background focus:border-ring focus:ring-ring"
                                         />
-                                        <p className="text-xs text-gray-400">
+                                        <p className="text-xs text-muted-foreground">
                                             Include any specific guidelines or
                                             requirements for this report.
                                         </p>
@@ -192,20 +193,20 @@ export default function ReportDialog({
                                         <div className="space-y-2">
                                             <Label
                                                 htmlFor="deadline"
-                                                className="text-sm font-medium text-gray-700"
+                                                className="text-sm font-medium text-foreground"
                                             >
                                                 Deadline{' '}
-                                                <span className="text-red-500">
+                                                <span className="text-destructive">
                                                     *
                                                 </span>
                                             </Label>
                                             <div className="relative">
-                                                <Calendar className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                                                <Calendar className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                                 <Input
                                                     type="date"
                                                     name="deadline"
                                                     id="deadline"
-                                                    className="border-gray-200 bg-white pl-9 focus:border-blue-500 focus:ring-blue-500"
+                                                    className="border-input bg-background pl-9 focus:border-ring focus:ring-ring"
                                                 />
                                             </div>
                                             <InputError
@@ -220,10 +221,10 @@ export default function ReportDialog({
                             <div className="space-y-5">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-100">
-                                            <FileText className="h-3.5 w-3.5 text-purple-600" />
+                                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
+                                            <FileText className="h-3.5 w-3.5 text-primary" />
                                         </div>
-                                        <h3 className="text-sm font-semibold text-gray-900">
+                                        <h3 className="text-sm font-semibold text-foreground">
                                             Required Attachments
                                         </h3>
                                     </div>
@@ -232,23 +233,23 @@ export default function ReportDialog({
                                         onClick={addField}
                                         variant="outline"
                                         size="sm"
-                                        className="h-8 border-purple-200 text-xs text-purple-700 hover:bg-purple-50 hover:text-purple-800"
+                                        className="h-8 border-border text-xs text-foreground hover:bg-accent hover:text-accent-foreground"
                                     >
                                         <Plus className="mr-1 h-3.5 w-3.5" />
                                         Add Attachment Field
                                     </Button>
                                 </div>
 
-                                <div className="rounded-xl border bg-white p-5 shadow-sm">
+                                <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
                                     {fields.length === 0 ? (
                                         <div className="flex flex-col items-center justify-center py-8 text-center">
-                                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-50">
-                                                <FileText className="h-6 w-6 text-purple-300" />
+                                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                                                <FileText className="h-6 w-6 text-muted-foreground/50" />
                                             </div>
-                                            <p className="mt-2 text-sm font-medium text-gray-700">
+                                            <p className="mt-2 text-sm font-medium text-foreground">
                                                 No attachments requested
                                             </p>
-                                            <p className="text-xs text-gray-400">
+                                            <p className="text-xs text-muted-foreground">
                                                 Add attachment fields that
                                                 officers need to upload
                                             </p>
@@ -258,14 +259,14 @@ export default function ReportDialog({
                                             {fields.map((field, index) => (
                                                 <div
                                                     key={field.id}
-                                                    className="group relative flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50/50 p-3 transition-all hover:border-gray-300 hover:bg-white"
+                                                    className="group relative flex items-start gap-3 rounded-lg border border-border bg-muted/50 p-3 transition-all hover:border-border hover:bg-card"
                                                 >
-                                                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-purple-100 text-purple-600">
+                                                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
                                                         <FileText className="h-4 w-4" />
                                                     </div>
 
                                                     <div className="flex-1 space-y-1">
-                                                        <Label className="text-xs font-medium text-gray-500">
+                                                        <Label className="text-xs font-medium text-muted-foreground">
                                                             Attachment Name #
                                                             {index + 1}
                                                         </Label>
@@ -279,9 +280,9 @@ export default function ReportDialog({
                                                                 )
                                                             }
                                                             placeholder="e.g. Signed Agreement, Financial Statement..."
-                                                            className="h-9 border-gray-200 bg-white text-sm focus:border-purple-500 focus:ring-purple-500"
+                                                            className="h-9 border-input bg-background text-sm focus:border-ring focus:ring-ring"
                                                         />
-                                                        <p className="text-xs text-gray-400">
+                                                        <p className="text-xs text-muted-foreground">
                                                             Officers will be
                                                             required to upload
                                                             this file
@@ -292,7 +293,7 @@ export default function ReportDialog({
                                                         type="button"
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:bg-red-50 hover:text-red-600"
+                                                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-background opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
                                                         onClick={() =>
                                                             removeField(
                                                                 field.id,
@@ -311,20 +312,20 @@ export default function ReportDialog({
                             {/* Reference Files Section */}
                             <div className="space-y-5">
                                 <div className="flex items-center gap-2">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100">
-                                        <Download className="h-3.5 w-3.5 text-emerald-600" />
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
+                                        <Download className="h-3.5 w-3.5 text-primary" />
                                     </div>
-                                    <h3 className="text-sm font-semibold text-gray-900">
+                                    <h3 className="text-sm font-semibold text-foreground">
                                         Reference Materials
                                     </h3>
                                 </div>
 
-                                <div className="rounded-xl border border-emerald-200 bg-emerald-50/30 p-5 shadow-sm">
+                                <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
                                     <div className="mb-3 flex items-center justify-between">
-                                        <Label className="text-sm font-medium text-emerald-900">
+                                        <Label className="text-sm font-medium text-foreground">
                                             Upload Reference Files
                                         </Label>
-                                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                                        <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                                             Optional
                                         </span>
                                     </div>
@@ -333,8 +334,8 @@ export default function ReportDialog({
                                         className={cn(
                                             'relative cursor-pointer rounded-lg border-2 border-dashed transition-all',
                                             referenceFiles
-                                                ? 'border-emerald-300 bg-emerald-50/50'
-                                                : 'border-emerald-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/50',
+                                                ? 'border-primary/30 bg-primary/5'
+                                                : 'border-border bg-background hover:border-primary/30 hover:bg-accent/50',
                                         )}
                                         onClick={() =>
                                             referenceFileInputRef.current?.click()
@@ -357,7 +358,7 @@ export default function ReportDialog({
                                         referenceFiles.length > 0 ? (
                                             <div className="p-4">
                                                 <div className="mb-3 flex items-center justify-between">
-                                                    <p className="text-sm font-medium text-emerald-700">
+                                                    <p className="text-sm font-medium text-foreground">
                                                         {referenceFiles.length}{' '}
                                                         file(s) selected
                                                     </p>
@@ -365,7 +366,7 @@ export default function ReportDialog({
                                                         type="button"
                                                         variant="ghost"
                                                         size="sm"
-                                                        className="h-7 px-2 text-xs text-red-600 hover:bg-red-50 hover:text-red-700"
+                                                        className="h-7 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             clearReferenceFiles();
@@ -382,11 +383,11 @@ export default function ReportDialog({
                                                             key={i}
                                                             className="flex items-center gap-2 text-sm"
                                                         >
-                                                            <FileText className="h-4 w-4 text-emerald-500" />
-                                                            <span className="flex-1 truncate text-gray-600">
+                                                            <FileText className="h-4 w-4 text-primary" />
+                                                            <span className="flex-1 truncate text-foreground">
                                                                 {file.name}
                                                             </span>
-                                                            <span className="text-xs text-gray-400">
+                                                            <span className="text-xs text-muted-foreground">
                                                                 {(
                                                                     file.size /
                                                                     1024
@@ -401,14 +402,14 @@ export default function ReportDialog({
                                             </div>
                                         ) : (
                                             <div className="flex flex-col items-center py-8">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
-                                                    <UploadCloud className="h-6 w-6 text-emerald-500" />
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                                                    <UploadCloud className="h-6 w-6 text-muted-foreground" />
                                                 </div>
-                                                <p className="mt-2 text-sm font-medium text-gray-700">
+                                                <p className="mt-2 text-sm font-medium text-foreground">
                                                     Click to upload reference
                                                     files
                                                 </p>
-                                                <p className="text-xs text-gray-400">
+                                                <p className="text-xs text-muted-foreground">
                                                     PDF, DOCX, XLSX (Max 10MB
                                                     each)
                                                 </p>
@@ -421,20 +422,20 @@ export default function ReportDialog({
                             {/* Templates Section */}
                             <div className="space-y-5">
                                 <div className="flex items-center gap-2">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100">
-                                        <FileUp className="h-3.5 w-3.5 text-amber-600" />
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
+                                        <FileUp className="h-3.5 w-3.5 text-primary" />
                                     </div>
-                                    <h3 className="text-sm font-semibold text-gray-900">
+                                    <h3 className="text-sm font-semibold text-foreground">
                                         Report Templates
                                     </h3>
                                 </div>
 
-                                <div className="rounded-xl border border-amber-200 bg-amber-50/30 p-5 shadow-sm">
+                                <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
                                     <div className="mb-3 flex items-center justify-between">
-                                        <Label className="text-sm font-medium text-amber-900">
+                                        <Label className="text-sm font-medium text-foreground">
                                             Upload Template Files
                                         </Label>
-                                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                                        <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                                             Optional
                                         </span>
                                     </div>
@@ -443,8 +444,8 @@ export default function ReportDialog({
                                         className={cn(
                                             'relative cursor-pointer rounded-lg border-2 border-dashed transition-all',
                                             templateFiles
-                                                ? 'border-amber-300 bg-amber-50/50'
-                                                : 'border-amber-200 bg-white hover:border-amber-300 hover:bg-amber-50/50',
+                                                ? 'border-primary/30 bg-primary/5'
+                                                : 'border-border bg-background hover:border-primary/30 hover:bg-accent/50',
                                         )}
                                         onClick={() =>
                                             templateFileInputRef.current?.click()
@@ -465,7 +466,7 @@ export default function ReportDialog({
                                         templateFiles.length > 0 ? (
                                             <div className="p-4">
                                                 <div className="mb-3 flex items-center justify-between">
-                                                    <p className="text-sm font-medium text-amber-700">
+                                                    <p className="text-sm font-medium text-foreground">
                                                         {templateFiles.length}{' '}
                                                         file(s) selected
                                                     </p>
@@ -473,7 +474,7 @@ export default function ReportDialog({
                                                         type="button"
                                                         variant="ghost"
                                                         size="sm"
-                                                        className="h-7 px-2 text-xs text-red-600 hover:bg-red-50 hover:text-red-700"
+                                                        className="h-7 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             clearTemplateFiles();
@@ -490,11 +491,11 @@ export default function ReportDialog({
                                                             key={i}
                                                             className="flex items-center gap-2 text-sm"
                                                         >
-                                                            <FileText className="h-4 w-4 text-amber-500" />
-                                                            <span className="flex-1 truncate text-gray-600">
+                                                            <FileText className="h-4 w-4 text-primary" />
+                                                            <span className="flex-1 truncate text-foreground">
                                                                 {file.name}
                                                             </span>
-                                                            <span className="text-xs text-gray-400">
+                                                            <span className="text-xs text-muted-foreground">
                                                                 {(
                                                                     file.size /
                                                                     1024
@@ -509,14 +510,14 @@ export default function ReportDialog({
                                             </div>
                                         ) : (
                                             <div className="flex flex-col items-center py-8">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
-                                                    <FileUp className="h-6 w-6 text-amber-500" />
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                                                    <FileUp className="h-6 w-6 text-muted-foreground" />
                                                 </div>
-                                                <p className="mt-2 text-sm font-medium text-gray-700">
+                                                <p className="mt-2 text-sm font-medium text-foreground">
                                                     Click to upload template
                                                     files
                                                 </p>
-                                                <p className="text-xs text-gray-400">
+                                                <p className="text-xs text-muted-foreground">
                                                     PDF, DOCX, XLSX (Max 10MB
                                                     each)
                                                 </p>
@@ -536,14 +537,14 @@ export default function ReportDialog({
 
                             {/* Error Summary */}
                             {Object.keys(errors).length > 0 && (
-                                <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+                                <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4">
                                     <div className="flex items-start gap-3">
-                                        <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-500" />
+                                        <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-destructive" />
                                         <div>
-                                            <p className="text-sm font-medium text-red-800">
+                                            <p className="text-sm font-medium text-destructive">
                                                 Please fix the following errors:
                                             </p>
-                                            <ul className="mt-1 list-inside list-disc text-sm text-red-700">
+                                            <ul className="mt-1 list-inside list-disc text-sm text-destructive/90">
                                                 {Object.entries(errors).map(
                                                     ([key, value]) => (
                                                         <li key={key}>
@@ -558,7 +559,7 @@ export default function ReportDialog({
                             )}
 
                             {/* Action Buttons */}
-                            <div className="sticky bottom-0 -mx-6 border-t bg-white px-6 py-4">
+                            <div className="sticky bottom-0 -mx-6 border-t border-border bg-card px-6 py-4">
                                 <div className="flex justify-end gap-3">
                                     <Button
                                         type="button"
@@ -571,11 +572,11 @@ export default function ReportDialog({
                                     <Button
                                         type="submit"
                                         disabled={processing}
-                                        className="min-w-[120px] bg-blue-600 px-6 hover:bg-blue-700"
+                                        className="min-w-[120px] bg-primary px-6 text-primary-foreground hover:bg-primary/90"
                                     >
                                         {processing ? (
                                             <div className="flex items-center gap-2">
-                                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                                                 Creating...
                                             </div>
                                         ) : (

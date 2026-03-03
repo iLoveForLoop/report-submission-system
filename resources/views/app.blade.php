@@ -1,18 +1,33 @@
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        {{-- Inline script to detect system dark mode preference and apply it immediately --}}
+        {{-- Inline script to detect saved theme preference or system dark mode --}}
         <script>
             (function() {
+                // Check localStorage first for saved preference
+                const savedTheme = localStorage.getItem('theme');
                 const appearance = '{{ $appearance ?? "system" }}';
 
-                if (appearance === 'system') {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (savedTheme) {
+                    // If there's a saved preference, use it
+                    if (savedTheme === 'dark') {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                } else {
+                    // If no saved preference, fall back to system or default
+                    if (appearance === 'system') {
+                        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-                    if (prefersDark) {
+                        if (prefersDark) {
+                            document.documentElement.classList.add('dark');
+                        }
+                    } else if (appearance === 'dark') {
                         document.documentElement.classList.add('dark');
                     }
                 }

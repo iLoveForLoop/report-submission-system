@@ -1,3 +1,4 @@
+// edit-submission-report-dialog.tsx
 import ReportSubmissionController from '@/actions/App/Http/Controllers/ReportSubmissionController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { Report, ReportSubmission } from '@/types';
-
 import { Form } from '@inertiajs/react';
 import {
     AlertCircle,
@@ -26,6 +26,7 @@ import {
     Folder,
     Pencil,
     UploadCloud,
+    X,
     XCircle,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -76,8 +77,6 @@ export default function EditReportSubmissionDialog({
 
             submission.media.forEach((file: MediaFile) => {
                 const fieldId = file.field_id || 'unknown';
-
-                console.log('Field ID: ', fieldId);
                 if (!filesByField[fieldId]) {
                     filesByField[fieldId] = [];
                 }
@@ -126,10 +125,6 @@ export default function EditReportSubmissionDialog({
         setFilesToDelete([]);
     };
 
-    // console.log('Report: ', report);
-    console.log('Report Submissiona: ', submission);
-    // console.log('Submission Data: ', submission);
-
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -137,7 +132,7 @@ export default function EditReportSubmissionDialog({
                     type="button"
                     variant="outline"
                     size="sm"
-                    className="text-blue-600 hover:bg-blue-50 hover:text-blue-700 dark:text-blue-400 dark:hover:bg-blue-950 dark:hover:text-blue-300"
+                    className="text-primary hover:bg-primary/10 hover:text-primary"
                 >
                     {submission.status === 'returned' ? (
                         <p>Resubmit</p>
@@ -152,19 +147,19 @@ export default function EditReportSubmissionDialog({
             </DialogTrigger>
 
             <DialogContent className="max-h-[90vh] max-w-3xl overflow-x-hidden overflow-y-auto p-0">
-                <div className="sticky top-0 z-10 border-b bg-white px-6 py-4 dark:dark:bg-[#141414]">
+                <div className="sticky top-0 z-10 border-b border-border bg-card px-6 py-4">
                     <DialogHeader>
                         <div className="flex items-start justify-between">
                             <div>
-                                <DialogTitle className="text-start text-sm lg:text-xl">
+                                <DialogTitle className="text-xl text-foreground">
                                     Edit Submission: {report.title}
                                 </DialogTitle>
-                                <DialogDescription className="mt-1 text-xs text-gray-500 lg:text-sm dark:text-gray-400">
+                                <DialogDescription className="mt-1 text-sm text-muted-foreground">
                                     Update your submission details and files
                                     below.
                                 </DialogDescription>
                             </div>
-                            <div className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                            <div className="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                                 <Pencil className="h-3.5 w-3.5" />
                                 Editing Mode
                             </div>
@@ -180,30 +175,32 @@ export default function EditReportSubmissionDialog({
                     {({ processing, errors }) => (
                         <div className="space-y-8 px-6 pb-6">
                             {/* Report Info Banner */}
-                            <div className="rounded-xl border bg-blue-50/50 p-4 dark:border dark:dark:bg-[#141414]">
+                            <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
                                 <div className="flex items-start gap-3">
-                                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 dark:border dark:dark:bg-[#141414]">
-                                        <FileText className="h-4 w-4 text-blue-600 dark:text-blue-300" />
+                                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
+                                        <FileText className="h-4 w-4 text-primary" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-medium text-blue-900 dark:text-foreground">
+                                        <h4 className="text-sm font-medium text-foreground">
                                             Report Details
                                         </h4>
                                         <div className="mt-2 grid gap-2 text-sm sm:grid-cols-2">
-                                            <div className="flex items-center gap-2">
-                                                <Calendar className="h-3.5 w-3.5 text-blue-600 dark:text-blue-300" />
-                                                <span className="dark:text-blue-300">
+                                            <div className="flex items-center gap-2 text-muted-foreground">
+                                                <Calendar className="h-3.5 w-3.5 text-primary" />
+                                                <span>
                                                     Deadline:{' '}
+                                                    {formatDate(
+                                                        report.deadline,
+                                                    )}
                                                 </span>
-                                                {formatDate(report.deadline)}
                                             </div>
                                             {report.program && (
-                                                <div className="flex items-center gap-2">
-                                                    <Folder className="h-3.5 w-3.5 text-blue-600 dark:text-blue-300" />
-                                                    <span className="dark:text-blue-300">
+                                                <div className="flex items-center gap-2 text-muted-foreground">
+                                                    <Folder className="h-3.5 w-3.5 text-primary" />
+                                                    <span>
                                                         Program:{' '}
+                                                        {report.program.name}
                                                     </span>
-                                                    {report.program.name}
                                                 </div>
                                             )}
                                         </div>
@@ -229,19 +226,19 @@ export default function EditReportSubmissionDialog({
                             {/* General Information Section */}
                             <div className="space-y-5">
                                 <div className="flex items-center gap-2">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900">
-                                        <FileText className="h-3.5 w-3.5 text-purple-600 dark:text-purple-300" />
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
+                                        <FileText className="h-3.5 w-3.5 text-primary" />
                                     </div>
-                                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                    <h3 className="text-sm font-semibold text-foreground">
                                         General Information
                                     </h3>
                                 </div>
 
-                                <div className="space-y-4 rounded-xl border bg-white p-5 shadow-sm dark:border dark:dark:bg-[#141414]">
+                                <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-sm">
                                     <div className="space-y-2">
                                         <Label
                                             htmlFor="description"
-                                            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                            className="text-sm font-medium text-foreground"
                                         >
                                             Description / Notes
                                         </Label>
@@ -252,9 +249,9 @@ export default function EditReportSubmissionDialog({
                                                 submission?.description ?? ''
                                             }
                                             placeholder="Add any additional notes or context about your submission..."
-                                            className="min-h-[100px] border-gray-200 bg-white text-xs focus:border-2 focus:ring-gray-500 dark:border-gray-700 dark:dark:bg-[#141414] dark:focus:border-gray-400 dark:focus:ring-gray-400"
+                                            className="min-h-[100px] border-input bg-background focus:border-ring focus:ring-ring"
                                         />
-                                        <p className="text-xs text-gray-400 dark:text-gray-500">
+                                        <p className="text-xs text-muted-foreground">
                                             Optional: Provide any clarifying
                                             information about your submission.
                                         </p>
@@ -268,20 +265,20 @@ export default function EditReportSubmissionDialog({
                             {/* Required Attachments Section */}
                             <div className="space-y-5">
                                 <div className="flex items-center gap-2">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900">
-                                        <FileUp className="h-3.5 w-3.5 text-amber-600 dark:text-amber-300" />
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
+                                        <FileUp className="h-3.5 w-3.5 text-primary" />
                                     </div>
-                                    <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                    <h3 className="text-sm font-semibold text-foreground">
                                         Attachments
                                     </h3>
                                 </div>
 
                                 {schema.length === 0 ? (
-                                    <div className="rounded-xl border border-dashed bg-gray-50 p-8 text-center dark:border dark:dark:bg-[#141414]">
-                                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <div className="rounded-xl border border-dashed border-border bg-muted/50 p-8 text-center">
+                                        <p className="text-sm font-medium text-foreground">
                                             No attachments required
                                         </p>
-                                        <p className="text-xs text-gray-400 dark:text-gray-500">
+                                        <p className="text-xs text-muted-foreground">
                                             This report doesn't require any file
                                             attachments
                                         </p>
@@ -294,20 +291,10 @@ export default function EditReportSubmissionDialog({
                                             const hasExistingFiles =
                                                 fieldExistingFiles.length > 0;
 
-                                            console.log(
-                                                'Existing files: ',
-                                                existingFiles,
-                                            );
-
-                                            console.log(
-                                                'Field Existing files: ',
-                                                fieldExistingFiles,
-                                            );
-
                                             return (
                                                 <div
                                                     key={field.id}
-                                                    className="rounded-xl border bg-white p-5 shadow-sm transition-all hover:border-amber-200 dark:border dark:dark:bg-[#141414] dark:hover:border-amber-800"
+                                                    className="rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/20"
                                                 >
                                                     <div className="space-y-4">
                                                         <div className="flex items-start justify-between">
@@ -316,18 +303,18 @@ export default function EditReportSubmissionDialog({
                                                                     htmlFor={
                                                                         field.id
                                                                     }
-                                                                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                                                    className="text-sm font-medium text-foreground"
                                                                 >
                                                                     {
                                                                         field.label
                                                                     }
                                                                     {field.required && (
-                                                                        <span className="ml-1 text-red-500 dark:text-red-400">
+                                                                        <span className="ml-1 text-destructive">
                                                                             *
                                                                         </span>
                                                                     )}
                                                                 </Label>
-                                                                <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                                                                <p className="mt-1 text-xs text-muted-foreground">
                                                                     Attachment #
                                                                     {index + 1}{' '}
                                                                     of{' '}
@@ -340,7 +327,7 @@ export default function EditReportSubmissionDialog({
                                                                 {uploadedFiles[
                                                                     field.id
                                                                 ] && (
-                                                                    <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900 dark:text-green-300">
+                                                                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                                                                         {
                                                                             uploadedFiles[
                                                                                 field
@@ -355,7 +342,7 @@ export default function EditReportSubmissionDialog({
                                                                     !uploadedFiles[
                                                                         field.id
                                                                     ] && (
-                                                                        <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                                                                        <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                                                                             {
                                                                                 fieldExistingFiles.length
                                                                             }{' '}
@@ -368,7 +355,7 @@ export default function EditReportSubmissionDialog({
                                                         {/* Existing Files */}
                                                         {hasExistingFiles && (
                                                             <div className="space-y-2">
-                                                                <p className="text-xs font-medium text-blue-700 dark:text-blue-400">
+                                                                <p className="text-xs font-medium text-muted-foreground">
                                                                     Current
                                                                     Files:
                                                                 </p>
@@ -378,19 +365,19 @@ export default function EditReportSubmissionDialog({
                                                                             key={
                                                                                 file.id
                                                                             }
-                                                                            className="flex items-center justify-between rounded-lg border border-border bg-background p-3 transition hover:bg-muted/40 dark:border-gray-800"
+                                                                            className="flex items-center justify-between rounded-lg border border-border bg-background p-3 transition hover:bg-muted/40"
                                                                         >
                                                                             <div className="flex min-w-0 flex-1 items-center gap-3">
-                                                                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-500/10">
-                                                                                    <FileText className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                                                                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                                                                                    <FileText className="h-4 w-4 text-primary" />
                                                                                 </div>
                                                                                 <div className="min-w-0 flex-1">
-                                                                                    <p className="truncate text-sm font-medium dark:text-gray-200">
+                                                                                    <p className="truncate text-sm font-medium text-foreground">
                                                                                         {
                                                                                             file.name
                                                                                         }
                                                                                     </p>
-                                                                                    <p className="text-xs text-muted-foreground dark:text-gray-400">
+                                                                                    <p className="text-xs text-muted-foreground">
                                                                                         {file.size
                                                                                             ? `${(file.size / 1024).toFixed(2)} KB`
                                                                                             : 'Unknown size'}
@@ -398,35 +385,35 @@ export default function EditReportSubmissionDialog({
                                                                                 </div>
                                                                             </div>
 
-                                                                            <div className="flex gap-2">
+                                                                            <div className="flex gap-1">
                                                                                 <Button
-                                                                                    variant="outline"
-                                                                                    size="sm"
-                                                                                    type="button"
+                                                                                    variant="ghost"
+                                                                                    size="icon"
+                                                                                    className="h-8 w-8 text-muted-foreground hover:bg-muted hover:text-foreground"
                                                                                     onClick={() =>
                                                                                         window.open(
                                                                                             file.url,
                                                                                             '_blank',
-                                                                                            'noopener,noreferrer',
                                                                                         )
                                                                                     }
+                                                                                    title="View file"
                                                                                 >
-                                                                                    <Eye className="mr-2 h-4 w-4" />
-                                                                                    View
+                                                                                    <Eye className="h-4 w-4" />
                                                                                 </Button>
 
                                                                                 <Button
-                                                                                    variant="outline"
-                                                                                    size="sm"
+                                                                                    variant="ghost"
+                                                                                    size="icon"
+                                                                                    className="h-8 w-8 text-muted-foreground hover:bg-muted hover:text-foreground"
                                                                                     asChild
+                                                                                    title="Download file"
                                                                                 >
                                                                                     <a
                                                                                         href={
                                                                                             file.download_url
                                                                                         }
                                                                                     >
-                                                                                        <Download className="mr-2 h-4 w-4" />
-                                                                                        Download
+                                                                                        <Download className="h-4 w-4" />
                                                                                     </a>
                                                                                 </Button>
 
@@ -434,13 +421,14 @@ export default function EditReportSubmissionDialog({
                                                                                     type="button"
                                                                                     variant="ghost"
                                                                                     size="icon"
-                                                                                    className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300"
+                                                                                    className="h-8 w-8 text-destructive/70 hover:bg-destructive/10 hover:text-destructive"
                                                                                     onClick={() =>
                                                                                         markFileForDeletion(
                                                                                             file.id,
                                                                                             field.id,
                                                                                         )
                                                                                     }
+                                                                                    title="Remove file"
                                                                                 >
                                                                                     <XCircle className="h-4 w-4" />
                                                                                 </Button>
@@ -458,8 +446,8 @@ export default function EditReportSubmissionDialog({
                                                                 uploadedFiles[
                                                                     field.id
                                                                 ]
-                                                                    ? 'border-green-300 bg-green-50/50 dark:border-green-800 dark:bg-green-950/50'
-                                                                    : 'border-gray-200 bg-gray-50/50 hover:border-amber-300 hover:bg-amber-50/50 dark:border-gray-700 dark:bg-gray-900/50 dark:hover:border-amber-700 dark:hover:bg-amber-950/50',
+                                                                    ? 'border-primary/30 bg-primary/5'
+                                                                    : 'border-border bg-background hover:border-primary/30 hover:bg-accent/50',
                                                             )}
                                                             onClick={() => {
                                                                 if (
@@ -487,7 +475,7 @@ export default function EditReportSubmissionDialog({
                                                                     ] &&
                                                                     !hasExistingFiles
                                                                 }
-                                                                className="absolute inset-0 cursor-pointer opacity-0"
+                                                                className="hidden"
                                                                 onChange={(e) =>
                                                                     handleFieldChange(
                                                                         field.id,
@@ -502,7 +490,7 @@ export default function EditReportSubmissionDialog({
                                                             ] ? (
                                                                 <div className="p-4">
                                                                     <div className="mb-3 flex items-center justify-between">
-                                                                        <p className="text-sm font-medium text-green-700 dark:text-green-400">
+                                                                        <p className="text-sm font-medium text-foreground">
                                                                             New
                                                                             Files
                                                                             Selected
@@ -511,7 +499,7 @@ export default function EditReportSubmissionDialog({
                                                                             type="button"
                                                                             variant="ghost"
                                                                             size="sm"
-                                                                            className="h-7 px-2 text-xs text-red-600 hover:bg-red-50 hover:text-red-700 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300"
+                                                                            className="h-7 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
                                                                             onClick={(
                                                                                 e,
                                                                             ) => {
@@ -521,8 +509,8 @@ export default function EditReportSubmissionDialog({
                                                                                 );
                                                                             }}
                                                                         >
+                                                                            <X className="mr-1 h-3 w-3" />
                                                                             Clear
-                                                                            all
                                                                         </Button>
                                                                     </div>
                                                                     <ul className="space-y-2">
@@ -540,16 +528,16 @@ export default function EditReportSubmissionDialog({
                                                                                     }
                                                                                     className="flex items-center gap-3 text-sm"
                                                                                 >
-                                                                                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-amber-100 dark:bg-amber-900">
-                                                                                        <FileText className="h-4 w-4 text-amber-600 dark:text-amber-300" />
+                                                                                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-primary/10">
+                                                                                        <FileText className="h-4 w-4 text-primary" />
                                                                                     </div>
                                                                                     <div className="min-w-0 flex-1">
-                                                                                        <p className="truncate font-medium text-gray-700 dark:text-gray-300">
+                                                                                        <p className="truncate font-medium text-foreground">
                                                                                             {
                                                                                                 file.name
                                                                                             }
                                                                                         </p>
-                                                                                        <p className="text-xs text-gray-400 dark:text-gray-500">
+                                                                                        <p className="text-xs text-muted-foreground">
                                                                                             {(
                                                                                                 file.size /
                                                                                                 1024
@@ -566,15 +554,15 @@ export default function EditReportSubmissionDialog({
                                                                 </div>
                                                             ) : (
                                                                 <div className="flex flex-col items-center py-6">
-                                                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900">
-                                                                        <UploadCloud className="h-5 w-5 text-amber-500 dark:text-amber-400" />
+                                                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+                                                                        <UploadCloud className="h-5 w-5 text-muted-foreground" />
                                                                     </div>
-                                                                    <p className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                                    <p className="mt-2 text-sm font-medium text-foreground">
                                                                         {hasExistingFiles
                                                                             ? 'Click to upload additional files'
                                                                             : 'Click to upload files'}
                                                                     </p>
-                                                                    <p className="text-xs text-gray-400 dark:text-gray-500">
+                                                                    <p className="text-xs text-muted-foreground">
                                                                         PDF,
                                                                         Images,
                                                                         DOCX
@@ -603,14 +591,14 @@ export default function EditReportSubmissionDialog({
 
                             {/* Error Summary */}
                             {Object.keys(errors).length > 0 && (
-                                <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/50">
+                                <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4">
                                     <div className="flex items-start gap-3">
-                                        <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-500 dark:text-red-400" />
+                                        <AlertCircle className="h-5 w-5 flex-shrink-0 text-destructive" />
                                         <div>
-                                            <p className="text-sm font-medium text-red-800 dark:text-red-300">
+                                            <p className="text-sm font-medium text-destructive">
                                                 Please fix the following errors:
                                             </p>
-                                            <ul className="mt-1 list-inside list-disc text-sm text-red-700 dark:text-red-400">
+                                            <ul className="mt-1 list-inside list-disc text-sm text-destructive/90">
                                                 {Object.entries(errors).map(
                                                     ([key, value]) => (
                                                         <li key={key}>
@@ -625,7 +613,7 @@ export default function EditReportSubmissionDialog({
                             )}
 
                             {/* Action Buttons */}
-                            <div className="sticky bottom-0 -mx-6 border-t bg-white px-6 py-4 dark:border-gray-800 dark:dark:bg-[#141414]">
+                            <div className="sticky bottom-0 -mx-6 border-t border-border bg-card px-6 py-4">
                                 <div className="flex justify-end gap-3">
                                     <Button
                                         type="button"
@@ -638,11 +626,11 @@ export default function EditReportSubmissionDialog({
                                     <Button
                                         type="submit"
                                         disabled={processing}
-                                        className="min-w-[140px] bg-blue-600 px-6 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+                                        className="min-w-[140px] bg-primary px-6 text-primary-foreground hover:bg-primary/90"
                                     >
                                         {processing ? (
                                             <div className="flex items-center gap-2">
-                                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent dark:text-muted" />
+                                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                                                 Updating...
                                             </div>
                                         ) : (

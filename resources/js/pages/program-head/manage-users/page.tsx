@@ -1,9 +1,9 @@
 import { manageUsers } from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import { FlashToaster } from '@/components/flash-toaster';
+import { Pagination } from '@/components/ui/pagination';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, LaravelPaginator, User } from '@/types';
-import { Head,  usePage } from '@inertiajs/react';
-import { Pagination } from '@/components/ui/pagination';
+import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import Header from './components/header';
 import UsersTable from './components/users-table';
@@ -19,6 +19,8 @@ export default function ManageUsers() {
     const { users } = usePage<{ users: LaravelPaginator<User> }>().props;
     const usersData = users.data;
     const [selectedUsers, setSelectedUsers] = useState<Set<number>>(new Set());
+
+    console.log({ users });
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

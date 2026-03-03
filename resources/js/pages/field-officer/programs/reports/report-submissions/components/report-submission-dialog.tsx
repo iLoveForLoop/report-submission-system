@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// report-submission-dialog.tsx
 import ReportSubmissionController from '@/actions/App/Http/Controllers/ReportSubmissionController';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -114,26 +116,26 @@ export default function ReportSubmissionDialog({
                     disabled
                     className="cursor-not-allowed opacity-75"
                 >
-                    <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
+                    <CheckCircle2 className="mr-2 h-4 w-4 text-primary" />
                     Report Already Submitted
                 </Button>
             )}
 
             <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0">
-                <div className="sticky top-0 z-10 border-b bg-white px-6 py-4">
+                <div className="sticky top-0 z-10 border-b border-border bg-card px-6 py-4">
                     <DialogHeader>
                         <div className="flex items-start justify-between">
                             <div>
-                                <DialogTitle className="text-xl">
+                                <DialogTitle className="text-xl text-foreground">
                                     Submit Report: {report.title}
                                 </DialogTitle>
-                                <DialogDescription className="mt-1 text-sm text-gray-500">
+                                <DialogDescription className="mt-1 text-sm text-muted-foreground">
                                     Please fill out the required information
                                     below.
                                 </DialogDescription>
                             </div>
                             {isDeadlinePassed && (
-                                <div className="flex items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-700">
+                                <div className="flex items-center gap-1 rounded-full bg-destructive/10 px-3 py-1 text-xs font-medium text-destructive">
                                     <Clock className="h-3.5 w-3.5" />
                                     Deadline Passed
                                 </div>
@@ -153,18 +155,18 @@ export default function ReportSubmissionDialog({
                     className="px-6 pb-6"
                 >
                     {({ processing, errors }) => (
-                        <div className="space-y-8 px-6 pb-6">
+                        <div className="space-y-8">
                             {/* Report Info Banner */}
-                            <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-4">
+                            <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
                                 <div className="flex items-start gap-3">
-                                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100">
-                                        <FileText className="h-4 w-4 text-blue-600" />
+                                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
+                                        <FileText className="h-4 w-4 text-primary" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-sm font-medium text-blue-900">
+                                        <h4 className="text-sm font-medium text-foreground">
                                             Report Details
                                         </h4>
-                                        <div className="mt-2 grid gap-2 text-sm text-blue-700">
+                                        <div className="mt-2 grid gap-2 text-sm text-muted-foreground">
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="h-3.5 w-3.5" />
                                                 <span>
@@ -198,19 +200,19 @@ export default function ReportSubmissionDialog({
                             {/* General Information Section */}
                             <div className="space-y-5">
                                 <div className="flex items-center gap-2">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-100">
-                                        <FileText className="h-3.5 w-3.5 text-purple-600" />
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
+                                        <FileText className="h-3.5 w-3.5 text-primary" />
                                     </div>
-                                    <h3 className="text-sm font-semibold text-gray-900">
+                                    <h3 className="text-sm font-semibold text-foreground">
                                         General Information
                                     </h3>
                                 </div>
 
-                                <div className="space-y-4 rounded-xl border bg-white p-5 shadow-sm">
+                                <div className="space-y-4 rounded-xl border border-border bg-card p-5 shadow-sm">
                                     <div className="space-y-2">
                                         <Label
                                             htmlFor="description"
-                                            className="text-sm font-medium text-gray-700"
+                                            className="text-sm font-medium text-foreground"
                                         >
                                             Description / Notes
                                         </Label>
@@ -218,9 +220,9 @@ export default function ReportSubmissionDialog({
                                             id="description"
                                             name="description"
                                             placeholder="Add any additional notes or context about your submission..."
-                                            className="min-h-[100px] border-gray-200 bg-white focus:border-purple-500 focus:ring-purple-500"
+                                            className="min-h-[100px] border-input bg-background focus:border-ring focus:ring-ring"
                                         />
-                                        <p className="text-xs text-gray-400">
+                                        <p className="text-xs text-muted-foreground">
                                             Optional: Provide any clarifying
                                             information about your submission.
                                         </p>
@@ -235,25 +237,25 @@ export default function ReportSubmissionDialog({
                             <div className="space-y-5">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100">
-                                            <FileUp className="h-3.5 w-3.5 text-amber-600" />
+                                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
+                                            <FileUp className="h-3.5 w-3.5 text-primary" />
                                         </div>
-                                        <h3 className="text-sm font-semibold text-gray-900">
+                                        <h3 className="text-sm font-semibold text-foreground">
                                             Required Attachments
                                         </h3>
                                     </div>
                                 </div>
 
                                 {schema.length === 0 ? (
-                                    <div className="rounded-xl border border-dashed bg-gray-50 p-8 text-center">
+                                    <div className="rounded-xl border border-dashed border-border bg-muted/50 p-8 text-center">
                                         <div className="flex flex-col items-center">
-                                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-                                                <CheckCircle2 className="h-6 w-6 text-gray-400" />
+                                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                                                <CheckCircle2 className="h-6 w-6 text-muted-foreground/50" />
                                             </div>
-                                            <p className="mt-2 text-sm font-medium text-gray-700">
+                                            <p className="mt-2 text-sm font-medium text-foreground">
                                                 No attachments required
                                             </p>
-                                            <p className="text-xs text-gray-400">
+                                            <p className="text-xs text-muted-foreground">
                                                 This report doesn't require any
                                                 file attachments
                                             </p>
@@ -264,7 +266,7 @@ export default function ReportSubmissionDialog({
                                         {schema.map((field, index) => (
                                             <div
                                                 key={field.id}
-                                                className="rounded-xl border bg-white p-5 shadow-sm transition-all hover:border-amber-200"
+                                                className="rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/20"
                                             >
                                                 <div className="space-y-4">
                                                     <div className="flex items-start justify-between">
@@ -273,16 +275,16 @@ export default function ReportSubmissionDialog({
                                                                 htmlFor={
                                                                     field.id
                                                                 }
-                                                                className="text-sm font-medium text-gray-700"
+                                                                className="text-sm font-medium text-foreground"
                                                             >
                                                                 {field.label}
                                                                 {field.required && (
-                                                                    <span className="ml-1 text-red-500">
+                                                                    <span className="ml-1 text-destructive">
                                                                         *
                                                                     </span>
                                                                 )}
                                                             </Label>
-                                                            <p className="mt-1 text-xs text-gray-400">
+                                                            <p className="mt-1 text-xs text-muted-foreground">
                                                                 Attachment #
                                                                 {index + 1} of{' '}
                                                                 {schema.length}
@@ -291,7 +293,7 @@ export default function ReportSubmissionDialog({
                                                         {uploadedFiles[
                                                             field.id
                                                         ] && (
-                                                            <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                                                            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                                                                 {
                                                                     uploadedFiles[
                                                                         field.id
@@ -308,8 +310,8 @@ export default function ReportSubmissionDialog({
                                                             uploadedFiles[
                                                                 field.id
                                                             ]
-                                                                ? 'border-green-300 bg-green-50/50'
-                                                                : 'border-gray-200 bg-gray-50/50 hover:border-amber-300 hover:bg-amber-50/50',
+                                                                ? 'border-primary/30 bg-primary/5'
+                                                                : 'border-border bg-background hover:border-primary/30 hover:bg-accent/50',
                                                         )}
                                                         onClick={() => {
                                                             if (
@@ -351,7 +353,7 @@ export default function ReportSubmissionDialog({
                                                         ] ? (
                                                             <div className="p-4">
                                                                 <div className="mb-3 flex items-center justify-between">
-                                                                    <p className="text-sm font-medium text-green-700">
+                                                                    <p className="text-sm font-medium text-foreground">
                                                                         Selected
                                                                         Files
                                                                     </p>
@@ -359,7 +361,7 @@ export default function ReportSubmissionDialog({
                                                                         type="button"
                                                                         variant="ghost"
                                                                         size="sm"
-                                                                        className="h-7 px-2 text-xs text-red-600 hover:bg-red-50 hover:text-red-700"
+                                                                        className="h-7 px-2 text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
                                                                         onClick={(
                                                                             e,
                                                                         ) => {
@@ -387,16 +389,16 @@ export default function ReportSubmissionDialog({
                                                                                 }
                                                                                 className="flex items-center gap-3 text-sm"
                                                                             >
-                                                                                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-amber-100">
-                                                                                    <FileText className="h-4 w-4 text-amber-600" />
+                                                                                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded bg-primary/10">
+                                                                                    <FileText className="h-4 w-4 text-primary" />
                                                                                 </div>
                                                                                 <div className="min-w-0 flex-1">
-                                                                                    <p className="truncate font-medium text-gray-700">
+                                                                                    <p className="truncate font-medium text-foreground">
                                                                                         {
                                                                                             file.name
                                                                                         }
                                                                                     </p>
-                                                                                    <p className="text-xs text-gray-400">
+                                                                                    <p className="text-xs text-muted-foreground">
                                                                                         {(
                                                                                             file.size /
                                                                                             1024
@@ -413,14 +415,14 @@ export default function ReportSubmissionDialog({
                                                             </div>
                                                         ) : (
                                                             <div className="flex flex-col items-center py-6">
-                                                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
-                                                                    <UploadCloud className="h-5 w-5 text-amber-500" />
+                                                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+                                                                    <UploadCloud className="h-5 w-5 text-muted-foreground" />
                                                                 </div>
-                                                                <p className="mt-2 text-sm font-medium text-gray-700">
+                                                                <p className="mt-2 text-sm font-medium text-foreground">
                                                                     Click to
                                                                     upload files
                                                                 </p>
-                                                                <p className="text-xs text-gray-400">
+                                                                <p className="text-xs text-muted-foreground">
                                                                     PDF, Images,
                                                                     DOCX (Max
                                                                     10MB each)
@@ -448,19 +450,19 @@ export default function ReportSubmissionDialog({
                                 report.templates?.length > 0) && (
                                 <div className="space-y-5">
                                     <div className="flex items-center gap-2">
-                                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-100">
-                                            <Download className="h-3.5 w-3.5 text-emerald-600" />
+                                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
+                                            <Download className="h-3.5 w-3.5 text-primary" />
                                         </div>
-                                        <h3 className="text-sm font-semibold text-gray-900">
+                                        <h3 className="text-sm font-semibold text-foreground">
                                             Reference Materials
                                         </h3>
                                     </div>
 
-                                    <div className="rounded-xl border border-emerald-200 bg-emerald-50/30 p-5">
+                                    <div className="rounded-xl border border-border bg-card p-5">
                                         <div className="grid gap-4 sm:grid-cols-2">
                                             {report.references?.length > 0 && (
                                                 <div>
-                                                    <Label className="text-xs font-medium text-emerald-700">
+                                                    <Label className="text-xs font-medium text-muted-foreground">
                                                         Reference Files
                                                     </Label>
                                                     <ul className="mt-2 space-y-2">
@@ -470,8 +472,8 @@ export default function ReportSubmissionDialog({
                                                                     key={i}
                                                                     className="flex items-center gap-2 text-sm"
                                                                 >
-                                                                    <FileText className="h-4 w-4 text-emerald-500" />
-                                                                    <span className="flex-1 truncate text-gray-600">
+                                                                    <FileText className="h-4 w-4 text-primary" />
+                                                                    <span className="flex-1 truncate text-foreground">
                                                                         {
                                                                             file.name
                                                                         }
@@ -484,7 +486,7 @@ export default function ReportSubmissionDialog({
                                             )}
                                             {report.templates?.length > 0 && (
                                                 <div>
-                                                    <Label className="text-xs font-medium text-amber-700">
+                                                    <Label className="text-xs font-medium text-muted-foreground">
                                                         Template Files
                                                     </Label>
                                                     <ul className="mt-2 space-y-2">
@@ -494,8 +496,8 @@ export default function ReportSubmissionDialog({
                                                                     key={i}
                                                                     className="flex items-center gap-2 text-sm"
                                                                 >
-                                                                    <FileText className="h-4 w-4 text-amber-500" />
-                                                                    <span className="flex-1 truncate text-gray-600">
+                                                                    <FileText className="h-4 w-4 text-primary" />
+                                                                    <span className="flex-1 truncate text-foreground">
                                                                         {
                                                                             file.name
                                                                         }
@@ -513,14 +515,14 @@ export default function ReportSubmissionDialog({
 
                             {/* Error Summary */}
                             {Object.keys(errors).length > 0 && (
-                                <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+                                <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4">
                                     <div className="flex items-start gap-3">
-                                        <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-500" />
+                                        <AlertCircle className="h-5 w-5 flex-shrink-0 text-destructive" />
                                         <div>
-                                            <p className="text-sm font-medium text-red-800">
+                                            <p className="text-sm font-medium text-destructive">
                                                 Please fix the following errors:
                                             </p>
-                                            <ul className="mt-1 list-inside list-disc text-sm text-red-700">
+                                            <ul className="mt-1 list-inside list-disc text-sm text-destructive/90">
                                                 {Object.entries(errors).map(
                                                     ([key, value]) => (
                                                         <li key={key}>
@@ -535,7 +537,7 @@ export default function ReportSubmissionDialog({
                             )}
 
                             {/* Action Buttons */}
-                            <div className="sticky bottom-0 -mx-6 border-t bg-white px-6 py-4">
+                            <div className="sticky bottom-0 -mx-6 border-t border-border bg-card px-6 py-4">
                                 <div className="flex justify-end gap-3">
                                     <Button
                                         type="button"
@@ -548,14 +550,11 @@ export default function ReportSubmissionDialog({
                                     <Button
                                         type="submit"
                                         disabled={processing}
-                                        className={cn(
-                                            'min-w-[140px] px-6',
-                                            'bg-blue-600 hover:bg-blue-700',
-                                        )}
+                                        className="min-w-[140px] bg-primary px-6 text-primary-foreground hover:bg-primary/90"
                                     >
                                         {processing ? (
                                             <div className="flex items-center gap-2">
-                                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
                                                 Submitting...
                                             </div>
                                         ) : (

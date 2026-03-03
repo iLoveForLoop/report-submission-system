@@ -90,11 +90,20 @@ export default function UsersTable({
                         <TableCell>
                             <div className="flex items-center gap-3 rounded-lg p-3">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                                    {user.avatar ? (
+                                    {user.avatar_url ? (
                                         <img
-                                            src={user.avatar}
+                                            src={user.avatar_url}
                                             alt={user.name}
                                             className="h-full w-full rounded-full object-cover"
+                                            onError={(e) => {
+                                                // Fallback if image fails to load
+                                                e.currentTarget.style.display =
+                                                    'none';
+                                                e.currentTarget.parentElement!.innerHTML =
+                                                    user.name
+                                                        .charAt(0)
+                                                        .toUpperCase();
+                                            }}
                                         />
                                     ) : (
                                         user.name.charAt(0).toUpperCase()

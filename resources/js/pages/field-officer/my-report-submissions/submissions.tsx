@@ -43,6 +43,8 @@ export default function Submissions({
                 <p className="max-w-md text-sm text-muted-foreground lg:text-base">
                     You haven't submitted any reports yet. Your submissions will
                     appear here once you start submitting reports.
+
+
                 </p>
             </div>
         );
@@ -200,6 +202,7 @@ export default function Submissions({
                                             {date}
                                         </p>
                                     </div>
+                                    
                                 </div>
 
                                 {/* Content based on view mode */}

@@ -170,7 +170,7 @@ export default function Dashboard() {
             change: 'Need submission',
             icon: FileClock,
             color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
-            link: '/field-officer/my-report-submissions?filter=pending',
+            link: '/field-officer/pending-reports',
         },
         {
             title: 'Submitted Reports',
@@ -224,7 +224,7 @@ export default function Dashboard() {
                                     View Programs
                                 </Link>
                                 <Link
-                                    href="/field-officer/my-report-submissions"
+                                    href="/field-officer/pending-reports"
                                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 lg:text-sm"
                                 >
                                     <Upload className="h-4 w-4" />
@@ -381,7 +381,7 @@ export default function Dashboard() {
                                     </span>
                                 </div>
                                 <Link
-                                    href="/field-officer/my-report-submissions?filter=pending"
+                                    href="/field-officer/pending-reports"
                                     className="flex items-center gap-1 text-xs text-primary hover:underline lg:text-sm"
                                 >
                                     View all
@@ -517,7 +517,7 @@ export default function Dashboard() {
                                                                 submission.submitted_at,
                                                             )}
                                                         </p>
-                                                        {submission.feedback && (
+                                                        {/* {submission.feedback && (
                                                             <p className="mt-2 rounded bg-muted p-2 text-xs">
                                                                 <span className="font-medium">
                                                                     Feedback:
@@ -526,7 +526,7 @@ export default function Dashboard() {
                                                                     submission.feedback
                                                                 }
                                                             </p>
-                                                        )}
+                                                        )} */}
                                                     </div>
                                                     <span
                                                         className={`rounded-full px-2 py-1 text-xs font-medium ${status.class}`}
@@ -542,7 +542,7 @@ export default function Dashboard() {
 
                             <div className="border-t p-4">
                                 <Link
-                                    href="/field-officer/my-report-submissions"
+                                    href="/field-officer/my-reports-submissions"
                                     className="flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-foreground"
                                 >
                                     View all submissions

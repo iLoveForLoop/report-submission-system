@@ -30,92 +30,98 @@ class ViewController extends Controller
         ]);
     }
 
-public function programs(Request $request)
-{
-    $query = auth()->user()
-        ->programsAsCoordinator()
-        ->with('coordinator');
+    public function programs(Request $request)
+    {
+        $programs = Program::query()
+            ->where('coordinator_id', auth()->id())           // focal person owns these
+            ->withCount([
+                'pendingSubmissions as pending_submissions_count', // how many to review
+            ])
+            ->with(['coordinator:id,name'])
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
 
-    // Add year filter if provided
-    if ($request->has('year') && $request->year) {
-        $query->whereYear('created_at', $request->year);
+        return inertia('focal-person/programs/page', [
+            'programs' => $programs,
+            'filters'  => $request->only('year'),
+        ]);
     }
 
-    $programs = $query->paginate(15)
-        ->through(fn ($program) => [
-            'id' => $program->id,
-            'name' => $program->name,
-            'description' => $program->description,
-            'created_at' => $program->created_at->toISOString(),
-            'updated_at' => $program->updated_at->toISOString(),
-            'coordinator' => [
-                'id' => $program->coordinator->id,
-                'name' => $program->coordinator->name,
-                'email' => $program->coordinator->email,
-                'avatar' => $program->coordinator->avatar,
-                'email_verified_at' => $program->coordinator->email_verified_at,
-                'two_factor_enabled' => $program->coordinator->two_factor_enabled ?? false,
-                'created_at' => $program->coordinator->created_at->toISOString(),
-                'updated_at' => $program->coordinator->updated_at->toISOString(),
-                'role' => $program->coordinator->role,
-            ],
-        ]);
-
-    return inertia('focal-person/programs/page', [
-        'programs' => $programs,
-        'filters' => $request->only(['year']), // Pass filters back to frontend
-    ]);
-}
-
     public function reports(Program $program)
-{
-    $reports = auth()->user()
-        ->createdReports()
-        ->where('program_id', $program->id)
-        ->latest()
-        ->with(['program', 'coordinator', 'media'])
-        ->get()
-        ->map(fn ($report) => [
-            'id' => $report->id,
-            'title' => $report->title,
-            'content' => $report->content,
-            'form_schema' => $report->form_schema,
+    {
+        $reports = auth()->user()
+            ->createdReports()
+            ->where('program_id', $program->id)
+            ->latest()
+            ->with(['program', 'coordinator', 'media'])
+            ->withCount([
+
+                'submissions as submitted_count' => fn ($q) =>
+                    $q->where('status', 'submitted'),
 
 
-            'program' => [
-                'id' => $report->program->id,
-                'name' => $report->program->name,
-                'description' => $report->program->description,
-            ],
+                'submissions as accepted_count' => fn ($q) =>
+                    $q->where('status', 'accepted'),
 
-            'coordinator' => [
-                'id' => $report->coordinator->id,
-                'name' => $report->coordinator->name,
-                'email' => $report->coordinator->email,
-                'avatar' => $report->coordinator->avatar,
-            ],
 
-            'templates' => $report
-                ->getMedia('templates')
-                ->map(fn ($media) => [
-                    'id' => $media->id,
-                    'name' => $media->name,
-                    'file_name' => $media->file_name,
-                    'mime_type' => $media->mime_type,
-                    'size' => $media->size,
-                    'url' => $media->getFullUrl(),
-                ]),
+                'submissions as total_count',
+            ])
+            ->get()
+            ->map(fn ($report) => [
+                'id'          => $report->id,
+                'title'       => $report->title,
+                'content'     => $report->content,
+                'form_schema' => $report->form_schema,
+                'deadline'    => $report->deadline?->toISOString(),
 
-            'created_at' => $report->created_at->toISOString(),
-            'updated_at' => $report->updated_at->toISOString(),
+                'submitted_count' => $report->submitted_count,
+                'accepted_count'  => $report->accepted_count,
+                'total_count'     => $report->total_count,
+
+                'program' => [
+                    'id'          => $report->program->id,
+                    'name'        => $report->program->name,
+                    'description' => $report->program->description,
+                ],
+
+                'coordinator' => [
+                    'id'     => $report->coordinator->id,
+                    'name'   => $report->coordinator->name,
+                    'email'  => $report->coordinator->email,
+                    'avatar' => $report->coordinator->avatar,
+                ],
+
+                'templates' => $report
+                    ->getMedia('templates')
+                    ->map(fn ($media) => [
+                        'id'           => $media->id,
+                        'name'         => $media->name,
+                        'file_name'    => $media->file_name,
+                        'mime_type'    => $media->mime_type,
+                        'size'         => $media->size,
+                        'original_url' => $media->getFullUrl(),
+                    ]),
+
+                'created_at' => $report->created_at->toISOString(),
+                'updated_at' => $report->updated_at->toISOString(),
+            ]);
+
+        return inertia('focal-person/programs/reports/page', [
+            'program' => $program,
+            'reports' => $reports,
         ]);
+    }
 
+    public function submissionPage() {
 
-    return inertia('focal-person/programs/reports/page', [
-        'program' => $program,
-        'reports' => $reports,
-    ]);
-}
+        $reports = $this->getReports();
+
+        return inertia('focal-person/submission-logs/page', [
+            'reports' => $reports,
+            'summary' => $this->getSummary($reports),
+        ]);
+    }
 
 
     public function reportSubmissions(Program $program, Report $report){
@@ -270,9 +276,6 @@ public function programs(Request $request)
             ->all();
     }
 
-    // ── Recent activity ───────────────────────────────────────────────────────────
-    // Inferred from approved/returned submissions under assigned programs.
-    // If you have an audit/activity log table, query that instead.
 
     private function getRecentActivity(int $userId): array
     {
@@ -296,7 +299,6 @@ public function programs(Request $request)
             ->all();
     }
 
-    // ── Assigned programs with pending counts ─────────────────────────────────────
 
     private function getAssignedPrograms(int $userId): array
     {
@@ -317,7 +319,6 @@ public function programs(Request $request)
             ->all();
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────────
 
     private function getInitials(?string $name): string
     {
@@ -327,4 +328,97 @@ public function programs(Request $request)
             ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1))
             : strtoupper(substr($name, 0, 2));
     }
+
+
+    //SUBMISSION LOGS
+
+
+    private function getReports(): array
+    {
+        // All field officers — the denominator for "not submitted"
+        $allOfficers = User::role('field_officer')
+            ->select('id', 'name', 'email', 'cluster')
+            ->get();
+
+        $totalOfficers = $allOfficers->count();
+
+        return Report::with(['program', 'submissions.fieldOfficer'])
+            ->orderByDesc('deadline')
+            ->get()
+            ->map(fn ($report) => $this->formatReport($report, $allOfficers, $totalOfficers))
+            ->all();
+    }
+
+    private function formatReport(Report $report, \Illuminate\Support\Collection $allOfficers, int $totalOfficers): array
+    {
+        $submissions       = $report->submissions;
+        $submittedOfficerIds = $submissions->pluck('field_officer_id')->all();
+
+        // Officers who have NOT submitted
+        $notSubmitted = $allOfficers
+            ->whereNotIn('id', $submittedOfficerIds)
+            ->map(fn ($officer) => [
+                'id'           => $officer->id,
+                'name'         => $officer->name,
+                'email'        => $officer->email,
+                'cluster'      => $officer->cluster,
+                'submitted_at' => null,
+                'reviewed_at'  => null,
+                'status'       => 'not_submitted',
+            ])
+            ->values()
+            ->all();
+
+        $submitted = $submissions->map(function ($sub) use ($report) {
+            $isLate = $report->deadline && $sub->created_at->gt($report->deadline);
+
+            return [
+                'id'           => $sub->fieldOfficer?->id,
+                'name'         => $sub->fieldOfficer?->name ?? 'N/A',
+                'email'        => $sub->fieldOfficer?->email ?? 'N/A',
+                'cluster'      => $sub->fieldOfficer?->cluster ?? 'N/A',
+                'submitted_at' => $sub->created_at->toISOString(),
+                'reviewed_at'  => $sub->reviewed_at?->toISOString(),
+                'status'       => match ($sub->status) {
+                    'approved' => $isLate ? 'submitted_late' : 'submitted_on_time',
+                    'returned' => 'returned',
+                    default    => $isLate ? 'submitted_late' : 'pending',
+                },
+                'submission_status' => $sub->status, // raw: pending | approved | returned
+            ];
+        })->all();
+
+        $submittedCount = $submissions->count();
+        $isOverdue      = $report->deadline && now()->gt($report->deadline);
+        $reportStatus   = match (true) {
+            $submittedCount === $totalOfficers => 'completed',
+            $isOverdue                         => 'overdue',
+            default                            => 'open',
+        };
+
+        return [
+            'id'              => $report->id,
+            'title'           => $report->title,
+            'program'         => $report->program?->name ?? 'N/A',
+            'deadline'        => $report->deadline?->toDateString(),
+            'final_deadline'  => $report->final_deadline?->toDateString(),
+            'submitted_count' => $submittedCount,
+            'total_officers'  => $totalOfficers,
+            'report_status'   => $reportStatus,
+            'officers'        => array_merge($submitted, $notSubmitted),
+        ];
+    }
+
+    private function getSummary(array $reports): array
+    {
+        $statuses = collect($reports)->pluck('report_status');
+
+        return [
+            'total'     => count($reports),
+            'open'      => $statuses->filter(fn ($s) => $s === 'open')->count(),
+            'overdue'   => $statuses->filter(fn ($s) => $s === 'overdue')->count(),
+            'completed' => $statuses->filter(fn ($s) => $s === 'completed')->count(),
+        ];
+    }
+
 }

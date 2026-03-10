@@ -37,7 +37,7 @@ export function mainNavigationPath(role: string): NavItem[] {
                 },
 
                 {
-                    title: 'My Reports ',
+                    title: 'My Submissions ',
                     href: FieldOfficerNavigationPath.myReportSubmissions().url,
                     icon: FileCheck,
 
@@ -65,6 +65,15 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Programs',
                     href: FocalPersonNavigationPath.programs().url,
                     icon: File,
+                    badge: {
+                        countKey: 'pending_submissions_count', // amber — submissions to review
+                        variant: 'warning',
+                    },
+                },
+                {
+                    title: 'Submission Logs',
+                    href: FocalPersonNavigationPath.submissionPage().url,
+                    icon: FileCheck,
                 },
                 {
                     title: 'Notifications',

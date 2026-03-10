@@ -7,6 +7,8 @@ import { ReportSubmission } from '@/types';
 import { Form } from '@inertiajs/react';
 import { Calendar, Clock, Download, Eye, FileText, X } from 'lucide-react';
 import { useState } from 'react';
+import { FilePreviewModal } from './file-preview-modal';
+import { ModalState, isImage, isSpreadsheet } from './file-preview-types';
 
 export default function ReportSubmissionDrawer({
     submission,
@@ -19,8 +21,46 @@ export default function ReportSubmissionDrawer({
 }) {
     const [showReturnForm, setShowReturnForm] = useState(false);
     const [remarks, setRemarks] = useState('');
+    const [modal, setModal] = useState<ModalState>({
+        isOpen: false,
+        item: null,
+        allItems: [],
+        currentIndex: 0,
+    });
 
-    // if (!submission) return null;
+    const openPreview = (fileId: number) => {
+        const files = submission?.media ?? [];
+        const index = files.findIndex((f) => f.id === fileId);
+        if (index === -1) return;
+        setModal({
+            isOpen: true,
+            item: files[index],
+            allItems: files,
+            currentIndex: index,
+        });
+    };
+
+    const closePreview = () => {
+        setModal((prev) => ({ ...prev, isOpen: false, item: null }));
+    };
+
+    const navigatePreview = (indexOrDir: number | 'prev' | 'next') => {
+        setModal((prev) => {
+            let next: number;
+            if (indexOrDir === 'prev') next = prev.currentIndex - 1;
+            else if (indexOrDir === 'next') next = prev.currentIndex + 1;
+            else next = indexOrDir;
+
+            if (next < 0 || next >= prev.allItems.length) return prev;
+            return { ...prev, currentIndex: next, item: prev.allItems[next] };
+        });
+    };
+
+    const getFileIcon = (mime: string, name: string) => {
+        if (isImage(mime)) return 'image';
+        if (isSpreadsheet(mime, name)) return 'sheet';
+        return 'file';
+    };
 
     return (
         <>
@@ -40,7 +80,6 @@ export default function ReportSubmissionDrawer({
             >
                 {submission && (
                     <>
-                        {/* All your existing content wrapped in this fragment */}
                         {/* Header */}
                         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background px-6 py-4">
                             <h2 className="text-lg font-semibold">
@@ -55,6 +94,7 @@ export default function ReportSubmissionDrawer({
                                 <X className="h-5 w-5" />
                             </Button>
                         </div>
+
                         {/* Content */}
                         <div className="space-y-6 p-6">
                             {/* Submitter Info */}
@@ -120,7 +160,7 @@ export default function ReportSubmissionDrawer({
                                 </div>
                             </div>
 
-                            {/* Previous Remarks (if any) */}
+                            {/* Previous Remarks */}
                             {submission.remarks && (
                                 <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
                                     <h4 className="mb-2 text-sm font-medium text-amber-900">
@@ -143,63 +183,95 @@ export default function ReportSubmissionDrawer({
                                 {submission.media &&
                                 submission.media.length > 0 ? (
                                     <div className="space-y-2">
-                                        {submission.media.map((file) => (
-                                            <div
-                                                key={file.id}
-                                                className="flex items-center justify-between rounded-lg border border-border bg-background p-4 transition hover:bg-muted/40"
-                                            >
-                                                <div className="flex min-w-0 flex-1 items-center gap-3">
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-500/10">
-                                                        <FileText className="h-5 w-5 text-gray-600" />
-                                                    </div>
-                                                    <div className="min-w-0 flex-1">
-                                                        <p className="truncate text-sm font-medium">
-                                                            {file.name}
-                                                        </p>
-                                                        <p className="text-xs text-muted-foreground">
-                                                            {file.size
-                                                                ? `${(file.size / 1024).toFixed(2)} KB`
-                                                                : 'Unknown size'}
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                                <div className="flex gap-2">
-                                                    {/* View Button */}
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            window.open(
-                                                                file.original_url,
-                                                                '_blank',
-                                                                'noopener,noreferrer',
-                                                            )
-                                                        }
-                                                    >
-                                                        <Eye className="mr-2 h-4 w-4" />
-                                                        View
-                                                    </Button>
-
-                                                    {/* Download Button */}
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        asChild
-                                                    >
-                                                        <a
-                                                            href={
-                                                                file.original_url
-                                                            }
-                                                            download
+                                        {submission.media.map((file) => {
+                                            const fileType = getFileIcon(
+                                                file.mime_type,
+                                                file.name,
+                                            );
+                                            return (
+                                                <div
+                                                    key={file.id}
+                                                    className="flex items-center justify-between rounded-lg border border-border bg-background p-4 transition hover:bg-muted/40"
+                                                >
+                                                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                                                        <div
+                                                            className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+                                                                fileType ===
+                                                                'sheet'
+                                                                    ? 'bg-emerald-500/10'
+                                                                    : fileType ===
+                                                                        'image'
+                                                                      ? 'bg-blue-500/10'
+                                                                      : 'bg-gray-500/10'
+                                                            }`}
                                                         >
-                                                            <Download className="mr-2 h-4 w-4" />
-                                                            Download
-                                                        </a>
-                                                    </Button>
+                                                            <FileText
+                                                                className={`h-5 w-5 ${
+                                                                    fileType ===
+                                                                    'sheet'
+                                                                        ? 'text-emerald-600'
+                                                                        : fileType ===
+                                                                            'image'
+                                                                          ? 'text-blue-600'
+                                                                          : 'text-gray-600'
+                                                                }`}
+                                                            />
+                                                        </div>
+                                                        <div className="min-w-0 flex-1">
+                                                            <p className="truncate text-sm font-medium">
+                                                                {file.name}
+                                                            </p>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                {file.size
+                                                                    ? `${(file.size / 1024).toFixed(2)} KB`
+                                                                    : 'Unknown size'}
+                                                                {' · '}
+                                                                <span className="uppercase">
+                                                                    {file.name
+                                                                        .split(
+                                                                            '.',
+                                                                        )
+                                                                        .pop()}
+                                                                </span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex gap-2">
+                                                        {/* View Button — opens modal */}
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                openPreview(
+                                                                    file.id,
+                                                                )
+                                                            }
+                                                        >
+                                                            <Eye className="mr-2 h-4 w-4" />
+                                                            View
+                                                        </Button>
+
+                                                        {/* Download Button */}
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            asChild
+                                                        >
+                                                            <a
+                                                                href={
+                                                                    file.original_url
+                                                                }
+                                                                download
+                                                            >
+                                                                <Download className="mr-2 h-4 w-4" />
+                                                                Download
+                                                            </a>
+                                                        </Button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 ) : (
                                     <div className="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center">
@@ -211,7 +283,7 @@ export default function ReportSubmissionDrawer({
                                 )}
                             </div>
 
-                            {/* Additional Data (if any) */}
+                            {/* Additional Information */}
                             {submission.description && (
                                 <div className="space-y-3">
                                     <h3 className="text-base font-semibold">
@@ -225,6 +297,7 @@ export default function ReportSubmissionDrawer({
                                 </div>
                             )}
                         </div>
+
                         {/* Footer Actions */}
                         {submission.status !== 'accepted' &&
                             submission.status !== 'returned' && (
@@ -247,9 +320,7 @@ export default function ReportSubmissionDrawer({
                                                     reportSubmission:
                                                         submission.id,
                                                 })}
-                                                onSuccess={() => {
-                                                    onClose();
-                                                }}
+                                                onSuccess={() => onClose()}
                                             >
                                                 <input
                                                     type="hidden"
@@ -338,6 +409,20 @@ export default function ReportSubmissionDrawer({
                     </>
                 )}
             </div>
+
+            {/* File Preview Modal — z-60 so it sits above the drawer (z-50) */}
+            {modal.isOpen && (
+                <div
+                    className="z-60"
+                    style={{ position: 'relative', zIndex: 60 }}
+                >
+                    <FilePreviewModal
+                        state={modal}
+                        onClose={closePreview}
+                        onNavigate={navigatePreview}
+                    />
+                </div>
+            )}
         </>
     );
 }

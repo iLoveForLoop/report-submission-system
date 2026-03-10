@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Program extends Model
 {
@@ -43,4 +44,28 @@ class Program extends Model
             })
             ->exists();
     }
+
+    // All submissions across all reports in this program
+    public function reportSubmissions(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            ReportSubmission::class,
+            Report::class,
+            'program_id',  // FK on reports table
+            'report_id',   // FK on report_submissions table
+        );
+    }
+
+    // Convenience: only submitted ones (awaiting focal person review)
+    public function pendingSubmissions(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            ReportSubmission::class,
+            Report::class,
+            'program_id',
+            'report_id',
+        )->where('report_submissions.status', 'submitted');
+    }
+
+
 }

@@ -77,6 +77,16 @@ class User extends Authenticatable implements HasMedia
             ->count();
     }
 
+    public function pendingSubmissionsToReviewCount(): int
+    {
+        return ReportSubmission::query()
+            ->where('status', 'submitted')
+            ->whereHas('report.program', function ($q) {
+                $q->where('created_by', $this->id);
+            })
+            ->count();
+    }
+
     /**
      * Get the attributes that should be cast.
      *

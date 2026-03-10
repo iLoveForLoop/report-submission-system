@@ -176,7 +176,8 @@ class ViewController extends Controller
 
 
     // PRIVATE FUNCTION
-    // ── Stats ─────────────────────────────────────────────────────────────────────
+
+    // DASHBOARD
 
     private function getTotalSubmissions(): int
     {
@@ -198,8 +199,6 @@ class ViewController extends Controller
         return ReportSubmission::where('status', 'submitted')->count();
     }
 
-    // ── Cluster chart data ─────────────────────────────────────────────────────────
-    // When $month is null → all-time. When $month is e.g. "2025-03" → filter to that month.
 
     private function getClusterChartData(?string $month): array
     {
@@ -231,7 +230,6 @@ class ViewController extends Controller
         })->all();
     }
 
-    // ── Recent submissions ────────────────────────────────────────────────────────
 
     private function getRecentSubmissions(): array
     {
@@ -251,7 +249,6 @@ class ViewController extends Controller
             ->all();
     }
 
-    // ── Top programs ──────────────────────────────────────────────────────────────
 
     private function getTopPrograms(): array
     {
@@ -279,8 +276,6 @@ class ViewController extends Controller
             ->values()
             ->all();
     }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────────
 
     private function getInitials(?string $name): string
     {

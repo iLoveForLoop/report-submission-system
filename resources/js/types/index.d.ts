@@ -54,6 +54,7 @@ export interface User {
     role: string;
     notifications_count: number;
     pending_reports_count: number;
+    pending_submissions_count: number;
     [key: string]: unknown; // This allows for additional properties...
 }
 
@@ -65,6 +66,7 @@ export interface Program {
     created_at: string;
     updated_at: string;
     has_pending_reports: boolean;
+    pending_submissions_count?: number;
 }
 
 export interface Report {

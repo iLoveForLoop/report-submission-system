@@ -53,7 +53,7 @@ interface OverdueReport {
 
 interface RecentActivity {
     id: string;
-    type: 'approved' | 'returned';
+    type: 'accepted' | 'returned';
     report_title: string;
     officer: string;
     program: string;

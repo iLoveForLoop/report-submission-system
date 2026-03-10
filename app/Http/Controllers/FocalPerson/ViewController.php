@@ -139,4 +139,8 @@ public function programs(Request $request)
             'notifications' => Inertia::scroll($notifications)
         ]);
     }
+
+    public function submissionPage() {
+        return inertia('focal-person/submission-logs/page');
+    }
 }

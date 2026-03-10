@@ -134,12 +134,19 @@ export default function EditReportSubmissionDialog({
                     size="sm"
                     className="text-primary hover:bg-primary/10 hover:text-primary"
                 >
-                    <Pencil className="mr-1 h-3.5 w-3.5" />
-                    Edit
+                    {submission.status === 'returned' ? (
+                        <p>Resubmit</p>
+                    ) : (
+                        <>
+                            {' '}
+                            <Pencil className="mr-1 h-3.5 w-3.5" />
+                            Edit
+                        </>
+                    )}
                 </Button>
             </DialogTrigger>
 
-            <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0 overflow-x-hidden">
+            <DialogContent className="max-h-[90vh] max-w-3xl overflow-x-hidden overflow-y-auto p-0">
                 <div className="sticky top-0 z-10 border-b border-border bg-card px-6 py-4">
                     <DialogHeader>
                         <div className="flex items-start justify-between">

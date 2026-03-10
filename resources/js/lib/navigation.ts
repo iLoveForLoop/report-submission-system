@@ -2,6 +2,9 @@ import FieldOfficerNavigationPath from '@/actions/App/Http/Controllers/FieldOffi
 import FocalPersonNavigationPath from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
 import ProgramHeadNavigationPath from '@/actions/App/Http/Controllers/ProgramHead/ViewController';
 import ProvincialDirectorNavigationPath from '@/actions/App/Http/Controllers/ProvincialDirector/ViewController';
+import AdminDirectorNavigationPath from '@/actions/App/Http/Controllers/Admin/ViewController';
+
+
 import { NavItem } from '@/types';
 import { Bell, File, FileCheck, Layers, LayoutGrid, Users } from 'lucide-react';
 
@@ -18,21 +21,26 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Programs',
                     href: FieldOfficerNavigationPath.programs().url,
                     icon: Layers,
+                    // badge: {
+                    //     countKey: 'pending_reports_count',
+                    //     variant: 'warning',
+                    // },
+                },
+                {
+                    title: 'Pending Reports',
+                    href: FieldOfficerNavigationPath.pendingReports().url,
+                    icon: File,
                     badge: {
                         countKey: 'pending_reports_count',
                         variant: 'warning',
                     },
-                },
-                {
-                    title: 'Pending Report',
-                    href: FieldOfficerNavigationPath.pendingReports().url,
-                    icon: File,
                 },
 
                 {
                     title: 'My Reports ',
                     href: FieldOfficerNavigationPath.myReportSubmissions().url,
                     icon: FileCheck,
+
                 },
 
                 {
@@ -59,10 +67,18 @@ export function mainNavigationPath(role: string): NavItem[] {
                     icon: File,
                 },
                 {
+                    title: 'Submission Logs',
+                    href: FocalPersonNavigationPath.submissionPage().url,
+                    icon: FileCheck,
+                },
+                {
                     title: 'Notifications',
                     href: FocalPersonNavigationPath.notifications().url,
                     icon: Bell,
-                    showNotificationBadge: true,
+                    badge: {
+                        countKey: 'notifications_count',
+                        variant: 'notification',
+                    },
                 },
             ];
         case 'program_head':
@@ -101,6 +117,14 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'Programs',
                     href: ProvincialDirectorNavigationPath.programs().url,
                     icon: Layers,
+                },
+            ];
+        case 'admin':
+            return [
+                {
+                    title: 'Dashboard',
+                    href: AdminDirectorNavigationPath.dashboard().url,
+                    icon: LayoutGrid,
                 },
             ];
         default:

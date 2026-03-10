@@ -4,7 +4,6 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import {
-    Activity,
     ArrowDown,
     ArrowUp,
     Award,
@@ -22,8 +21,6 @@ import {
     HeartPulse,
     Hourglass,
     MapPin,
-    PieChart,
-    TrendingUp,
     Users,
     Utensils,
     XCircle,
@@ -47,11 +44,7 @@ import {
     Bar,
     BarChart,
     CartesianGrid,
-    Cell,
     LabelList,
-    Line,
-    Pie,
-    LineChart as ReLineChart,
     XAxis,
     YAxis,
 } from 'recharts';
@@ -66,20 +59,20 @@ const breadcrumbs: BreadcrumbItem[] = [
 // Enhanced static data for clusters
 const clusterComparisonData = [
     {
-        cluster: 'North Cluster',
+        cluster: 'M&M',
         approved: 180,
         pending: 45,
         rejected: 20,
-        total: 245,
-        shortName: 'North',
+        total: 290,
+        shortName: 'M&M',
     },
     {
-        cluster: 'South Cluster',
+        cluster: "D'ONE",
         approved: 210,
         pending: 72,
         rejected: 30,
-        total: 312,
-        shortName: 'South',
+        total: 624,
+        shortName: "D'ONE",
     },
 ];
 
@@ -170,6 +163,13 @@ const approvedChartConfig = {
     },
 } satisfies ChartConfig;
 
+const totalSubmissionChartConfig = {
+    approved: {
+        label: 'Total Submission',
+        color: 'hsl(212.1 76.2% 36.3%)',
+    },
+} satisfies ChartConfig;
+
 const pendingChartConfig = {
     pending: {
         label: 'Pending',
@@ -183,8 +183,6 @@ const rejectedChartConfig = {
         color: 'hsl(0 72.2% 50.6%)',
     },
 } satisfies ChartConfig;
-
-
 
 export default function Dashboard() {
     const getStatusBadge = (status: string) => {
@@ -219,14 +217,14 @@ export default function Dashboard() {
                     <div className="relative z-10">
                         <div className="grid grid-rows-1 lg:grid-cols-2">
                             <div>
-                                <h1 className="text-2xl lg:text-3xl font-bold text-foreground">
+                                <h1 className="text-2xl font-bold text-foreground lg:text-3xl">
                                     Program Head Dashboard
                                 </h1>
                                 <p className="mt-2 text-muted-foreground">
                                     Welcome back! Here's your program overview
                                 </p>
                             </div>
-                            <div className="flex items-center lg:justify-end gap-3 mt-3 lg:mt-0 ">
+                            <div className="mt-3 flex items-center gap-3 lg:mt-0 lg:justify-end">
                                 <button className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm transition-colors hover:bg-accent">
                                     <Calendar className="h-4 w-4 text-muted-foreground" />
                                     <span>Last 30 days</span>
@@ -316,19 +314,19 @@ export default function Dashboard() {
                 </div>
 
                 {/* Main Chart Section - Three Vertical Bar Charts */}
-                <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                    {/* Approved Chart */}
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    {/* Total Submission Chart */}
                     <Card>
                         <CardHeader className="pb-2">
                             <div className="flex items-center gap-2">
                                 <CheckCircle2 className="h-5 w-5 text-chart-2" />
-                                <CardTitle>Approved Submissions</CardTitle>
+                                <CardTitle>Total Submissions</CardTitle>
                             </div>
                             <CardDescription>By cluster</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <ChartContainer
-                                config={approvedChartConfig}
+                                config={totalSubmissionChartConfig}
                                 className="h-[250px] w-full"
                             >
                                 <BarChart
@@ -364,13 +362,13 @@ export default function Dashboard() {
                                         }
                                     />
                                     <Bar
-                                        dataKey="approved"
+                                        dataKey="total"
                                         fill="var(--color-approved)"
                                         radius={[4, 4, 0, 0]}
                                         barSize={40}
                                     >
                                         <LabelList
-                                            dataKey="approved"
+                                            dataKey="total"
                                             position="top"
                                             offset={8}
                                             className="fill-foreground font-medium"
@@ -467,6 +465,81 @@ export default function Dashboard() {
                         </CardFooter>
                     </Card>
 
+                    {/* Approved Chart */}
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <div className="flex items-center gap-2">
+                                <CheckCircle2 className="h-5 w-5 text-chart-2" />
+                                <CardTitle>Approved Submissions</CardTitle>
+                            </div>
+                            <CardDescription>By cluster</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <ChartContainer
+                                config={approvedChartConfig}
+                                className="h-[250px] w-full"
+                            >
+                                <BarChart
+                                    accessibilityLayer
+                                    data={clusterComparisonData}
+                                    margin={{
+                                        top: 20,
+                                        right: 20,
+                                        left: 20,
+                                        bottom: 20,
+                                    }}
+                                >
+                                    <CartesianGrid
+                                        vertical={false}
+                                        className="stroke-border/50"
+                                    />
+                                    <XAxis
+                                        dataKey="shortName"
+                                        tickLine={false}
+                                        tickMargin={10}
+                                        axisLine={false}
+                                        className="fill-muted-foreground text-sm"
+                                    />
+                                    <YAxis
+                                        tickLine={false}
+                                        axisLine={false}
+                                        className="fill-muted-foreground text-xs"
+                                    />
+                                    <ChartTooltip
+                                        cursor={false}
+                                        content={
+                                            <ChartTooltipContent indicator="line" />
+                                        }
+                                    />
+                                    <Bar
+                                        dataKey="approved"
+                                        fill="var(--color-approved)"
+                                        radius={[4, 4, 0, 0]}
+                                        barSize={40}
+                                    >
+                                        <LabelList
+                                            dataKey="approved"
+                                            position="top"
+                                            offset={8}
+                                            className="fill-foreground font-medium"
+                                            fontSize={12}
+                                        />
+                                    </Bar>
+                                </BarChart>
+                            </ChartContainer>
+                        </CardContent>
+                        <CardFooter className="border-t border-border pt-4">
+                            <div className="flex w-full items-center justify-between text-sm">
+                                <span className="text-muted-foreground">
+                                    Total approved
+                                </span>
+                                <span className="font-bold text-chart-2">
+                                    390
+                                </span>
+                            </div>
+                        </CardFooter>
+                    </Card>
+
                     {/* Rejected Chart */}
                     <Card>
                         <CardHeader className="pb-2">
@@ -544,7 +617,6 @@ export default function Dashboard() {
                 </div>
 
                 {/* Second Row - Monthly Trends and Status Distribution */}
-
 
                 {/* Program Performance Cards */}
                 <Card>
@@ -673,24 +745,26 @@ export default function Dashboard() {
                                                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
                                                         {submission.avatar}
                                                     </div>
-                                                    <span className="text-xs lg:text-sm font-medium text-foreground whitespace-nowrap">
+                                                    <span className="text-xs font-medium whitespace-nowrap text-foreground lg:text-sm">
                                                         {submission.officer}
                                                     </span>
                                                 </div>
                                             </td>
                                             <td className="py-3">
-                                                <div className="text-xs lg:text-sm flex items-center gap-1 text-muted-foreground whitespace-nowrap">
+                                                <div className="flex items-center gap-1 text-xs whitespace-nowrap text-muted-foreground lg:text-sm">
                                                     <MapPin className="h-3 w-3 flex-shrink-0" />
                                                     {submission.cluster}
                                                 </div>
                                             </td>
-                                            <td className="text-xs lg:text-sm py-3 text-muted-foreground whitespace-nowrap">
+                                            <td className="py-3 text-xs whitespace-nowrap text-muted-foreground lg:text-sm">
                                                 {submission.program}
                                             </td>
-                                            <td className="py-3 text-xs lg:text-sm whitespace-nowrap">
-                                                {getStatusBadge(submission.status)}
+                                            <td className="py-3 text-xs whitespace-nowrap lg:text-sm">
+                                                {getStatusBadge(
+                                                    submission.status,
+                                                )}
                                             </td>
-                                            <td className="py-3 text-xs lg:text-sm text-muted-foreground whitespace-nowrap">
+                                            <td className="py-3 text-xs whitespace-nowrap text-muted-foreground lg:text-sm">
                                                 {submission.time}
                                             </td>
                                             <td className="py-3">

@@ -12,9 +12,20 @@ use Inertia\Inertia;
 
 class ViewController extends Controller
 {
-    public function dashboard()
+    public function dashboard(): \Inertia\Response
     {
-        return inertia('field-officer/dashboard/page');
+        $user = auth()->user();
+
+        return inertia('field-officer/dashboard/page', [
+            'programs_count'          => $this->getProgramsCount(),
+            'pending_reports_count'   => $this->getPendingReportsCount($user->id),
+            'submitted_reports_count' => $this->getSubmittedReportsCount($user->id),
+            'returned_reports_count'  => $this->getReturnedReportsCount($user->id),
+            'recent_programs'         => $this->getRecentPrograms($user->id),
+            'pending_reports'         => $this->getPendingReports($user->id),
+            'recent_submissions'      => $this->getRecentSubmissions($user->id),
+            'upcoming_deadlines'      => $this->getUpcomingDeadlines($user->id),
+        ]);
     }
 
     public function programs(Request $request)
@@ -43,6 +54,7 @@ class ViewController extends Controller
 
         $reports = $program->reports()
             ->with('coordinator')
+            ->latest()
             ->paginate(12)
             ->through(function ($report) use ($user) {
                 return [
@@ -88,11 +100,22 @@ class ViewController extends Controller
                 'id' => $report->coordinator->id,
                 'name' => $report->coordinator->name,
                 'email' => $report->coordinator->email,
-                'avatar' => $report->coordinator->avatar,
+                // 'avatar' => $report->coordinator->avatar,
             ],
 
             'templates' => $report
                 ->getMedia('templates')
+                ->map(fn($media) => [
+                    'id' => $media->id,
+                    'name' => $media->name,
+                    'file_name' => $media->file_name,
+                    'mime_type' => $media->mime_type,
+                    'size' => $media->size,
+                    'original_url' => $media->original_url,
+                ]),
+
+            'references' => $report
+                ->getMedia('references')
                 ->map(fn($media) => [
                     'id' => $media->id,
                     'name' => $media->name,
@@ -182,10 +205,10 @@ class ViewController extends Controller
 public function pendingReports()
 {
     $user = auth()->user();
-    
+
     $pendingReports = Report::with([
             'program:id,name,description',
-            'coordinator:id,name,email,avatar',
+            'coordinator:id,name,email',
             'media' // Load all media at once
         ])
         ->where(function ($query) use ($user) {
@@ -203,7 +226,7 @@ public function pendingReports()
             // Filter media by collection
             $templates = $report->media->where('collection_name', 'templates');
             $references = $report->media->where('collection_name', 'references');
-            
+
             // Helper function to format media
             $formatMedia = fn($media) => [
                 'id' => $media->id,
@@ -213,7 +236,7 @@ public function pendingReports()
                 'size' => $media->size,
                 'original_url' => $media->original_url,
             ];
-            
+
             return [
                 'id' => $report->id,
                 'title' => $report->title,
@@ -230,7 +253,7 @@ public function pendingReports()
                 'submission_status' => $report->submission_status
             ];
         });
-      
+
     return inertia('field-officer/pending-reports/page', [
         'pendingReports' => $pendingReports
     ]);
@@ -255,5 +278,185 @@ public function pendingReports()
         return inertia('field-officer/notifications/page', [
             'notifications' => Inertia::scroll($notifications)
         ]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+    //PRIVATE FUNCTIONS
+    private function getProgramsCount(): int
+    {
+        return Program::whereHas('reports')->count();
+    }
+
+    private function getPendingReportsCount(int $userId): int
+    {
+        return Report::where(function ($query) use ($userId) {
+            $query->whereDoesntHave('submissions', fn ($q) =>
+                $q->where('field_officer_id', $userId)
+            )
+            ->orWhereHas('submissions', fn ($q) =>
+                $q->where('field_officer_id', $userId)->where('status', 'returned')
+            );
+        })->count();
+    }
+
+    private function getSubmittedReportsCount(int $userId): int
+    {
+        return ReportSubmission::where('field_officer_id', $userId)
+            ->where('status', '!=', 'returned')
+            ->count();
+    }
+
+    private function getReturnedReportsCount(int $userId): int
+    {
+        return ReportSubmission::where('field_officer_id', $userId)
+            ->where('status', 'returned')
+            ->count();
+    }
+
+    private function getRecentPrograms(int $userId): array
+    {
+        return Program::with(['coordinator', 'reports.submissions'])
+            ->whereHas('reports')
+            ->latest()
+            ->take(4)
+            ->get()
+            ->map(fn ($program) => $this->formatProgram($program, $userId))
+            ->all();
+    }
+
+    private function formatProgram(Program $program, int $userId): array
+    {
+        $reports = $program->reports;
+        $totalReports = $reports->count();
+
+        $submittedCount = $reports->filter(fn ($report) =>
+            $report->submissions
+                ->where('field_officer_id', $userId)
+                ->where('status', '!=', 'returned')
+                ->isNotEmpty()
+        )->count();
+
+        $progress = $totalReports > 0
+            ? (int) round(($submittedCount / $totalReports) * 100)
+            : 0;
+
+        $nearestDeadline = $reports
+            ->whereNotNull('deadline')
+            ->sortBy('deadline')
+            ->first()
+            ?->deadline;
+
+        return [
+            'id'            => $program->id,
+            'name'          => $program->name,
+            'description'   => $program->description,
+            'reports_count' => $totalReports,
+            'coordinator'   => $program->coordinator?->name ?? 'N/A',
+            'progress'      => $progress,
+            'deadline'      => $nearestDeadline?->toDateString(),
+        ];
+    }
+
+    private function getPendingReports(int $userId): array
+    {
+        return Report::with('program')
+            ->where(function ($query) use ($userId) {
+                $query->whereDoesntHave('submissions', fn ($q) =>
+                    $q->where('field_officer_id', $userId)
+                )
+                ->orWhereHas('submissions', fn ($q) =>
+                    $q->where('field_officer_id', $userId)->where('status', 'returned')
+                );
+            })
+            ->orderBy('deadline')
+            ->take(4)
+            ->get()
+            ->map(fn ($report) => $this->formatPendingReport($report, $userId))
+            ->all();
+    }
+
+    private function formatPendingReport(Report $report, int $userId): array
+    {
+        $daysUntilDeadline = $report->deadline
+            ? now()->diffInDays($report->deadline, false)
+            : null;
+
+        $priority = match (true) {
+            $daysUntilDeadline === null => 'medium',
+            $daysUntilDeadline <= 3    => 'high',
+            $daysUntilDeadline <= 7    => 'medium',
+            default                    => 'low',
+        };
+
+        $wasReturned = $report->submissions()
+            ->where('field_officer_id', $userId)
+            ->where('status', 'returned')
+            ->exists();
+
+        return [
+            'id'             => $report->id,
+            'title'          => $report->title,
+            'program'        => $report->program?->name ?? 'N/A',
+            'program_id'     => $report->program_id,
+            'deadline'       => $report->deadline?->toDateString(),
+            'final_deadline' => $report->final_deadline?->toDateString(),
+            'status'         => $wasReturned ? 'returned' : 'pending',
+            'priority'       => $priority,
+        ];
+    }
+
+    private function getRecentSubmissions(int $userId): array
+    {
+        return ReportSubmission::with(['report.program'])
+            ->where('field_officer_id', $userId)
+            ->latest()
+            ->take(4)
+            ->get()
+            ->map(fn ($submission) => [
+                'id'           => $submission->id,
+                'report_title' => $submission->report?->title ?? 'N/A',
+                'program'      => $submission->report?->program?->name ?? 'N/A',
+                'submitted_at' => $submission->created_at->toISOString(),
+                'status'       => $submission->status,
+                'feedback'     => $submission->description,
+            ])
+            ->all();
+    }
+
+    private function getUpcomingDeadlines(int $userId): array
+    {
+        return Report::with('program')
+            ->whereNotNull('deadline')
+            ->where('deadline', '>=', now())
+            ->where(function ($query) use ($userId) {
+                $query->whereDoesntHave('submissions', fn ($q) =>
+                    $q->where('field_officer_id', $userId)
+                )
+                ->orWhereHas('submissions', fn ($q) =>
+                    $q->where('field_officer_id', $userId)->where('status', 'returned')
+                );
+            })
+            ->orderBy('deadline')
+            ->take(3)
+            ->get()
+            ->map(fn ($report) => [
+                'id'           => $report->id,
+                'report'       => $report->title,
+                'program'      => $report->program?->name ?? 'N/A',
+                'program_id'   => $report->program_id,
+                'deadline'     => $report->deadline->toDateString(),
+                'days_left'    => max(0, (int) now()->diffInDays($report->deadline, false)),
+                'has_template' => $report->getMedia('templates')->isNotEmpty(),
+            ])
+            ->all();
     }
 }

@@ -82,7 +82,7 @@ export default function Page() {
                 <Activity
                     mode={programs.data.length <= 0 ? 'visible' : 'hidden'}
                 >
-                    <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2 py-12 text-center h-[60vh]">
                         <Folders className="h-16 w-16 text-muted-foreground/50" />
                         <h2 className="text-xl font-medium text-muted-foreground">
                             No programs yet

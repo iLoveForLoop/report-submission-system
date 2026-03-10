@@ -8,6 +8,7 @@ import { useState } from 'react';
 import FilterBtn from '../../../components/filter';
 import GriddView from './components/grid-view';
 import ListView from './components/list-view';
+import { FolderOpen } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -76,11 +77,15 @@ export default function Programs() {
                 {/* No Results */}
                 {!isLoading && programs.data.length === 0 && (
                     <div className="py-12 text-center">
-                        <h1 className="text-lg text-muted-foreground">
-                            {selectedYear
-                                ? `No programs found for ${selectedYear}`
-                                : 'No programs yet'}
-                        </h1>
+                        <div className='flex flex-col gap-2 items-center justify-center h-[50vh]'>
+                            <FolderOpen className='text-muted-foreground' />
+                            <h1 className="text-sm md:text-lg text-muted-foreground">
+                                {selectedYear
+                                    ? `No programs found for ${selectedYear}`
+                                    : 'No programs yet'}
+                            </h1>
+                        </div>
+
                         {selectedYear && (
                             <button
                                 onClick={() => handleYearFilter(null)}

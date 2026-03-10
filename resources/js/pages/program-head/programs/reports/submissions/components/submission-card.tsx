@@ -1,14 +1,14 @@
 import { Media, ReportSubmission } from '@/types';
-import { useState } from 'react';
 import {
-    FileText,
+    ChevronDown,
+    Download,
+    Eye,
     File,
     FileSpreadsheet,
+    FileText,
     Image,
-    Eye,
-    Download,
-    ChevronDown
 } from 'lucide-react';
+import { useState } from 'react';
 
 const STATUS_CONFIG: Record<
     ReportSubmission['status'],
@@ -59,9 +59,11 @@ function formatDate(dateStr: string) {
 }
 
 function getFileIcon(mimeType: string) {
-    if (mimeType.includes('word') || mimeType.includes('document')) return FileText;
+    if (mimeType.includes('word') || mimeType.includes('document'))
+        return FileText;
     if (mimeType.includes('pdf')) return FileText;
-    if (mimeType.includes('sheet') || mimeType.includes('excel')) return FileSpreadsheet;
+    if (mimeType.includes('sheet') || mimeType.includes('excel'))
+        return FileSpreadsheet;
     if (mimeType.includes('image')) return Image;
     return File;
 }
@@ -85,9 +87,9 @@ export default function SubmissionCard({
 }) {
     const [expanded, setExpanded] = useState(false);
     const timeliness = submission.timeliness
-            ? (TIMELINESS_CONFIG[
-                    submission.timeliness as keyof typeof TIMELINESS_CONFIG
-            ] ?? null)
+        ? (TIMELINESS_CONFIG[
+              submission.timeliness as keyof typeof TIMELINESS_CONFIG
+          ] ?? null)
         : null;
 
     const media: Media[] = submission.media ?? [];
@@ -102,7 +104,8 @@ export default function SubmissionCard({
                 <div className="min-w-0 flex-1">
                     <div className="mb-2 flex items-center gap-2.5">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-purple-600 text-sm font-bold text-white">
-                            {submission.field_officer?.first_name?.[0] ?? '?'}
+                            {submission.field_officer?.first_name?.[0] ??
+                                '?'}{' '}
                         </div>
                         <div>
                             <p className="text-sm font-semibold text-[var(--foreground)]">
@@ -226,7 +229,9 @@ export default function SubmissionCard({
                             </p>
                             <p className="text-sm text-[var(--foreground)]">
                                 {submission.description ?? (
-                                    <em className="text-[var(--muted-foreground)]">None</em>
+                                    <em className="text-[var(--muted-foreground)]">
+                                        None
+                                    </em>
                                 )}
                             </p>
                         </div>
@@ -236,7 +241,9 @@ export default function SubmissionCard({
                             </p>
                             <p className="text-sm text-[var(--foreground)]">
                                 {submission.remarks ?? (
-                                    <em className="text-[var(--muted-foreground)]">None</em>
+                                    <em className="text-[var(--muted-foreground)]">
+                                        None
+                                    </em>
                                 )}
                             </p>
                         </div>

@@ -256,12 +256,15 @@ return (
                             <h1 className="text-2xl lg:text-3xl font-bold text-foreground">
                                 Focal Person Dashboard
                             </h1>
-                            <div className="text-muted-foreground mt-1 flex items-center gap-2">
+                            <div className="text-muted-foreground mt-1 flex items-center gap-27 lg:gap-2">
                                 <span className='text-xs lg:text-sm'>Welcome back, Focal Person</span>
-                                <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                                    <Bell className="w-3 h-3" />
-                                    3 new notifications
-                                </span>
+                                <div className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                                    <div className='flex items-center gap-1'>
+                                        <Bell className="w-3 h-3" />
+                                        <p>3</p>
+                                    </div>
+                                    <p className='hidden md:block'>New Notification</p>
+                                </div>
                             </div>
                         </div>
                         <div className="flex items-center lg:justify-end gap-3 mt-5 lg:mt-0">

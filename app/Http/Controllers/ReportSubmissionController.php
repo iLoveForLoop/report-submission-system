@@ -155,7 +155,7 @@ class ReportSubmissionController extends Controller
             abort(403, 'You are not authorized to update this submission.');
         }
 
-        // Check if deadline has passed (optional - you may want to restrict edits after deadline)
+
         $deadlinePassed = $report->deadline && now()->gt($report->deadline);
 
         // Handle file deletions
@@ -226,10 +226,18 @@ class ReportSubmissionController extends Controller
             return redirect()->back()->with('info', 'No changes were made to the submission.');
         }
 
+
+        $isResubmitted = false;
+
+        if($submission->status === 'returned'){
+            $isResubmitted = true;
+        }
+
         // Update the submission
         $submission->update([
             'description' => $request->description,
             'data' => $finalData,
+            'status' => $isResubmitted ? 'submitted' : $submission->status,
             'updated_at' => now(),
         ]);
 

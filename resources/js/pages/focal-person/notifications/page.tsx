@@ -1,3 +1,4 @@
+//notifications/page.tsx
 // notifications/page.tsx
 import { ScrollToTop } from '@/components/ui/scroll-to-top';
 import { useNotifications } from '@/hooks/use-notifications';
@@ -186,12 +187,59 @@ export default function NotificationsPage() {
         remove(id);
     };
 
+    // Filter button styling helper with gradients
+    const getFilterButtonStyle = (value: NotificationFilter) => {
+        const baseClasses = "rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide capitalize transition-all duration-200";
+
+        if (filter === value) {
+            // Active filter - use gradient colors
+            switch(value) {
+                case 'all':
+                    return `${baseClasses} bg-gradient-to-r from-primary/90 to-primary text-primary-foreground shadow-md shadow-primary/30 ring-2 ring-primary/20`;
+                case 'unread':
+                    return `${baseClasses} bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md shadow-blue-500/30 ring-2 ring-blue-400/30 dark:from-blue-600 dark:to-blue-700`;
+                case 'read':
+                    return `${baseClasses} bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-md shadow-emerald-500/30 ring-2 ring-emerald-400/30 dark:from-emerald-600 dark:to-emerald-700`;
+                default:
+                    return `${baseClasses} bg-gradient-to-r from-primary/90 to-primary text-primary-foreground`;
+            }
+        } else {
+            // Inactive filters with subtle gradients on hover
+            switch(value) {
+                case 'all':
+                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 hover:text-primary hover:ring-2 hover:ring-primary/30`;
+                case 'unread':
+                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-gradient-to-r hover:from-blue-500/10 hover:to-blue-600/5 hover:text-blue-600 hover:ring-2 hover:ring-blue-200 dark:hover:text-blue-400 dark:hover:from-blue-500/20 dark:hover:to-blue-600/10`;
+                case 'read':
+                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-gradient-to-r hover:from-emerald-500/10 hover:to-emerald-600/5 hover:text-emerald-600 hover:ring-2 hover:ring-emerald-200 dark:hover:text-emerald-400 dark:hover:from-emerald-500/20 dark:hover:to-emerald-600/10`;
+                default:
+                    return `${baseClasses} bg-muted/50 text-muted-foreground hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 hover:text-primary`;
+            }
+        }
+    };
+
+    // Stats card styling with gradients
+    const getStatsCardStyle = (type: 'total' | 'unread' | 'read') => {
+        const baseClasses = "rounded-sm border px-4 py-3 transition-all duration-200";
+
+        switch(type) {
+            case 'total':
+                return `${baseClasses} border-border bg-gradient-to-br from-card to-muted/30 hover:from-card hover:to-muted/50`;
+            case 'unread':
+                return `${baseClasses} border-primary/20 bg-gradient-to-br from-primary/5 via-primary/5 to-blue-500/5 hover:from-primary/10 hover:via-primary/10 hover:to-blue-500/10 dark:from-primary/10 dark:via-primary/10 dark:to-blue-500/10`;
+            case 'read':
+                return `${baseClasses} border-border bg-gradient-to-br from-muted/50 to-emerald-500/5 hover:from-muted/60 hover:to-emerald-500/10 dark:from-muted/30 dark:to-emerald-500/10`;
+            default:
+                return baseClasses;
+        }
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Notifications" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-sm p-4">
                 {/* Header Card */}
-                <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+                <div className="rounded-sm border border-border bg-card p-4 shadow-sm">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
                             <h1 className="flex items-center gap-2 text-xl font-semibold text-foreground">
@@ -206,16 +254,16 @@ export default function NotificationsPage() {
                         <button
                             onClick={markAllNotificationsAsRead}
                             disabled={unreadCount === 0}
-                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-accent hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                            className="inline-flex cursor-pointer items-center gap-2 rounded-sm border border-border bg-gradient-to-r from-card to-muted/30 px-3 py-2 text-sm font-medium text-foreground transition-all duration-200 hover:border-primary/20 hover:from-primary/5 hover:to-primary/10 hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <CheckCheck className="h-4 w-4" />
                             Mark all as read
                         </button>
                     </div>
 
-                    {/* Stats */}
+                    {/* Stats with gradients */}
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-lg border border-border bg-muted/50 px-4 py-3">
+                        <div className={getStatsCardStyle('total')}>
                             <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Total
                             </p>
@@ -223,7 +271,7 @@ export default function NotificationsPage() {
                                 {notifications.total}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
+                        <div className={getStatsCardStyle('unread')}>
                             <p className="text-xs font-medium tracking-wide text-primary uppercase">
                                 Unread
                             </p>
@@ -231,7 +279,7 @@ export default function NotificationsPage() {
                                 {unreadCount}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-border bg-muted/50 px-4 py-3">
+                        <div className={getStatsCardStyle('read')}>
                             <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Read
                             </p>
@@ -243,12 +291,12 @@ export default function NotificationsPage() {
                 </div>
 
                 {/* List Card */}
-                <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-                    {/* Filter row */}
+                <div className="rounded-sm border border-border bg-card p-4 shadow-sm">
+                    {/* Filter row with gradient buttons */}
                     <div className="mb-4 flex items-center gap-2">
                         <Filter className="h-4 w-4 text-muted-foreground" />
                         <p className="text-sm font-medium text-foreground">
-                            Filter
+                            Filter by:
                         </p>
                         <div className="ml-2 flex flex-wrap gap-2">
                             {(['all', 'unread', 'read'] as const).map(
@@ -256,11 +304,7 @@ export default function NotificationsPage() {
                                     <button
                                         key={value}
                                         onClick={() => setFilter(value)}
-                                        className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
-                                            filter === value
-                                                ? 'bg-primary text-primary-foreground'
-                                                : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                                        }`}
+                                        className={getFilterButtonStyle(value)}
                                     >
                                         {value}
                                     </button>
@@ -271,13 +315,17 @@ export default function NotificationsPage() {
 
                     {/* Notification list */}
                     {filtered.length === 0 ? (
-                        <div className="rounded-lg border border-dashed border-border px-4 py-12 text-center">
+                        <div className="rounded-sm border border-dashed border-border bg-gradient-to-b from-muted/20 to-muted/5 px-4 py-12 text-center">
                             <Bell className="mx-auto h-9 w-9 text-muted-foreground/30" />
                             <p className="mt-3 text-sm font-medium text-foreground">
-                                No notifications found
+                                No {filter !== 'all' ? filter : ''} notifications found
                             </p>
                             <p className="mt-1 text-xs text-muted-foreground">
-                                New updates will appear here once available.
+                                {filter === 'unread'
+                                    ? "You've caught up on all your notifications!"
+                                    : filter === 'read'
+                                    ? "You haven't marked any notifications as read yet"
+                                    : "New updates will appear here once available."}
                             </p>
                         </div>
                     ) : (
@@ -292,10 +340,10 @@ export default function NotificationsPage() {
                                         onClick={() =>
                                             isClickable && handleCardClick(item)
                                         }
-                                        className={`group rounded-lg border px-4 py-3 transition-all ${
+                                        className={`group rounded-sm border px-4 py-3 transition-all ${
                                             item.isRead
-                                                ? 'border-border bg-card'
-                                                : `${theme.unreadBorder} ${theme.unreadBg}`
+                                                ? 'border-border bg-card hover:bg-gradient-to-r hover:from-card hover:to-muted/20'
+                                                : `${theme.unreadBorder} ${theme.unreadBg} hover:bg-gradient-to-r hover:from-transparent hover:to-white/5`
                                         } ${
                                             isClickable
                                                 ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-md'
@@ -306,14 +354,14 @@ export default function NotificationsPage() {
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex flex-wrap items-center gap-2">
                                                     {!item.isRead && (
-                                                        <span className="h-2 w-2 flex-shrink-0 rounded-full bg-primary" />
+                                                        <span className="h-2 w-2 flex-shrink-0 rounded-full bg-primary animate-pulse" />
                                                     )}
                                                     <p className="text-sm font-semibold text-foreground">
                                                         {item.title}
                                                     </p>
                                                     {!item.isRead && (
                                                         <span
-                                                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${theme.badge}`}
+                                                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase bg-gradient-to-r ${theme.badge}`}
                                                         >
                                                             New
                                                         </span>
@@ -335,7 +383,7 @@ export default function NotificationsPage() {
                                                     onClick={(e) =>
                                                         handleRemove(e, item.id)
                                                     }
-                                                    className="rounded p-1 text-muted-foreground/50 opacity-0 transition-all group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
+                                                    className="rounded p-1 text-muted-foreground/50 opacity-0 transition-all group-hover:opacity-100 hover:bg-gradient-to-r hover:from-destructive/10 hover:to-destructive/5 hover:text-destructive"
                                                     title="Dismiss notification"
                                                 >
                                                     <Trash2 className="h-3.5 w-3.5" />
@@ -352,7 +400,7 @@ export default function NotificationsPage() {
                                                             item.id,
                                                         )
                                                     }
-                                                    className={`inline-flex cursor-pointer items-center gap-1 rounded-md border bg-card px-2.5 py-1.5 text-xs font-medium transition-colors ${theme.markReadBtn}`}
+                                                    className={`inline-flex cursor-pointer items-center gap-1 rounded-md border bg-gradient-to-r from-card to-muted/20 px-2.5 py-1.5 text-xs font-medium transition-all duration-200 hover:from-muted/30 hover:to-muted/40 ${theme.markReadBtn}`}
                                                 >
                                                     <CheckCheck className="h-3.5 w-3.5" />
                                                     Mark as read
@@ -366,7 +414,7 @@ export default function NotificationsPage() {
                                                                 item,
                                                             )
                                                         }
-                                                        className={`inline-flex cursor-pointer items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-foreground transition-colors ${theme.viewBtn}`}
+                                                        className={`inline-flex cursor-pointer items-center gap-1 rounded-md bg-gradient-to-r px-2.5 py-1.5 text-xs font-medium text-foreground transition-all duration-200 hover:shadow-md ${theme.viewBtn}`}
                                                     >
                                                         <ExternalLink className="h-3.5 w-3.5" />
                                                         View Report
@@ -377,7 +425,7 @@ export default function NotificationsPage() {
 
                                         {item.isRead && item.action_url && (
                                             <div className="mt-2">
-                                                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors group-hover:text-primary">
+                                                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors group-hover:bg-gradient-to-r group-hover:from-primary/10 group-hover:to-transparent group-hover:bg-clip-text group-hover:text-transparent">
                                                     <ExternalLink className="h-3 w-3" />
                                                     Click to view report
                                                 </span>
@@ -403,7 +451,7 @@ export default function NotificationsPage() {
                         {!nextPageUrl &&
                             !loading &&
                             notificationList.length > 0 && (
-                                <p className="text-xs text-muted-foreground/50">
+                                <p className="text-xs text-muted-foreground/50 bg-gradient-to-r from-transparent via-muted-foreground/10 to-transparent px-4 py-1">
                                     You've seen all notifications
                                 </p>
                             )}

@@ -13,7 +13,7 @@ import {
 import useAuth from '@/hooks/use-auth';
 import { mainNavigationPath } from '@/lib/navigation';
 import { dashboard } from '@/routes';
-import { type NavItem } from '@/types';
+// import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import AppLogo from './app-logo';
 
@@ -25,7 +25,7 @@ import AppLogo from './app-logo';
 //     },
 // ];
 
-const footerNavItems: NavItem[] = [
+// const footerNavItems: NavItem[] = [
     // {
     //     title: 'Repository',
     //     href: 'https://github.com/laravel/react-starter-kit',
@@ -36,7 +36,7 @@ const footerNavItems: NavItem[] = [
     //     href: 'https://laravel.com/docs/starter-kits#react',
     //     icon: BookOpen,
     // },
-];
+
 
 export function AppSidebar() {
     const role = useAuth().user.role;

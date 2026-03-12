@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 // focal-person/submission-logs/page.tsx
 import {
     Dialog,

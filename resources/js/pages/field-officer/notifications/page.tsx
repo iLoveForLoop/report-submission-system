@@ -53,34 +53,35 @@ function getNotificationTheme(title: string) {
     const t = title.toLowerCase();
     if (t.includes('approved') || t.includes('success')) {
         return {
-            unreadBorder: 'border-emerald-200 dark:border-emerald-800',
-            unreadBg: 'bg-emerald-50 dark:bg-emerald-950/30',
-            badge: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
+            unreadBorder: 'border-green-500 bg-green-50 dark:border-green-800',
+            unreadBg: 'bg-green-50 dark:bg-green-950/30',
+            badge: 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300',
             markReadBtn:
-                'border-emerald-200 text-emerald-600 hover:bg-emerald-50 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-950/50',
+                'border-green-200 text-green-600 hover:bg-green-50 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-950/50',
             viewBtn:
-                'bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600',
+                'bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600',
         };
     }
     if (t.includes('rejected') || t.includes('denied')) {
         return {
-            unreadBorder: 'border-red-200 dark:border-red-800',
+            unreadBorder: 'border-red-500 bg-red-50 dark:border-red-800',
             unreadBg: 'bg-red-50 dark:bg-red-950/30',
             badge: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
             markReadBtn:
                 'border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/50',
             viewBtn:
-                'bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600',
+                'bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600',
         };
     }
+    // Default/warning/pending notifications
     return {
-        unreadBorder: 'border-primary/20 dark:border-primary/10',
-        unreadBg: 'bg-primary/5 dark:bg-primary/10',
-        badge: 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground',
+        unreadBorder: 'border-amber-500 bg-amber-50 dark:border-amber-800',
+        unreadBg: 'bg-amber-50 dark:bg-amber-950/30',
+        badge: 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
         markReadBtn:
-            'border-primary/20 text-primary hover:bg-primary/5 dark:border-primary/10 dark:text-primary-foreground dark:hover:bg-primary/20',
+            'border-amber-200 text-amber-600 hover:bg-amber-50 dark:border-amber-800 dark:text-amber-400 dark:hover:bg-amber-950/50',
         viewBtn:
-            'bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary dark:hover:bg-primary/90',
+            'bg-amber-600 text-white hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-600',
     };
 }
 
@@ -190,52 +191,51 @@ export default function NotificationsPage() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Notifications" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h1 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+                            <BellRing className="h-5 w-5 text-primary" />
+                            Notifications
+                        </h1>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                            Stay updated with submission activity and report
+                            status changes.
+                        </p>
+                    </div>
+                    <button
+                        onClick={markAllNotificationsAsRead}
+                        disabled={unreadCount === 0}
+                        className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-accent hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                        <CheckCheck className="h-4 w-4" />
+                        Mark all as read
+                    </button>
+                </div>
                 {/* Header Card */}
                 <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div>
-                            <h1 className="flex items-center gap-2 text-xl font-semibold text-foreground">
-                                <BellRing className="h-5 w-5 text-primary" />
-                                Notifications
-                            </h1>
-                            <p className="mt-1 text-sm text-muted-foreground">
-                                Stay updated with submission activity and report
-                                status changes.
-                            </p>
-                        </div>
-                        <button
-                            onClick={markAllNotificationsAsRead}
-                            disabled={unreadCount === 0}
-                            className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/20 hover:bg-accent hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                            <CheckCheck className="h-4 w-4" />
-                            Mark all as read
-                        </button>
-                    </div>
-
-                    {/* Stats */}
+                    {/* Stats - Updated colors to match filter buttons */}
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-lg border border-border bg-muted/50 px-4 py-3">
-                            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                        <div className="rounded-lg border border-border bg-muted px-4 py-3">
+                            <p className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
                                 Total
                             </p>
                             <p className="mt-1 text-lg font-semibold text-foreground">
                                 {notifications.total}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
-                            <p className="text-xs font-medium tracking-wide text-primary uppercase">
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+                            <p className="text-xs font-medium tracking-wide text-amber-600 uppercase">
                                 Unread
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-primary">
+                            <p className="mt-1 text-lg font-semibold text-amber-600">
                                 {unreadCount}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-border bg-muted/50 px-4 py-3">
-                            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3">
+                            <p className="text-xs font-medium tracking-wide text-green-600 uppercase">
                                 Read
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-foreground">
+                            <p className="mt-1 text-lg font-semibold text-green-600">
                                 {readCount}
                             </p>
                         </div>
@@ -258,7 +258,11 @@ export default function NotificationsPage() {
                                         onClick={() => setFilter(value)}
                                         className={`rounded-full px-3 py-1.5 text-xs font-semibold tracking-wide capitalize transition-colors ${
                                             filter === value
-                                                ? 'bg-primary text-primary-foreground'
+                                                ? value === 'unread'
+                                                    ? 'bg-amber-500 text-white'
+                                                    : value === 'read'
+                                                        ? 'bg-green-500 text-white'
+                                                        : 'bg-primary text-primary-foreground'
                                                 : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                                         }`}
                                     >
@@ -306,7 +310,13 @@ export default function NotificationsPage() {
                                             <div className="min-w-0 flex-1">
                                                 <div className="flex flex-wrap items-center gap-2">
                                                     {!item.isRead && (
-                                                        <span className="h-2 w-2 flex-shrink-0 rounded-full bg-primary" />
+                                                        <span className={`h-2 w-2 flex-shrink-0 rounded-full ${
+                                                            item.title.toLowerCase().includes('approved')
+                                                                ? 'bg-green-500'
+                                                                : item.title.toLowerCase().includes('rejected')
+                                                                    ? 'bg-red-500'
+                                                                    : 'bg-amber-500'
+                                                        }`} />
                                                     )}
                                                     <p className="text-sm font-semibold text-foreground">
                                                         {item.title}
@@ -366,7 +376,7 @@ export default function NotificationsPage() {
                                                                 item,
                                                             )
                                                         }
-                                                        className={`inline-flex cursor-pointer items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-foreground transition-colors ${theme.viewBtn}`}
+                                                        className={`inline-flex cursor-pointer items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-white transition-colors ${theme.viewBtn}`}
                                                     >
                                                         <ExternalLink className="h-3.5 w-3.5" />
                                                         View Report

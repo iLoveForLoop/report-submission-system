@@ -99,41 +99,42 @@ export default function PendingReportsPage() {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-hidden">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <CardTitle className="flex gap-2 items-center text-lg font-semibold text-foreground lg:text-2xl">
-                            <FileText className="h-5 w-5 text-primary" />
+                        <CardTitle className="flex gap-2 items-center text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                            <FileText className="h-5 w-5 text-primary dark:text-primary-400" />
                             Pending Reports
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="dark:text-gray-400">
                             Track and submit reports before deadline.
                         </CardDescription>
                     </div>
                     <Link
                         href={ViewController.programs().url}
-                        className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-accent"
+                        className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-accent dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
                     >
                         <FolderKanban className="h-4 w-4" />
                         View Programs
                     </Link>
                 </div>
-                <Card className="gap-4">
+                <Card className="gap-4 dark:border-gray-700">
                     <CardContent className="space-y-4 px-5">
                         <div className="flex flex-col justify-between md:flex-row md:items-center">
                             <div className="relative w-full md:max-w-sm">
-                                <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground dark:text-gray-500" />
                                 <input
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     placeholder="Search title or program..."
-                                    className="w-full rounded-md border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+                                    className="w-full rounded-md border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/30 dark:border-gray-700 dark:text-white dark:placeholder-gray-500 dark:focus:ring-primary-400/30"
                                 />
                             </div>
 
-                            <div className="flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-2 mt-5 md:mt-0">
                                 {[
                                     {
                                         key: 'all',
                                         label: 'All',
                                         icon: FileText,
+
                                     },
                                     {
                                         key: 'overdue',
@@ -153,8 +154,8 @@ export default function PendingReportsPage() {
                                         }
                                         className={`rounded-md border px-3 py-1.5 text-sm ${
                                             filter === item.key
-                                                ? 'border-primary bg-primary/10 text-primary'
-                                                : 'hover:bg-accent'
+                                                ? 'border-primary bg-primary/10 text-primary dark:border-primary-400 dark:bg-primary-400/10 dark:text-primary-400'
+                                                : 'hover:bg-accent dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white'
                                         }`}
                                     >
                                         <item.icon className="mr-1 inline h-3.5 w-3.5" />
@@ -173,14 +174,14 @@ export default function PendingReportsPage() {
                                 label="Overdue"
                                 value={stats.overdue}
                                 icon={
-                                    <AlertTriangle className="h-4 w-4 text-rose-500" />
+                                    <AlertTriangle className="h-4 w-4 text-rose-500 dark:text-rose-400" />
                                 }
                             />
                             <StatCard
                                 label="Due in 7 Days"
                                 value={stats.dueSoon}
                                 icon={
-                                    <Clock3 className="h-4 w-4 text-amber-500" />
+                                    <Clock3 className="h-4 w-4 text-amber-500 dark:text-amber-400" />
                                 }
                             />
                         </div>
@@ -189,13 +190,13 @@ export default function PendingReportsPage() {
 
                 <div className="grid gap-3 h-[48vh] overflow-y-auto">
                     {filteredReports.length === 0 ? (
-                        <Card className="py-8 text-center">
+                        <Card className="py-8 text-center dark:border-gray-700 dark:bg-gray-800/50">
                             <CardContent>
-                                <p className="inline-flex items-center gap-2 font-medium">
-                                    <FileSearch className="h-4 w-4 text-muted-foreground" />
+                                <p className="inline-flex items-center gap-2 font-medium dark:text-gray-300">
+                                    <FileSearch className="h-4 w-4 text-muted-foreground dark:text-gray-500" />
                                     No pending reports found.
                                 </p>
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-sm text-muted-foreground dark:text-gray-400">
                                     Try another search or filter.
                                 </p>
                             </CardContent>
@@ -205,20 +206,24 @@ export default function PendingReportsPage() {
                             const days = daysUntil(report.deadline);
                             const urgencyClass =
                                 days < 0
-                                    ? 'bg-rose-500/10 text-rose-600'
+                                    ? 'bg-rose-500/10 text-rose-600 dark:bg-rose-950/30 dark:text-rose-400'
                                     : days <= 3
-                                      ? 'bg-amber-500/10 text-amber-600'
-                                      : 'bg-emerald-500/10 text-emerald-600';
+                                        ? 'bg-amber-500/10 text-amber-600 dark:bg-amber-950/30 dark:text-amber-400'
+                                        : 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400';
 
                             return (
-                                <Card key={report.id} className="gap-4 py-4">
-                                    <CardContent className="px-4">
+                                <Card key={report.id} className={`gap-4 py-4 dark:border-gray-700 dark:bg-gray-800/50
+                                    ${days < 0
+                                        ? 'border-l-4 border-red-500 bg-red-50 dark:bg-red-950/20 dark:border-red-500'
+                                        : 'border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-500'
+                                    }`}>
+                                    <CardContent className="px-4 dark:text-gray-300">
                                         <div className="flex flex-wrap items-start justify-between gap-3">
                                             <div>
-                                                <h2 className="text-base font-semibold">
+                                                <h2 className="text-base font-semibold dark:text-white">
                                                     {report.title}
                                                 </h2>
-                                                <p className="text-sm text-muted-foreground">
+                                                <p className="text-sm text-muted-foreground dark:text-gray-400">
                                                     {report.program?.name}
                                                 </p>
                                             </div>
@@ -231,15 +236,15 @@ export default function PendingReportsPage() {
                                             </span>
                                         </div>
 
-                                        <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+                                        <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground dark:text-gray-400">
                                             <span className="inline-flex items-center gap-1.5">
-                                                <CalendarClock className="h-3.5 w-3.5" />
+                                                <CalendarClock className="h-3.5 w-3.5 dark:text-gray-500" />
                                                 Deadline:{' '}
                                                 {formatDate(report.deadline)}
                                             </span>
                                             {report.final_deadline && (
                                                 <span className="inline-flex items-center gap-1.5">
-                                                    <TimerReset className="h-3.5 w-3.5" />
+                                                    <TimerReset className="h-3.5 w-3.5 dark:text-gray-500" />
                                                     Final:{' '}
                                                     {formatDate(
                                                         report.final_deadline,
@@ -247,12 +252,12 @@ export default function PendingReportsPage() {
                                                 </span>
                                             )}
                                             <span className="inline-flex items-center gap-1.5">
-                                                <FileText className="h-3.5 w-3.5" />
+                                                <FileText className="h-3.5 w-3.5 dark:text-gray-500" />
                                                 Templates:{' '}
                                                 {report.templates?.length ?? 0}
                                             </span>
                                             <span className="inline-flex items-center gap-1.5">
-                                                <FileText className="h-3.5 w-3.5" />
+                                                <FileText className="h-3.5 w-3.5 dark:text-gray-500" />
                                                 References:{' '}
                                                 {report.references?.length ?? 0}
                                             </span>
@@ -267,7 +272,7 @@ export default function PendingReportsPage() {
                                                         report: report.id,
                                                     },
                                                 )}
-                                                className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                                                className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-accent dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
                                             >
                                                 <ArrowRight className="h-4 w-4" />
                                                 Open Submission
@@ -279,7 +284,7 @@ export default function PendingReportsPage() {
                                                             report.program.id,
                                                     },
                                                 )}
-                                                className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-accent"
+                                                className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-accent dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
                                             >
                                                 <FolderKanban className="h-4 w-4" />
                                                 View Program Reports

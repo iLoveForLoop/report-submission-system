@@ -143,24 +143,28 @@
 }
 
     .bg {
-        animation: slide 3s ease-in-out infinite alternate;
-        background-image: linear-gradient(-60deg, rgb(226, 217, 217) 50%, white 50%);
-        bottom: 0;
-        left: -50%;
-        opacity: .5;
-        position: fixed;
-        right: -50%;
-        top: 0;
-        z-index: -1;
-    }
+    animation: slide 6s ease-in-out infinite alternate;
+    background-image: linear-gradient(
+        -60deg,
+        oklch(from var(--foreground) l c h / 0.08) 50%,
+        var(--background) 50%
+    );
+    bottom: 0;
+    left: -50%;
+    opacity: .5;
+    position: fixed;
+    right: -50%;
+    top: 0;
+    z-index: -1;
+}
 
     .bg2 {
         animation-direction: alternate-reverse;
-        animation-duration: 4s;
+        animation-duration: 7s;
     }
 
     .bg3 {
-        animation-duration: 5s;
+        animation-duration: 9s;
     }
 
     @keyframes slide {

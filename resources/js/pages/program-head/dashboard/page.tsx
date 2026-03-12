@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // program-head/dashboard/page.tsx
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { Auth, type BreadcrumbItem } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import {
     ArrowUpRight,
@@ -63,6 +63,7 @@ interface TopProgram {
 }
 
 interface DashboardProps {
+    auth: Auth,
     total_submissions: number;
     active_officers: number;
     approved_count: number;
@@ -267,6 +268,7 @@ function SectionHeader({
 
 export default function Dashboard() {
     const {
+        auth,
         total_submissions,
         active_officers,
         approved_count,
@@ -365,8 +367,8 @@ export default function Dashboard() {
                     <div className="px-5 py-5">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h1 className="text-xl font-bold tracking-tight text-foreground">
-                                    Program Head Dashboard
+                                <h1 className="text-xl font-md tracking-tight text-foreground">
+                                    Welcome, <span className='font-bold'>{auth.user.name}</span>
                                 </h1>
                                 <p className="mt-0.5 text-sm text-muted-foreground">
                                     Overview of submissions, officers, and

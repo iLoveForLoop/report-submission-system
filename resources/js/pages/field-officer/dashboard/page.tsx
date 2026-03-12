@@ -1,6 +1,6 @@
 // field-officer/dashboard/page.tsx
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { Auth, type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
     AlertTriangle,
@@ -73,6 +73,7 @@ interface UpcomingDeadline {
 }
 
 interface DashboardProps {
+    auth: Auth;
     programs_count: number;
     pending_reports_count: number;
     submitted_reports_count: number;
@@ -82,6 +83,8 @@ interface DashboardProps {
     recent_submissions: RecentSubmission[];
     upcoming_deadlines: UpcomingDeadline[];
 }
+
+
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -243,6 +246,7 @@ function MetaItem({
 
 export default function Dashboard() {
     const {
+        auth,
         programs_count,
         pending_reports_count,
         submitted_reports_count,
@@ -306,8 +310,8 @@ export default function Dashboard() {
                     <div className="px-5 py-5">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h1 className="text-xl font-bold tracking-tight text-foreground">
-                                    Field Officer Dashboard
+                                <h1 className="text-xl font-md tracking-tight text-foreground">
+                                    Welcome, <span className='font-bold'>{auth.user.name}</span>
                                 </h1>
                                 <div className="mt-1 flex flex-wrap items-center gap-3">
                                     <p className="text-sm text-muted-foreground">

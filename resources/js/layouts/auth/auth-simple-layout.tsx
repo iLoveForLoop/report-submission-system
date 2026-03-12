@@ -272,9 +272,9 @@ export default function AuthSimpleLayout({
                 <Developers />
             </motion.div>
 
-            {/* <div className="bg"></div>
+             <div className="bg"></div>
             <div className="bg bg2"></div>
-            <div className="bg bg3"></div> */}
+            <div className="bg bg3"></div>
         </>
     );
 }

@@ -1,8 +1,9 @@
+// field-officer/dashboard/page.tsx
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
-    AlertCircle,
+    AlertTriangle,
     Bell,
     Building2,
     Calendar,
@@ -15,6 +16,8 @@ import {
     FileText,
     FileWarning,
     FolderOpen,
+    Layers,
+    RefreshCw,
     Upload,
     Users,
     XCircle,
@@ -100,25 +103,35 @@ const formatDateTime = (dateString: string) => {
     });
 };
 
-const getStatusBadge = (status: string) => {
+const getStatusConfig = (status: string) => {
     const statusConfig = {
         approved: {
-            class: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+            badgeClass:
+                'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400',
+            iconClass:
+                'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400',
             icon: CheckCircle2,
             label: 'Approved',
         },
         pending: {
-            class: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+            badgeClass:
+                'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+            iconClass:
+                'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400',
             icon: Clock,
-            label: 'Pending Review',
+            label: 'Under Review',
         },
         returned: {
-            class: 'bg-rose-500/10 text-rose-600 dark:text-rose-400',
+            badgeClass:
+                'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400',
+            iconClass:
+                'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400',
             icon: XCircle,
             label: 'Returned',
         },
         draft: {
-            class: 'bg-gray-500/10 text-gray-600 dark:text-gray-400',
+            badgeClass: 'bg-muted text-muted-foreground',
+            iconClass: 'bg-muted text-muted-foreground',
             icon: FileText,
             label: 'Draft',
         },
@@ -129,17 +142,102 @@ const getStatusBadge = (status: string) => {
     );
 };
 
-const getPriorityBadge = (priority: string) => {
-    const priorityConfig = {
-        high: 'bg-rose-500/10 text-rose-600 dark:text-rose-400',
-        medium: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
-        low: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+const getPriorityConfig = (priority: string) => {
+    const configs = {
+        high: {
+            badgeClass:
+                'border border-red-300 bg-red-100 text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-400',
+            label: 'HIGH',
+        },
+        medium: {
+            badgeClass:
+                'border border-amber-300 bg-amber-100 text-amber-700 dark:border-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+            label: 'MED',
+        },
+        low: {
+            badgeClass:
+                'border border-green-300 bg-green-100 text-green-700 dark:border-green-700 dark:bg-green-900/40 dark:text-green-400',
+            label: 'LOW',
+        },
     };
-    return (
-        priorityConfig[priority as keyof typeof priorityConfig] ??
-        priorityConfig.medium
-    );
+    return configs[priority as keyof typeof configs] ?? configs.medium;
 };
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function SectionHeader({
+    title,
+    badge,
+    badgeVariant = 'neutral',
+    action,
+    headerColor,
+}: {
+    title: string;
+    badge?: string | number;
+    badgeVariant?: 'neutral' | 'warning' | 'danger' | 'success';
+    action?: { label: string; href: string };
+    headerColor?: string;
+}) {
+    const badgeOnColor = 'bg-white/20 text-white';
+    const defaultBadgeClasses = {
+        neutral: 'bg-muted text-muted-foreground',
+        warning:
+            'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
+        danger: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400',
+        success:
+            'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400',
+    };
+
+    const hasColor = Boolean(headerColor);
+
+    return (
+        <div
+            className={`flex items-center justify-between border-b-2 border-border px-5 py-3 ${headerColor ?? 'bg-muted/40'}`}
+        >
+            <div className="flex items-center gap-2.5">
+                <span
+                    className={`text-sm font-semibold tracking-tight ${hasColor ? 'text-white' : 'text-foreground'}`}
+                >
+                    {title}
+                </span>
+                {badge !== undefined && (
+                    <span
+                        className={`rounded px-1.5 py-0.5 text-xs font-medium ${hasColor ? badgeOnColor : defaultBadgeClasses[badgeVariant]}`}
+                    >
+                        {badge}
+                    </span>
+                )}
+            </div>
+            {action && (
+                <Link
+                    href={action.href}
+                    className={`flex items-center gap-1 text-xs font-medium hover:underline ${hasColor ? 'text-white/80 hover:text-white' : 'text-primary'}`}
+                >
+                    {action.label}
+                    <ChevronRight className="h-3.5 w-3.5" />
+                </Link>
+            )}
+        </div>
+    );
+}
+
+function MetaItem({
+    icon: Icon,
+    label,
+    value,
+}: {
+    icon: React.ElementType;
+    label: string;
+    value: string;
+}) {
+    return (
+        <div className="flex items-center gap-1.5">
+            <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">{label}:</span>
+            <span className="text-xs font-medium text-foreground">{value}</span>
+        </div>
+    );
+}
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -159,33 +257,33 @@ export default function Dashboard() {
         {
             title: 'Active Programs',
             value: programs_count,
-            change: `${programs_count} total`,
-            icon: FolderOpen,
-            color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+            icon: Layers,
+            accent: 'border-l-blue-500',
+            valueColor: 'text-blue-600 dark:text-blue-400',
             link: '/field-officer/programs',
         },
         {
             title: 'Pending Reports',
             value: pending_reports_count,
-            change: 'Need submission',
             icon: FileClock,
-            color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+            accent: 'border-l-amber-500',
+            valueColor: 'text-amber-600 dark:text-amber-400',
             link: '/field-officer/pending-reports',
         },
         {
-            title: 'Submitted Reports',
+            title: 'Submitted',
             value: submitted_reports_count,
-            change: 'Total submitted',
             icon: FileCheck,
-            color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+            accent: 'border-l-green-500',
+            valueColor: 'text-green-600 dark:text-green-400',
             link: '/field-officer/my-reports-submissions',
         },
         {
-            title: 'Returned Reports',
+            title: 'Returned',
             value: returned_reports_count,
-            change: 'Need revision',
             icon: FileWarning,
-            color: 'bg-rose-500/10 text-rose-600 dark:text-rose-400',
+            accent: 'border-l-red-500',
+            valueColor: 'text-red-600 dark:text-red-400',
             link: '/field-officer/my-report-submissions?filter=returned',
         },
     ];
@@ -194,40 +292,51 @@ export default function Dashboard() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Field Officer Dashboard" />
 
-            <div className="flex-1 space-y-8 bg-background p-6 md:p-8">
-                {/* ── Welcome Header ───────────────────────────────────────── */}
-                <div className="relative overflow-hidden rounded-xl border border-border bg-card p-8">
-                    <div className="relative z-10">
-                        <div className="grid grid-rows-1 lg:grid-cols-2">
+            <div className="flex-1 space-y-6 bg-background p-6 md:p-8">
+                {/* ── System Header (with traffic lights) ─────────────── */}
+                <div className="border border-border bg-card">
+                    <div className="flex items-center gap-3 border-b border-border/50 bg-muted/30 px-5 py-2">
+                        <div className="flex items-center gap-1.5">
+                            <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
+                            <span className="h-2.5 w-2.5 rounded-full bg-amber-500/70" />
+                            <span className="h-2.5 w-2.5 rounded-full bg-black/70" />
+                        </div>
+                    </div>
+
+                    <div className="px-5 py-5">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h1 className="text-2xl font-bold text-foreground lg:text-3xl">
+                                <h1 className="text-xl font-bold tracking-tight text-foreground">
                                     Field Officer Dashboard
                                 </h1>
-                                <div className="mt-1 flex items-center gap-2 text-muted-foreground">
-                                    <span className="text-xs lg:text-sm">
-                                        Welcome back, Field Officer
-                                    </span>
+                                <div className="mt-1 flex flex-wrap items-center gap-3">
+                                    <p className="text-sm text-muted-foreground">
+                                        Manage your program reports and
+                                        submissions
+                                    </p>
                                     {pending_reports_count > 0 && (
-                                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs text-amber-600 dark:text-amber-400">
-                                            <Bell className="h-3 w-3" />
+                                        <span className="flex items-center gap-1.5 rounded border-2 border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                                            <Bell className="h-3.5 w-3.5" />
                                             {pending_reports_count} pending
+                                            action
                                         </span>
                                     )}
                                 </div>
                             </div>
-                            <div className="mt-5 flex items-center gap-3 lg:mt-0 lg:justify-end">
+
+                            <div className="flex items-center gap-2">
                                 <Link
                                     href="/field-officer/programs"
-                                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-input bg-background px-4 py-2 text-xs font-medium transition-colors hover:bg-accent lg:text-sm"
+                                    className="flex items-center gap-1.5 rounded border-2 border-border bg-card px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted"
                                 >
-                                    <FolderOpen className="h-4 w-4" />
-                                    View Programs
+                                    <FolderOpen className="h-3.5 w-3.5" />
+                                    Programs
                                 </Link>
                                 <Link
                                     href="/field-officer/pending-reports"
-                                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 lg:text-sm"
+                                    className="flex items-center gap-1.5 rounded border-2 border-primary bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                                 >
-                                    <Upload className="h-4 w-4" />
+                                    <Upload className="h-3.5 w-3.5" />
                                     New Submission
                                 </Link>
                             </div>
@@ -235,128 +344,107 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* ── Stats Grid ───────────────────────────────────────────── */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    {stats.map((stat, index) => (
+                {/* ── Stats Row ───────────────────────────────────────────── */}
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {stats.map((stat, i) => (
                         <Link
-                            key={index}
+                            key={i}
                             href={stat.link}
-                            className="group relative overflow-hidden rounded-xl border bg-card p-6 transition-all hover:shadow-lg"
+                            className={`group flex items-center gap-4 rounded border-2 border-l-4 border-border bg-card p-4 transition-colors hover:bg-muted/50 ${stat.accent}`}
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                            <div className="relative">
-                                <div className="flex items-center justify-between">
-                                    <div
-                                        className={`rounded-lg ${stat.color} p-2.5`}
-                                    >
-                                        <stat.icon className="h-5 w-5" />
-                                    </div>
-                                    <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-                                </div>
-                                <div className="mt-4">
-                                    <h3 className="text-2xl font-bold">
-                                        {stat.value}
-                                    </h3>
-                                    <p className="mt-1 text-sm text-muted-foreground">
-                                        {stat.title}
-                                    </p>
-                                    <p className="mt-2 text-xs text-muted-foreground/70">
-                                        {stat.change}
-                                    </p>
-                                </div>
+                            <div className="min-w-0 flex-1">
+                                <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                                    {stat.title}
+                                </p>
+                                <p
+                                    className={`mt-1 text-3xl leading-none font-bold ${stat.valueColor}`}
+                                >
+                                    {stat.value}
+                                </p>
                             </div>
+                            <stat.icon className="h-8 w-8 shrink-0 text-muted-foreground/40 transition-colors group-hover:text-muted-foreground/60" />
                         </Link>
                     ))}
                 </div>
 
-                {/* ── Main Content Grid ────────────────────────────────────── */}
-                <div className="grid gap-6 lg:grid-cols-3">
-                    {/* Left Column */}
-                    <div className="space-y-6 lg:col-span-2">
+                {/* ── Main Grid ───────────────────────────────────────────── */}
+                <div className="grid gap-5 lg:grid-cols-3">
+                    {/* Left — 2/3 width */}
+                    <div className="space-y-5 lg:col-span-2">
                         {/* Active Programs */}
-                        <div className="rounded-xl border bg-card">
-                            <div className="flex items-center justify-between border-b p-6">
-                                <div className="items-center gap-3 lg:flex">
-                                    <h2 className="mb-1 text-sm font-semibold lg:mb-0 lg:text-lg">
-                                        Active Programs
-                                    </h2>
-                                    <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                                        {recent_programs.length} programs
-                                    </span>
-                                </div>
-                                <Link
-                                    href="/field-officer/programs"
-                                    className="flex items-center gap-1 text-xs text-primary hover:underline lg:text-sm"
-                                >
-                                    View all
-                                    <ChevronRight className="h-4 w-4" />
-                                </Link>
-                            </div>
-
+                        <div className="rounded border-2 border-border bg-card">
+                            <SectionHeader
+                                title="Active Programs"
+                                badge={`${recent_programs.length} enrolled`}
+                                badgeVariant="neutral"
+                                headerColor="bg-blue-500"
+                                action={{
+                                    label: 'View all',
+                                    href: '/field-officer/programs',
+                                }}
+                            />
                             {recent_programs.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-                                    <FolderOpen className="h-10 w-10 text-muted-foreground/30" />
-                                    <p className="text-sm text-muted-foreground">
-                                        No programs yet
+                                <div className="flex flex-col items-center justify-center gap-2 py-14 text-center">
+                                    <FolderOpen className="h-9 w-9 text-muted-foreground/20" />
+                                    <p className="text-xs text-muted-foreground">
+                                        No programs assigned.
                                     </p>
                                 </div>
                             ) : (
-                                <div className="divide-y">
+                                <div className="divide-y-2 divide-border">
                                     {recent_programs.map((program) => (
                                         <Link
                                             key={program.id}
                                             href={`/field-officer/programs/${program.id}/reports`}
-                                            className="block p-6 transition-colors hover:bg-muted/50"
+                                            className="block px-5 py-4 transition-colors hover:bg-muted/30"
                                         >
-                                            <div className="mb-3 items-start justify-between lg:flex">
-                                                <div className="mb-1 lg:mb-0">
-                                                    <h3 className="flex items-center gap-2 text-sm font-medium lg:text-base">
-                                                        <Building2 className="h-4 w-4 text-muted-foreground" />
-                                                        {program.name}
-                                                    </h3>
-                                                    <p className="mt-1 text-xs text-muted-foreground lg:text-sm">
-                                                        {program.description}
-                                                    </p>
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="flex min-w-0 items-start gap-2">
+                                                    <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                                                    <div className="min-w-0">
+                                                        <p className="text-sm leading-snug font-medium text-foreground">
+                                                            {program.name}
+                                                        </p>
+                                                        <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
+                                                            {
+                                                                program.description
+                                                            }
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <span className="rounded-full bg-primary/5 px-2 py-1 text-xs text-primary">
+                                                <span className="shrink-0 rounded bg-blue-100 px-1.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">
                                                     {program.reports_count}{' '}
                                                     reports
                                                 </span>
                                             </div>
-                                            <div className="grid grid-cols-2 gap-4 text-sm">
-                                                <div className="grid grid-rows-1 items-center gap-2 lg:flex">
-                                                    <Users className="h-4 w-4 text-muted-foreground" />
-                                                    <span className="text-muted-foreground">
-                                                        Coordinator:
-                                                    </span>
-                                                    <span className="font-medium">
-                                                        {program.coordinator}
-                                                    </span>
-                                                </div>
-                                                <div className="grid grid-rows-1 items-center gap-2 lg:flex">
-                                                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                                                    <span className="text-muted-foreground">
-                                                        Deadline:
-                                                    </span>
-                                                    <span className="font-medium">
-                                                        {formatDate(
-                                                            program.deadline,
-                                                        )}
-                                                    </span>
-                                                </div>
+
+                                            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
+                                                <MetaItem
+                                                    icon={Users}
+                                                    label="Coordinator"
+                                                    value={program.coordinator}
+                                                />
+                                                <MetaItem
+                                                    icon={Calendar}
+                                                    label="Deadline"
+                                                    value={formatDate(
+                                                        program.deadline,
+                                                    )}
+                                                />
                                             </div>
-                                            <div className="mt-4">
-                                                <div className="mb-2 flex items-center justify-between text-sm">
-                                                    <span className="text-muted-foreground">
-                                                        Overall Progress
+
+                                            <div className="mt-3">
+                                                <div className="mb-1 flex items-center justify-between">
+                                                    <span className="text-xs text-muted-foreground">
+                                                        Progress
                                                     </span>
-                                                    <span className="font-medium">
+                                                    <span className="text-xs font-medium text-foreground">
                                                         {program.progress}%
                                                     </span>
                                                 </div>
-                                                <div className="h-2 overflow-hidden rounded-full bg-muted">
+                                                <div className="h-1.5 w-full overflow-hidden rounded-sm bg-muted">
                                                     <div
-                                                        className="h-full rounded-full bg-gradient-to-r from-primary to-primary/60 transition-all"
+                                                        className="h-full bg-blue-500 transition-all"
                                                         style={{
                                                             width: `${program.progress}%`,
                                                         }}
@@ -370,293 +458,279 @@ export default function Dashboard() {
                         </div>
 
                         {/* Reports Due */}
-                        <div className="rounded-xl border bg-card">
-                            <div className="flex items-center justify-between border-b p-6">
-                                <div className="items-center gap-3 lg:flex">
-                                    <h2 className="text-sm font-semibold lg:text-lg">
-                                        Reports Due
-                                    </h2>
-                                    <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-600 dark:text-amber-400">
-                                        {pending_reports_count} pending
-                                    </span>
-                                </div>
-                                <Link
-                                    href="/field-officer/pending-reports"
-                                    className="flex items-center gap-1 text-xs text-primary hover:underline lg:text-sm"
-                                >
-                                    View all
-                                    <ChevronRight className="h-4 w-4" />
-                                </Link>
-                            </div>
-
+                        <div className="rounded border-2 border-border bg-card">
+                            <SectionHeader
+                                title="Reports Due"
+                                badge={`${pending_reports_count} pending`}
+                                badgeVariant="warning"
+                                headerColor="bg-amber-500"
+                                action={{
+                                    label: 'View all',
+                                    href: '/field-officer/pending-reports',
+                                }}
+                            />
                             {pending_reports.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-                                    <FileCheck className="h-10 w-10 text-emerald-400/50" />
-                                    <p className="text-sm text-muted-foreground">
-                                        All caught up! No pending reports.
+                                <div className="flex flex-col items-center justify-center gap-2 py-14 text-center">
+                                    <FileCheck className="h-9 w-9 text-green-400/60" />
+                                    <p className="text-sm font-medium text-muted-foreground">
+                                        All reports submitted
+                                    </p>
+                                    <p className="text-xs text-muted-foreground/60">
+                                        No pending reports at this time.
                                     </p>
                                 </div>
                             ) : (
-                                <div className="divide-y">
-                                    {pending_reports.map((report) => (
-                                        <div
-                                            key={report.id}
-                                            className="p-6 transition-colors hover:bg-muted/50"
-                                        >
-                                            <div className="mb-3 items-start justify-between lg:flex">
-                                                <div className="mb-1 flex-1 lg:mb-0">
-                                                    <div className="flex items-center gap-2">
-                                                        <FileText className="h-4 w-4 text-muted-foreground" />
-                                                        <h3 className="text-sm font-medium lg:text-base">
-                                                            {report.title}
-                                                        </h3>
-                                                        {report.status ===
-                                                            'returned' && (
-                                                            <span className="rounded-full bg-rose-500/10 px-2 py-0.5 text-xs text-rose-600 dark:text-rose-400">
-                                                                Returned
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <p className="mt-1 text-xs text-muted-foreground lg:text-sm">
-                                                        {report.program}
-                                                    </p>
-                                                </div>
-                                                <span
-                                                    className={`rounded-full px-2 py-1 text-xs font-medium ${getPriorityBadge(report.priority)}`}
-                                                >
-                                                    {report.priority} priority
-                                                </span>
-                                            </div>
-                                            <div className="items-center justify-between text-sm lg:flex">
-                                                <div className="mb-5 grid grid-cols-2 gap-4 lg:mb-0">
-                                                    <div className="grid grid-rows-1 items-center gap-2 lg:flex">
-                                                        <Clock className="h-4 w-4 text-muted-foreground" />
-                                                        <span className="text-xs text-muted-foreground">
-                                                            Deadline:
-                                                        </span>
-                                                        <span className="text-xs font-medium">
-                                                            {formatDate(
-                                                                report.deadline,
-                                                            )}
-                                                        </span>
-                                                    </div>
-                                                    {report.final_deadline && (
-                                                        <div className="grid grid-rows-1 items-center gap-2 lg:flex">
-                                                            <AlertCircle className="h-4 w-4 text-muted-foreground" />
-                                                            <span className="text-xs text-muted-foreground">
-                                                                Final:
-                                                            </span>
-                                                            <span className="text-xs font-medium">
-                                                                {formatDate(
-                                                                    report.final_deadline,
-                                                                )}
-                                                            </span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <Link
-                                                    href={`/field-officer/programs/${report.program_id}/reports/${report.id}/reports-submissions`}
-                                                    className="rounded-md border px-3 py-1 text-sm text-primary hover:underline"
-                                                >
-                                                    Submit Report →
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Right Column */}
-                    <div className="space-y-6">
-                        {/* Recent Submissions */}
-                        <div className="rounded-xl border bg-card">
-                            <div className="border-b p-6">
-                                <h2 className="text-sm font-semibold lg:text-lg">
-                                    Recent Submissions
-                                </h2>
-                            </div>
-
-                            {recent_submissions.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-                                    <FileText className="h-10 w-10 text-muted-foreground/30" />
-                                    <p className="text-sm text-muted-foreground">
-                                        No submissions yet
-                                    </p>
-                                </div>
-                            ) : (
-                                <div className="divide-y">
-                                    {recent_submissions.map((submission) => {
-                                        const status = getStatusBadge(
-                                            submission.status,
+                                <div className="divide-y-2 divide-border">
+                                    {pending_reports.map((report) => {
+                                        const priority = getPriorityConfig(
+                                            report.priority,
                                         );
-                                        const StatusIcon = status.icon;
                                         return (
                                             <div
-                                                key={submission.id}
-                                                className="p-4 transition-colors hover:bg-muted/50"
+                                                key={report.id}
+                                                className="px-5 py-4 transition-colors hover:bg-muted/30"
                                             >
-                                                <div className="flex items-start gap-3">
-                                                    <div
-                                                        className={`rounded-full p-2 ${status.class}`}
-                                                    >
-                                                        <StatusIcon className="h-4 w-4" />
-                                                    </div>
-                                                    <div className="min-w-0 flex-1">
-                                                        <p className="truncate text-sm font-medium">
-                                                            {
-                                                                submission.report_title
-                                                            }
-                                                        </p>
-                                                        <p className="mt-0.5 text-xs text-muted-foreground">
-                                                            {submission.program}
-                                                        </p>
-                                                        <p className="mt-1 text-xs text-muted-foreground">
-                                                            {formatDateTime(
-                                                                submission.submitted_at,
-                                                            )}
-                                                        </p>
-                                                        {/* {submission.feedback && (
-                                                            <p className="mt-2 rounded bg-muted p-2 text-xs">
-                                                                <span className="font-medium">
-                                                                    Feedback:
-                                                                </span>{' '}
-                                                                {
-                                                                    submission.feedback
-                                                                }
+                                                <div className="flex items-start justify-between gap-3">
+                                                    <div className="flex min-w-0 items-start gap-2">
+                                                        <FileText className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                                                        <div className="min-w-0">
+                                                            <div className="flex flex-wrap items-center gap-2">
+                                                                <p className="text-sm leading-snug font-medium text-foreground">
+                                                                    {
+                                                                        report.title
+                                                                    }
+                                                                </p>
+                                                                <span
+                                                                    className={`rounded px-1.5 py-0.5 text-xs font-medium ${priority.badgeClass}`}
+                                                                >
+                                                                    {
+                                                                        priority.label
+                                                                    }
+                                                                </span>
+                                                                {report.status ===
+                                                                    'returned' && (
+                                                                    <span className="flex items-center gap-1 rounded border border-red-300 bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-400">
+                                                                        <RefreshCw className="h-3 w-3" />
+                                                                        Returned
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            <p className="mt-0.5 text-xs text-muted-foreground">
+                                                                {report.program}
                                                             </p>
-                                                        )} */}
+                                                        </div>
                                                     </div>
-                                                    <span
-                                                        className={`rounded-full px-2 py-1 text-xs font-medium ${status.class}`}
+                                                    <Link
+                                                        href={`/field-officer/programs/${report.program_id}/reports/${report.id}/reports-submissions`}
+                                                        className="shrink-0 px-3 py-1 text-xs font-medium text-primary hover:underline"
                                                     >
-                                                        {status.label}
-                                                    </span>
+                                                        Submit →
+                                                    </Link>
+                                                </div>
+
+                                                <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
+                                                    <MetaItem
+                                                        icon={Clock}
+                                                        label="Deadline"
+                                                        value={formatDate(
+                                                            report.deadline,
+                                                        )}
+                                                    />
+                                                    {report.final_deadline && (
+                                                        <MetaItem
+                                                            icon={AlertTriangle}
+                                                            label="Final deadline"
+                                                            value={formatDate(
+                                                                report.final_deadline,
+                                                            )}
+                                                        />
+                                                    )}
                                                 </div>
                                             </div>
                                         );
                                     })}
                                 </div>
                             )}
+                        </div>
+                    </div>
 
-                            <div className="border-t p-4">
+                    {/* Right — 1/3 width */}
+                    <div className="space-y-5">
+                        {/* Recent Submissions */}
+                        <div className="rounded border-2 border-border bg-card">
+                            <SectionHeader
+                                title="Recent Submissions"
+                                headerColor="bg-slate-600"
+                            />
+
+                            {recent_submissions.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center gap-2 py-14 text-center">
+                                    <FileText className="h-9 w-9 text-muted-foreground/20" />
+                                    <p className="text-xs text-muted-foreground">
+                                        No submissions yet.
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="divide-y-2 divide-border">
+                                    {recent_submissions.map((submission) => {
+                                        const status = getStatusConfig(
+                                            submission.status,
+                                        );
+                                        const StatusIcon = status.icon;
+                                        return (
+                                            <div
+                                                key={submission.id}
+                                                className="flex items-start gap-3 px-4 py-3.5 transition-colors hover:bg-muted/30"
+                                            >
+                                                <div
+                                                    className={`mt-0.5 shrink-0 rounded p-1.5 ${status.iconClass}`}
+                                                >
+                                                    <StatusIcon className="h-3.5 w-3.5" />
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="truncate text-sm font-medium text-foreground">
+                                                        {
+                                                            submission.report_title
+                                                        }
+                                                    </p>
+                                                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                                                        {submission.program}
+                                                    </p>
+                                                    <p className="mt-1 text-xs text-muted-foreground/60">
+                                                        {formatDateTime(
+                                                            submission.submitted_at,
+                                                        )}
+                                                    </p>
+                                                </div>
+                                                <span
+                                                    className={`shrink-0 self-start rounded px-1.5 py-0.5 text-xs font-medium ${status.badgeClass}`}
+                                                >
+                                                    {status.label}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+
+                            <div className="border-t-2 border-border px-4 py-3">
                                 <Link
                                     href="/field-officer/my-reports-submissions"
-                                    className="flex items-center justify-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                                    className="flex items-center justify-center gap-1 text-xs text-muted-foreground hover:text-foreground"
                                 >
                                     View all submissions
-                                    <ChevronRight className="h-4 w-4" />
+                                    <ChevronRight className="h-3.5 w-3.5" />
                                 </Link>
                             </div>
                         </div>
 
                         {/* Upcoming Deadlines */}
-                        <div className="rounded-xl border bg-card">
-                            <div className="border-b p-6">
-                                <h2 className="flex items-center gap-2 text-sm font-semibold lg:text-lg">
-                                    <Calendar className="h-4 w-4 lg:h-5 lg:w-5" />
-                                    Upcoming Deadlines
-                                </h2>
-                            </div>
+                        <div className="rounded border-2 border-border bg-card">
+                            <SectionHeader
+                                title="Upcoming Deadlines"
+                                headerColor="bg-slate-600"
+                            />
 
                             {upcoming_deadlines.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-                                    <Calendar className="h-10 w-10 text-muted-foreground/30" />
-                                    <p className="text-sm text-muted-foreground">
-                                        No upcoming deadlines
+                                <div className="flex flex-col items-center justify-center gap-2 py-14 text-center">
+                                    <Calendar className="h-9 w-9 text-muted-foreground/20" />
+                                    <p className="text-xs text-muted-foreground">
+                                        No upcoming deadlines.
                                     </p>
                                 </div>
                             ) : (
-                                <div className="divide-y">
-                                    {upcoming_deadlines.map((deadline) => (
-                                        <Link
-                                            key={deadline.id}
-                                            href={`/field-officer/programs/${deadline.program_id}/reports/${deadline.id}/reports-submissions`}
-                                            className="block p-4 transition-colors hover:bg-muted/50"
-                                        >
-                                            <div className="mb-2 flex items-start justify-between">
-                                                <div>
-                                                    <p className="text-sm font-medium">
-                                                        {deadline.report}
-                                                    </p>
-                                                    <p className="mt-0.5 text-xs text-muted-foreground">
-                                                        {deadline.program}
-                                                    </p>
-                                                </div>
-                                                <span
-                                                    className={`rounded-full px-2 py-1 text-xs font-medium ${
-                                                        deadline.days_left <= 2
-                                                            ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-                                                            : deadline.days_left <=
-                                                                5
-                                                              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                                                              : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                                                    }`}
-                                                >
-                                                    {deadline.days_left} days
-                                                    left
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center justify-between text-xs">
-                                                <span className="text-muted-foreground">
-                                                    Due:{' '}
-                                                    {formatDate(
-                                                        deadline.deadline,
-                                                    )}
-                                                </span>
-                                                {deadline.has_template && (
-                                                    <span className="inline-flex items-center gap-1 text-primary">
-                                                        <Download className="h-3 w-3" />
-                                                        Template
+                                <div className="divide-y-2 divide-border">
+                                    {upcoming_deadlines.map((deadline) => {
+                                        const urgencyClass =
+                                            deadline.days_left <= 2
+                                                ? 'border border-red-300 bg-red-100 text-red-700 dark:border-red-700 dark:bg-red-900/40 dark:text-red-400'
+                                                : deadline.days_left <= 5
+                                                  ? 'border border-amber-300 bg-amber-100 text-amber-700 dark:border-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
+                                                  : 'border border-green-300 bg-green-100 text-green-700 dark:border-green-700 dark:bg-green-900/40 dark:text-green-400';
+                                        return (
+                                            <Link
+                                                key={deadline.id}
+                                                href={`/field-officer/programs/${deadline.program_id}/reports/${deadline.id}/reports-submissions`}
+                                                className="block px-4 py-3.5 transition-colors hover:bg-muted/30"
+                                            >
+                                                <div className="flex items-start justify-between gap-2">
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="truncate text-sm font-medium text-foreground">
+                                                            {deadline.report}
+                                                        </p>
+                                                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                                                            {deadline.program}
+                                                        </p>
+                                                        <div className="mt-1.5 flex items-center gap-3">
+                                                            <MetaItem
+                                                                icon={Calendar}
+                                                                label="Due"
+                                                                value={formatDate(
+                                                                    deadline.deadline,
+                                                                )}
+                                                            />
+                                                            {deadline.has_template && (
+                                                                <span className="flex items-center gap-1 text-xs font-medium text-primary">
+                                                                    <Download className="h-3 w-3" />
+                                                                    Template
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <span
+                                                        className={`shrink-0 rounded px-2 py-0.5 text-xs font-semibold ${urgencyClass}`}
+                                                    >
+                                                        {deadline.days_left}d
+                                                        left
                                                     </span>
-                                                )}
-                                            </div>
-                                        </Link>
-                                    ))}
+                                                </div>
+                                            </Link>
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>
 
                         {/* Quick Actions */}
-                        <div className="rounded-xl border bg-card p-6">
-                            <h2 className="mb-4 text-sm font-semibold lg:text-lg">
-                                Quick Actions
-                            </h2>
-                            <div className="grid grid-cols-2 gap-3">
+                        <div className="rounded border-2 border-border bg-card">
+                            <SectionHeader
+                                title="Quick Actions"
+                                headerColor="bg-slate-600"
+                            />
+                            <div className="grid grid-cols-2 divide-x-2 divide-y-2 divide-border">
                                 <Link
                                     href="/field-officer/programs"
-                                    className="group flex flex-col items-center gap-2 rounded-lg border border-input p-4 transition-colors hover:bg-accent"
+                                    className="group flex flex-col items-center gap-2 px-4 py-5 transition-colors hover:bg-muted/30"
                                 >
-                                    <FolderOpen className="h-4 w-4 text-muted-foreground group-hover:text-foreground lg:h-5 lg:w-5" />
-                                    <span className="text-xs font-medium">
+                                    <FolderOpen className="h-5 w-5 text-blue-500/50 transition-colors group-hover:text-blue-500" />
+                                    <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">
                                         Programs
                                     </span>
                                 </Link>
                                 <Link
                                     href="/field-officer/my-reports-submissions"
-                                    className="group flex flex-col items-center gap-2 rounded-lg border border-input p-4 transition-colors hover:bg-accent"
+                                    className="group flex flex-col items-center gap-2 px-4 py-5 transition-colors hover:bg-muted/30"
                                 >
-                                    <FileText className="h-4 w-4 text-muted-foreground group-hover:text-foreground lg:h-5 lg:w-5" />
-                                    <span className="text-xs font-medium">
+                                    <FileText className="h-5 w-5 text-violet-500/50 transition-colors group-hover:text-violet-500" />
+                                    <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">
                                         Submissions
                                     </span>
                                 </Link>
                                 <Link
                                     href="/field-officer/notifications"
-                                    className="group flex flex-col items-center gap-2 rounded-lg border border-input p-4 transition-colors hover:bg-accent"
+                                    className="group flex flex-col items-center gap-2 px-4 py-5 transition-colors hover:bg-muted/30"
                                 >
-                                    <Bell className="h-4 w-4 text-muted-foreground group-hover:text-foreground lg:h-5 lg:w-5" />
-                                    <span className="text-xs font-medium">
-                                        Notifications
+                                    <Bell className="h-5 w-5 text-amber-500/50 transition-colors group-hover:text-amber-500" />
+                                    <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">
+                                        Alerts
                                     </span>
                                 </Link>
                                 <button
                                     onClick={() => window.print()}
-                                    className="group flex flex-col items-center gap-2 rounded-lg border border-input p-4 transition-colors hover:bg-accent"
+                                    className="group flex flex-col items-center gap-2 px-4 py-5 transition-colors hover:bg-muted/30"
                                 >
-                                    <Download className="h-4 w-4 text-muted-foreground group-hover:text-foreground lg:h-5 lg:w-5" />
-                                    <span className="text-xs font-medium">
+                                    <Download className="h-5 w-5 text-green-500/50 transition-colors group-hover:text-green-500" />
+                                    <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">
                                         Export
                                     </span>
                                 </button>

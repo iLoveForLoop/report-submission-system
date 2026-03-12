@@ -58,6 +58,82 @@ const pulseDotVariants = {
     },
 };
 
+// ── Radar Orbit ───────────────────────────────────────────────────────────────
+
+function RadarOrbit({
+    radius,
+    duration,
+    dotSize = 8,
+    dotColor = '#3b82f6',
+    ringOpacity = 0.15,
+    delay = 0,
+}: {
+    radius: number;
+    duration: number;
+    dotSize?: number;
+    dotColor?: string;
+    ringOpacity?: number;
+    delay?: number;
+}) {
+    return (
+        <div
+            className="pointer-events-none absolute left-1/2 top-1/2"
+            style={{
+                width: radius * 2,
+                height: radius * 2,
+                marginLeft: -radius,
+                marginTop: -radius,
+            }}
+        >
+            {/* Static ring */}
+            <div
+                className="absolute inset-0 rounded-full border"
+                style={{ borderColor: dotColor, opacity: ringOpacity }}
+            />
+
+            {/* Orbiting glowing dot */}
+            <motion.div
+                style={{
+                    position: 'absolute',
+                    width: dotSize,
+                    height: dotSize,
+                    borderRadius: '50%',
+                    background: dotColor,
+                    boxShadow: `0 0 ${dotSize * 2}px ${dotColor}, 0 0 ${dotSize * 4}px ${dotColor}55`,
+                    top: '50%',
+                    left: '50%',
+                    marginLeft: -dotSize / 2,
+                    marginTop: -dotSize / 2,
+                }}
+                animate={{
+                    x: [
+                        radius,
+                        radius * Math.cos(Math.PI / 2),
+                        -radius,
+                        -radius * Math.cos(Math.PI / 2),
+                        radius,
+                    ],
+                    y: [
+                        0,
+                        -radius * Math.sin(Math.PI / 2),
+                        0,
+                        radius * Math.sin(Math.PI / 2),
+                        0,
+                    ],
+                }}
+                transition={{
+                    duration,
+                    repeat: Infinity,
+                    ease: 'linear',
+                    delay,
+                }}
+            />
+        </div>
+    );
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
+
 export default function Welcome({
     department = 'DILG Region VII - Bohol',
     headline = 'Report Submission System',
@@ -151,27 +227,39 @@ export default function Welcome({
                                 </motion.div>
                             </div>
 
-                            {/* <div className="bg"></div>
-                            <div className="bg bg2"></div>
-                            <div className="bg bg3"></div> */}
-
                             {/* Logo - RIGHT SIDE */}
                             <motion.div
                                 className="order-1 flex w-full justify-center md:order-2 md:w-1/2"
                                 variants={logoVariants}
                             >
-                                <img
-                                    src="/Logo/DILG-logo.png"
-                                    alt="DILG Logo"
-                                    className="h-auto max-h-[200px] w-auto sm:max-h-[250px] md:max-h-[300px] lg:max-h-[350px] xl:max-h-[400px]"
-                                />
+                                {/* Radar wrapper — all orbits centered on the logo */}
+                                <div className="relative flex items-center justify-center">
+
+                                    {/* Orbit 1 — inner, fast, blue */}
+                                    <RadarOrbit radius={135} duration={6}  dotSize={8} dotColor="#3b82f6" ringOpacity={0.20} delay={0}   />
+                                    {/* Orbit 2 — mid, medium speed, sky blue */}
+                                    <RadarOrbit radius={175} duration={11} dotSize={6} dotColor="#38bdf8" ringOpacity={0.13} delay={1.5} />
+                                    {/* Orbit 3 — outer, slow, indigo */}
+                                    <RadarOrbit radius={215} duration={17} dotSize={5} dotColor="#6366f1" ringOpacity={0.08} delay={3.5} />
+
+                                    {/* Logo sits on top of the orbits */}
+                                    <img
+                                        src="/Logo/DILG-logo.png"
+                                        alt="DILG Logo"
+                                        className="relative z-10 h-auto max-h-[200px] w-auto sm:max-h-[250px] md:max-h-[300px] lg:max-h-[350px] xl:max-h-[400px]"
+                                    />
+                                </div>
                             </motion.div>
+
                         </div>
                     </div>
                 </motion.div>
                 <Developers />
             </motion.main>
+
+            <div className="bg"></div>
+            <div className="bg bg2"></div>
+            <div className="bg bg3"></div>
         </>
     );
 }
-

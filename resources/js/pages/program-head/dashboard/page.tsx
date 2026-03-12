@@ -163,7 +163,6 @@ function StatusBadge({
         },
     };
 
-    // Fallback handles unexpected status values from the backend
     const config = configMap[status] ?? {
         cls: 'bg-muted text-muted-foreground',
         icon: Hourglass,
@@ -205,7 +204,6 @@ function ChartCard({
 }) {
     return (
         <div className="overflow-hidden rounded border-2 border-border bg-card">
-            {/* Header bar */}
             <div className="flex items-center gap-2.5 border-b-2 border-border bg-muted/40 px-5 py-3">
                 <div className={`rounded p-1.5 ${iconClass}`}>
                     <Icon className="h-4 w-4" />
@@ -228,6 +226,39 @@ function ChartCard({
                     {totalValue}
                 </span>
             </div>
+        </div>
+    );
+}
+
+// ─── Section Header ───────────────────────────────────────────────────────────
+
+function SectionHeader({
+    title,
+    subtitle,
+    icon: Icon,
+    headerColor = 'bg-blue-500',
+    action,
+}: {
+    title: string;
+    subtitle?: string;
+    icon: React.ElementType;
+    headerColor?: string;
+    action?: React.ReactNode;
+}) {
+    return (
+        <div
+            className={`flex items-center justify-between border-b-2 border-border px-5 py-3 ${headerColor}`}
+        >
+            <div className="flex items-center gap-2.5">
+                <Icon className="h-4 w-4 text-white" />
+                <div>
+                    <p className="text-sm font-semibold text-white">{title}</p>
+                    {subtitle && (
+                        <p className="text-xs text-white/70">{subtitle}</p>
+                    )}
+                </div>
+            </div>
+            {action}
         </div>
     );
 }
@@ -286,17 +317,14 @@ export default function Dashboard() {
             icon: FileText,
             accent: 'border-l-blue-500',
             valueColor: 'text-blue-600 dark:text-blue-400',
-            iconClass:
-                'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400',
         },
         {
             title: 'Active Officers',
             value: active_officers,
-            sub: 'Across 2 clusters',
+            sub: 'Across clusters',
             icon: Users,
             accent: 'border-l-slate-500',
             valueColor: 'text-foreground',
-            iconClass: 'bg-muted text-muted-foreground',
         },
         {
             title: 'Approved Reports',
@@ -308,8 +336,6 @@ export default function Dashboard() {
             icon: CheckCircle2,
             accent: 'border-l-green-500',
             valueColor: 'text-green-600 dark:text-green-400',
-            iconClass:
-                'bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-400',
         },
         {
             title: 'Pending Review',
@@ -318,8 +344,6 @@ export default function Dashboard() {
             icon: Clock,
             accent: 'border-l-amber-500',
             valueColor: 'text-amber-600 dark:text-amber-400',
-            iconClass:
-                'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400',
         },
     ];
 
@@ -328,37 +352,46 @@ export default function Dashboard() {
             <Head title="Program Head Dashboard" />
 
             <div className="flex-1 space-y-6 bg-background p-6 md:p-8">
-                {/* ── Page Header ── */}
-                <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <div className="flex items-center gap-2.5">
-
-                            <h1 className="text-xl font-bold tracking-tight text-foreground">
-                                Program Head Dashboard
-                            </h1>
+                {/* ── System Header (traffic lights) ───────────────────── */}
+                <div className="border border-border bg-card">
+                    <div className="flex items-center gap-3 border-b border-border/50 bg-muted/30 px-5 py-2">
+                        <div className="flex items-center gap-1.5">
+                            <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
+                            <span className="h-2.5 w-2.5 rounded-full bg-amber-500/70" />
+                            <span className="h-2.5 w-2.5 rounded-full bg-black/70" />
                         </div>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                            Overview of submissions, officers, and program
-                            performance
-                        </p>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        {/* Month filter */}
-                        <div className="flex items-center gap-2 rounded bg-card px-3 py-1.5">
-                            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                            <MonthFilter
-                                value={selectedMonth}
-                                onChange={handleMonthChange}
-                            />
-                            {loadingCharts && (
-                                <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                            )}
+                    <div className="px-5 py-5">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <h1 className="text-xl font-bold tracking-tight text-foreground">
+                                    Program Head Dashboard
+                                </h1>
+                                <p className="mt-0.5 text-sm text-muted-foreground">
+                                    Overview of submissions, officers, and
+                                    program performance
+                                </p>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                {/* Month filter */}
+                                <div className="flex items-center gap-2 bg-card px-3 py-1.5">
+                                    <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                                    <MonthFilter
+                                        value={selectedMonth}
+                                        onChange={handleMonthChange}
+                                    />
+                                    {loadingCharts && (
+                                        <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                                    )}
+                                </div>
+                                <button className="flex items-center gap-1.5 rounded border-2 border-primary bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90">
+                                    <Download className="h-3.5 w-3.5" />
+                                    Export
+                                </button>
+                            </div>
                         </div>
-                        <button className="flex items-center gap-1.5 rounded border-2 border-primary bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90">
-                            <Download className="h-3.5 w-3.5" />
-                            Export
-                        </button>
                     </div>
                 </div>
 
@@ -367,7 +400,7 @@ export default function Dashboard() {
                     {stats.map((stat, i) => (
                         <div
                             key={i}
-                            className={`flex items-center gap-4 rounded border-2 border-l-4 border-border bg-card p-4 ${stat.accent}`}
+                            className={`group flex items-center gap-4 rounded border-2 border-l-4 border-border bg-card p-4 ${stat.accent}`}
                         >
                             <div className="min-w-0 flex-1">
                                 <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
@@ -378,24 +411,21 @@ export default function Dashboard() {
                                 >
                                     {stat.value}
                                 </p>
-
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    {stat.sub}
+                                </p>
                             </div>
-                            <div
-                                className="shrink-0 rounded p-2.5"
-                            >
-                                <stat.icon className="h-6 w-6 text-gray-400" />
-                            </div>
+                            <stat.icon className="h-8 w-8 shrink-0 text-muted-foreground/40" />
                         </div>
                     ))}
                 </div>
 
                 {/* ── Charts Grid ── */}
                 <div className="grid gap-5 lg:grid-cols-2">
-                    {/* Total Submissions */}
                     <ChartCard
                         title="Total Submissions"
                         icon={FileText}
-                        iconClass=" text-blue-600  dark:text-blue-400"
+                        iconClass="text-blue-600 dark:text-blue-400"
                         description={`By cluster · ${selectedMonthLabel}`}
                         totalLabel="Total"
                         totalValue={sumField('total')}
@@ -454,11 +484,10 @@ export default function Dashboard() {
                         </ChartContainer>
                     </ChartCard>
 
-                    {/* Pending */}
                     <ChartCard
                         title="Pending Submissions"
                         icon={Hourglass}
-                        iconClass=" text-amber-600  dark:text-amber-400"
+                        iconClass="text-amber-600 dark:text-amber-400"
                         description={`By cluster · ${selectedMonthLabel}`}
                         totalLabel="Total pending"
                         totalValue={sumField('pending')}
@@ -517,11 +546,10 @@ export default function Dashboard() {
                         </ChartContainer>
                     </ChartCard>
 
-                    {/* Approved */}
                     <ChartCard
                         title="Approved Submissions"
                         icon={CheckCircle2}
-                        iconClass=" text-green-600 dark:text-green-400"
+                        iconClass="text-green-600 dark:text-green-400"
                         description={`By cluster · ${selectedMonthLabel}`}
                         totalLabel="Total approved"
                         totalValue={sumField('approved')}
@@ -580,11 +608,10 @@ export default function Dashboard() {
                         </ChartContainer>
                     </ChartCard>
 
-                    {/* Returned */}
                     <ChartCard
                         title="Returned Submissions"
                         icon={RotateCcw}
-                        iconClass=" text-red-600  dark:text-red-400"
+                        iconClass="text-red-600 dark:text-red-400"
                         description={`By cluster · ${selectedMonthLabel}`}
                         totalLabel="Total returned"
                         totalValue={sumField('rejected')}
@@ -646,25 +673,17 @@ export default function Dashboard() {
 
                 {/* ── Top Programs ── */}
                 <div className="overflow-hidden rounded border-2 border-border bg-card">
-                    {/* Header */}
-                    <div className="flex items-center gap-2.5 border-b-2 border-border bg-blue-500 px-5 py-3">
-                        <Award className="h-4 w-4 text-white" />
-                        <div>
-                            <p className="text-sm font-semibold text-white">
-                                Top Programs
-                            </p>
-                            <p className="text-xs text-blue-200">
-                                By submission volume
-                            </p>
-                        </div>
-                    </div>
+                    <SectionHeader
+                        title="Top Programs"
+                        // subtitle="By submission volume"
+                        icon={Award}
+                        headerColor="bg-blue-500"
+                    />
 
                     <div className="p-5">
                         {top_programs.length === 0 ? (
                             <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-                                <div className="rounded border-2 border-border bg-muted p-4">
-                                    <Award className="h-9 w-9 text-muted-foreground/30" />
-                                </div>
+                                <Award className="h-9 w-9 text-muted-foreground/30" />
                                 <p className="text-sm text-muted-foreground">
                                     No programs yet.
                                 </p>
@@ -677,7 +696,7 @@ export default function Dashboard() {
                                         className="rounded border-2 border-border bg-muted/30 p-4 transition-colors hover:bg-muted/50"
                                     >
                                         <div className="mb-3 flex items-center justify-between">
-                                            <div className="rounded bg-blue-50 p-2 text-blue-600  dark:text-blue-400">
+                                            <div className="rounded bg-blue-50 p-2 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400">
                                                 <FileText className="h-4 w-4" />
                                             </div>
                                             <span className="rounded bg-blue-50 px-1.5 py-0.5 text-xs font-bold text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">
@@ -701,7 +720,7 @@ export default function Dashboard() {
                                             </div>
                                             <div className="h-1.5 w-full overflow-hidden rounded-sm bg-border">
                                                 <div
-                                                    className={`h-full rounded-sm ${
+                                                    className={`h-full rounded-sm transition-all ${
                                                         program.completion ===
                                                         100
                                                             ? 'bg-green-500'
@@ -725,26 +744,22 @@ export default function Dashboard() {
 
                 {/* ── Recent Submissions ── */}
                 <div className="overflow-hidden rounded border-2 border-border bg-card">
-                    {/* Header */}
-                    <div className="flex items-center justify-between border-b-2 border-border bg-blue-500 px-5 py-3">
-                        <div className="flex items-center gap-2.5">
-                            <ClipboardList className="h-4 w-4 text-white" />
-                            <div>
-                                <p className="text-sm font-semibold text-white">
-                                    Recent Submissions
-                                </p>
-                                <p className="text-xs text-blue-200">
-                                    Latest activity from field officers
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+                    <SectionHeader
+                        title="Recent Submissions"
+                        // subtitle="Latest activity from field officers"
+                        icon={ClipboardList}
+                        headerColor="bg-blue-500"
+                        action={
+                            <button className="flex items-center gap-1 text-xs font-medium text-white/80 hover:text-white hover:underline">
+                                View all
+                                <ArrowUpRight className="h-3.5 w-3.5" />
+                            </button>
+                        }
+                    />
 
                     {recent_submissions.length === 0 ? (
                         <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-                            <div className="rounded border-2 border-border bg-muted p-4">
-                                <ClipboardList className="h-9 w-9 text-muted-foreground/30" />
-                            </div>
+                            <ClipboardList className="h-9 w-9 text-muted-foreground/30" />
                             <p className="text-sm text-muted-foreground">
                                 No submissions yet.
                             </p>
@@ -780,7 +795,7 @@ export default function Dashboard() {
                                             {/* Officer */}
                                             <td className="px-5 py-3.5">
                                                 <div className="flex items-center gap-2.5">
-                                                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-md text-black">
+                                                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-foreground">
                                                         {submission.avatar}
                                                     </div>
                                                     <span className="text-sm font-medium whitespace-nowrap text-foreground">
@@ -816,7 +831,7 @@ export default function Dashboard() {
 
                                             {/* Action */}
                                             <td className="px-5 py-3.5">
-                                                <button className="rounded border-2 border-border p-1.5 text-muted-foreground transition-colors hover:border-gray-400 hover:text-primary cursor-pointer">
+                                                <button className="cursor-pointer rounded border-2 border-border p-1.5 text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary">
                                                     <Eye className="h-3.5 w-3.5" />
                                                 </button>
                                             </td>
@@ -828,7 +843,7 @@ export default function Dashboard() {
                     )}
 
                     <div className="flex justify-center border-t-2 border-border px-5 py-3">
-                        <button className="flex items-center gap-1.5 text-xs font-sm text-primary hover:underline cursor-pointer">
+                        <button className="flex cursor-pointer items-center gap-1.5 text-xs font-medium text-primary hover:underline">
                             View All Submissions
                             <ArrowUpRight className="h-3 w-3" />
                         </button>

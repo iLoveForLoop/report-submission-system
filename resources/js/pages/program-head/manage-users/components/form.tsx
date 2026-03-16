@@ -25,6 +25,7 @@ export default function UserForm({ setOpen }: Props) {
     const roles = [
         { value: 'field_officer', label: 'Field Officer' },
         { value: 'focal_person', label: 'Focal Person' },
+
     ];
 
     const genders = [
@@ -260,6 +261,9 @@ export default function UserForm({ setOpen }: Props) {
                                         <SelectItem value={"D'ONE"}>
                                             D'ONE
                                         </SelectItem>
+                                        {/* <SelectItem value={"Provincial"}>
+                                            Provincial
+                                        </SelectItem> */}
                                     </SelectContent>
                                 </Select>
                             </div>

@@ -19,7 +19,7 @@ export default function UserProfile({user}:pageProps) {
     return (
         <div className=''>
             <div className=''>
-                <div className='cover-container h-[60vh] rounded-md relative border p-6 '>
+                <div className='cover-container h-[60vh] rounded-md relative border p-6 z-100 '>
                     <div className='flex items-center justify-between'>
                         <Link
                             href={'/program-head/manage-users'}

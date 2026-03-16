@@ -14,7 +14,7 @@ import {
     Upload,
     User,
 } from 'lucide-react';
-import { useState } from 'react';  // Only import useState
+import { useState } from 'react';
 import EditReportSubmissionDialog from './components/edit-report-submission-dialog';
 import EmptyReportSubmission from './components/empty-submission';
 import ReportSubmissionDialog from './components/report-submission-dialog';
@@ -25,26 +25,26 @@ const STATUS_MAP = {
         text: 'Submitted',
         textColor: 'text-emerald-600 dark:text-emerald-400',
         borderColor: 'border-emerald-500',
-        bgColor: 'bg-emerald-500/10',
+        bgColor: 'bg-emerald-500/10 dark:bg-emerald-500/20',
         icon: CheckCircle2,
     },
     returned: {
         text: 'Returned',
         textColor: 'text-red-600 dark:text-red-400',
         borderColor: 'border-red-500',
-        bgColor: 'bg-red-500/10',
+        bgColor: 'bg-red-500/10 dark:bg-red-500/20',
         icon: AlertCircle,
     },
     accepted: {
         text: 'Accepted',
         textColor: 'text-blue-600 dark:text-blue-400',
         borderColor: 'border-blue-500',
-        bgColor: 'bg-blue-500/10',
+        bgColor: 'bg-blue-500/10 dark:bg-blue-500/20',
         icon: CheckCircle2,
     }
 };
 
-export default function page() {
+export default function Page() {
     const [submitOpen, setSubmitOpen] = useState<boolean>(false);
     const [editOpen, setEditOpen] = useState<boolean>(false);
 
@@ -75,7 +75,7 @@ export default function page() {
         text: 'Unknown',
         textColor: 'text-gray-600 dark:text-gray-400',
         borderColor: 'border-gray-500',
-        bgColor: 'bg-gray-500/10',
+        bgColor: 'bg-gray-500/10 dark:bg-gray-500/20',
         icon: AlertCircle,
     };
 
@@ -106,20 +106,20 @@ export default function page() {
 
                     {/* Title and Deadline Card */}
                     <div className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-background via-background to-muted/20 p-8 shadow-sm">
-                        <div className="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-primary/5 blur-3xl" />
-                        <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-primary/5 blur-3xl" />
+                        <div className="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-primary/5 blur-3xl dark:bg-primary/10" />
+                        <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-primary/5 blur-3xl dark:bg-primary/10" />
 
                         <div className="relative gap-6 lg:flex lg:items-start lg:justify-between">
                             <div className="flex-1">
-                                <h1 className="mb-3 text-lg font-bold tracking-tight lg:text-3xl">
+                                <h1 className="mb-3 text-lg font-bold tracking-tight lg:text-3xl text-foreground dark:text-white">
                                     {report.title}
                                 </h1>
-                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <FileText className="h-4 w-4" />
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-gray-400">
+                                    <FileText className="h-4 w-4 dark:text-gray-500" />
                                     <span>Report Submission</span>
                                     {hasSubmitted && (
                                         <>
-                                            <span className="mx-2">•</span>
+                                            <span className="mx-2 dark:text-gray-600">•</span>
                                             <div className="flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400">
                                                 <CheckCircle2 className="h-4 w-4" />
                                                 <span>Submitted</span>
@@ -133,19 +133,19 @@ export default function page() {
                             <div
                                 className={`mt-5 inline-flex items-center gap-3 rounded-xl px-3 py-2 shadow-sm transition-all lg:mt-0 lg:px-5 lg:py-3 ${
                                     isOverdue
-                                        ? 'border-2 border-destructive/30 bg-destructive/10 text-destructive shadow-destructive/10'
+                                        ? 'border-2 border-destructive/30 bg-destructive/10 text-destructive shadow-destructive/10 dark:border-red-800 dark:bg-red-950/30 dark:text-red-400'
                                         : daysUntilDeadline <= 3
-                                          ? 'border-2 border-amber-500/30 bg-amber-500/10 text-amber-700 shadow-amber-500/10 dark:text-amber-400'
-                                          : 'border-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-emerald-500/10 dark:text-emerald-400'
+                                          ? 'border-2 border-amber-500/30 bg-amber-500/10 text-amber-700 shadow-amber-500/10 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-400'
+                                          : 'border-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-700 shadow-emerald-500/10 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400'
                                 }`}
                             >
                                 <div
                                     className={`rounded-full p-2 ${
                                         isOverdue
-                                            ? 'bg-destructive/20'
+                                            ? 'bg-destructive/20 dark:bg-red-900/50'
                                             : daysUntilDeadline <= 3
-                                              ? 'bg-amber-500/20'
-                                              : 'bg-emerald-500/20'
+                                              ? 'bg-amber-500/20 dark:bg-amber-900/50'
+                                              : 'bg-emerald-500/20 dark:bg-emerald-900/50'
                                     }`}
                                 >
                                     {isOverdue ? (
@@ -156,7 +156,7 @@ export default function page() {
                                 </div>
 
                                 <div className="flex flex-col leading-tight">
-                                    <span className="text-xs font-medium opacity-80">
+                                    <span className="text-xs font-medium opacity-80 dark:opacity-70">
                                         {isOverdue
                                             ? 'Overdue'
                                             : isToday
@@ -164,7 +164,7 @@ export default function page() {
                                               : 'Deadline'}
                                     </span>
 
-                                    <span className="text-xs font-bold lg:text-sm">
+                                    <span className="text-xs font-bold lg:text-sm dark:text-inherit">
                                         {deadlineDate.toLocaleDateString(
                                             'en-US',
                                             {
@@ -176,7 +176,7 @@ export default function page() {
 
                                         {!isOverdue &&
                                             daysUntilDeadline <= 3 && (
-                                                <span className="ml-1.5 text-xs font-medium opacity-80">
+                                                <span className="ml-1.5 text-xs font-medium opacity-80 dark:opacity-70">
                                                     ({daysUntilDeadline}d left)
                                                 </span>
                                             )}
@@ -202,7 +202,7 @@ export default function page() {
                 {reportSubmission && (
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-semibold text-foreground/90">
+                            <h2 className="text-lg font-semibold text-foreground/90 dark:text-white">
                                 Your Submission
                             </h2>
                             <div
@@ -216,32 +216,34 @@ export default function page() {
                             </div>
                         </div>
 
-                        <div className={`group relative overflow-hidden rounded-2xl border-2 bg-card shadow-md transition-all duration-300 hover:shadow-lg
-${
-                                reportSubmission?.status === 'returned' ? 'border-red-500 bg-red-50':
-                                reportSubmission?.status === 'accepted' ? 'border-blue-500 bg-blue-50' :
-                                reportSubmission?.status === 'submitted' ? 'border-green-500 bg-green-50' : 'border-gray-300 bg-white'
-                            }
-                        `}>
+                        <div className={`group relative overflow-hidden rounded-2xl border-2 shadow-md transition-all duration-300 hover:shadow-lg dark:shadow-gray-900/50 ${
+                            reportSubmission?.status === 'returned'
+                                ? 'border-l-4 border-red-500 bg-red-50 dark:bg-red-950/20 dark:border-red-500'
+                                : reportSubmission?.status === 'accepted'
+                                    ? 'border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/20 dark:border-blue-500'
+                                    : reportSubmission?.status === 'submitted'
+                                        ? 'border-l-4 border-green-500 bg-green-50 dark:bg-green-950/20 dark:border-green-500'
+                                        : 'border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800/50'
+                            }`}>
                             {/* Decorative Background */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent" />
-                            <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent dark:from-primary/10" />
+                            <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-primary/10 blur-3xl dark:bg-primary/20" />
 
                             <div className="relative p-6">
                                 {/* Main Content */}
                                 <div className="flex items-start gap-6">
                                     {/* Icon Section */}
-                                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/25">
-                                        <FileText className="h-8 w-8 text-primary-foreground" />
+                                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/25 dark:from-primary-600 dark:to-primary-700">
+                                        <FileText className="h-8 w-8 text-primary-foreground dark:text-white" />
                                     </div>
 
                                     {/* Details Section */}
                                     <div className="flex-1 space-y-4">
                                         <div>
-                                            <h3 className="text-lg font-bold text-foreground lg:text-xl">
+                                            <h3 className="text-lg font-bold text-foreground lg:text-xl dark:text-white">
                                                 Report Submitted
                                             </h3>
-                                            <p className="mt-1 text-xs text-muted-foreground lg:text-sm">
+                                            <p className="mt-1 text-xs text-muted-foreground lg:text-sm dark:text-gray-400">
                                                 Your report has been
                                                 successfully submitted and is
                                                 under review
@@ -251,15 +253,15 @@ ${
                                         {/* Info Grid */}
                                         <div className="grid gap-4 sm:grid-cols-2">
                                             {/* Submitted By */}
-                                            <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm">
-                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                                                    <User className="h-5 w-5 text-primary" />
+                                            <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/50">
+                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 dark:bg-primary-900/50">
+                                                    <User className="h-5 w-5 text-primary dark:text-primary-400" />
                                                 </div>
                                                 <div className="flex flex-col gap-1">
-                                                    <span className="text-xs font-medium text-muted-foreground">
+                                                    <span className="text-xs font-medium text-muted-foreground dark:text-gray-400">
                                                         Submitted By
                                                     </span>
-                                                    <span className="text-sm font-semibold text-foreground lg:text-base">
+                                                    <span className="text-sm font-semibold text-foreground lg:text-base dark:text-white">
                                                         {reportSubmission
                                                             ?.field_officer
                                                             ?.name || 'N/A'}
@@ -268,15 +270,15 @@ ${
                                             </div>
 
                                             {/* Submission Date */}
-                                            <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm">
-                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                                                    <Calendar className="h-5 w-5 text-primary" />
+                                            <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/50">
+                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 dark:bg-primary-900/50">
+                                                    <Calendar className="h-5 w-5 text-primary dark:text-primary-400" />
                                                 </div>
                                                 <div className="flex flex-col gap-1">
-                                                    <span className="text-xs font-medium text-muted-foreground">
+                                                    <span className="text-xs font-medium text-muted-foreground dark:text-gray-400">
                                                         Submission Date
                                                     </span>
-                                                    <span className="text-sm font-semibold text-foreground lg:text-base">
+                                                    <span className="text-sm font-semibold text-foreground lg:text-base dark:text-white">
                                                         {reportSubmission?.created_at
                                                             ? new Date(
                                                                     reportSubmission.created_at,
@@ -294,15 +296,15 @@ ${
                                             </div>
 
                                             {reportSubmission?.status === 'returned' && (
-                                                <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm">
-                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                                                        <MessageSquare className="h-5 w-5 text-primary" />
+                                                <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/50 sm:col-span-2">
+                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 dark:bg-primary-900/50">
+                                                        <MessageSquare className="h-5 w-5 text-primary dark:text-primary-400" />
                                                     </div>
-                                                    <div className="flex flex-col gap-1">
-                                                        <span className="text-xs font-medium text-muted-foreground">
+                                                    <div className="flex flex-col gap-1 flex-1">
+                                                        <span className="text-xs font-medium text-muted-foreground dark:text-gray-400">
                                                             Remarks
                                                         </span>
-                                                        <span className="text-sm font-semibold text-foreground lg:text-base">
+                                                        <span className="text-sm font-semibold text-foreground lg:text-base dark:text-white">
                                                             {reportSubmission.remarks}
                                                         </span>
                                                     </div>
@@ -313,9 +315,9 @@ ${
                                 </div>
 
                                 {/* Footer Actions */}
-                                <div className="mt-6 flex items-center justify-between border-t pt-4">
-                                    <div className="flex items-center gap-2 text-xs text-muted-foreground lg:text-sm">
-                                        <Upload className="h-4 w-4" />
+                                <div className="mt-6 flex items-center justify-between border-t pt-4 dark:border-gray-700">
+                                    <div className="flex items-center gap-2 text-xs text-muted-foreground lg:text-sm dark:text-gray-400">
+                                        <Upload className="h-4 w-4 dark:text-gray-500" />
                                         <span>
                                             Uploaded{' '}
                                             {reportSubmission?.created_at

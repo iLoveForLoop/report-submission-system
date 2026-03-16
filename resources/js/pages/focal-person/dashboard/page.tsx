@@ -1,6 +1,6 @@
 // focal-person/dashboard/page.tsx
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { Auth, type BreadcrumbItem } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
     AlertCircle,
@@ -69,6 +69,7 @@ interface AssignedProgram {
 }
 
 interface DashboardProps {
+    auth: Auth,
     pending_count: number;
     approved_today: number;
     approved_this_week: number;
@@ -187,6 +188,7 @@ function MetaItem({
 
 export default function Dashboard() {
     const {
+        auth,
         pending_count,
         approved_this_week,
         returned_count,
@@ -251,8 +253,8 @@ export default function Dashboard() {
                     <div className="px-5 py-5">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h1 className="text-xl font-bold tracking-tight text-foreground">
-                                    Focal Person Dashboard
+                                <h1 className="text-xl font-md tracking-tight text-foreground">
+                                    Welcome, <span className='font-bold'>{auth.user.name}</span>
                                 </h1>
                                 <div className="mt-1 flex flex-wrap items-center gap-3 text-muted-foreground">
                                     <p className="text-sm text-muted-foreground">

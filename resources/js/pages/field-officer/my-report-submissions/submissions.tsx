@@ -1,4 +1,3 @@
-// submissions.tsx
 import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewController';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Pagination } from '@/components/ui/pagination';
@@ -43,8 +42,6 @@ export default function Submissions({
                 <p className="max-w-md text-sm text-muted-foreground lg:text-base">
                     You haven't submitted any reports yet. Your submissions will
                     appear here once you start submitting reports.
-
-
                 </p>
             </div>
         );
@@ -78,8 +75,9 @@ export default function Submissions({
                 return {
                     icon: CheckCircle,
                     color: 'text-chart-2',
-                    bgColor: 'bg-chart-2/10',
-                    borderColor: 'border-chart-2/20',
+                    bgColor: 'bg-green-500/10',
+                    borderColor: 'border-green-500',
+                    leftBorderColor: 'border-l-green-500',
                     label: 'Submitted',
                 };
             case 'pending':
@@ -87,7 +85,8 @@ export default function Submissions({
                     icon: Clock,
                     color: 'text-amber-500',
                     bgColor: 'bg-amber-500/10',
-                    borderColor: 'border-amber-500/20',
+                    borderColor: 'border-amber-500',
+                    leftBorderColor: 'border-l-amber-500',
                     label: 'Pending',
                 };
             case 'approved':
@@ -96,7 +95,8 @@ export default function Submissions({
                     icon: CheckCircle,
                     color: 'text-green-500',
                     bgColor: 'bg-green-500/10',
-                    borderColor: 'border-green-500/20',
+                    borderColor: 'border-green-500',
+                    leftBorderColor: 'border-l-green-500',
                     label: 'Approved',
                 };
             case 'rejected':
@@ -105,6 +105,7 @@ export default function Submissions({
                     color: 'text-destructive',
                     bgColor: 'bg-destructive/10',
                     borderColor: 'border-destructive/20',
+                    leftBorderColor: 'border-l-destructive',
                     label: 'Rejected',
                 };
             default:
@@ -113,6 +114,7 @@ export default function Submissions({
                     color: 'text-chart-4',
                     bgColor: 'bg-chart-4/10',
                     borderColor: 'border-chart-4/20',
+                    leftBorderColor: 'border-l-chart-4',
                     label: status.charAt(0).toUpperCase() + status.slice(1),
                 };
         }
@@ -126,21 +128,6 @@ export default function Submissions({
             hour12: true,
         });
     };
-
-    // Handle pagination
-    // const handlePageChange = (page: number) => {
-    //     if (
-    //         page === submissions.current_page ||
-    //         page < 1 ||
-    //         page > submissions.last_page
-    //     )
-    //         return;
-
-    //     router.get(window.location.pathname, {
-    //         page,
-    //         filter,
-    //     });
-    // };
 
     return (
         <div className="space-y-6">
@@ -202,7 +189,6 @@ export default function Submissions({
                                             {date}
                                         </p>
                                     </div>
-                                    
                                 </div>
 
                                 {/* Content based on view mode */}
@@ -218,6 +204,7 @@ export default function Submissions({
 
                                             return (
                                                 <Link
+                                                    key={submission.id}
                                                     href={ViewController.reportSubmissions(
                                                         [
                                                             submission.report!
@@ -227,17 +214,16 @@ export default function Submissions({
                                                     )}
                                                 >
                                                     <Card
-                                                        key={submission.id}
-                                                        className="group border-border/50 transition-all duration-200 hover:border-primary/20 hover:shadow-lg"
+                                                        className={`group border border-border/50 transition-all duration-200 hover:shadow-lg ${statusDetails.bgColor} ${statusDetails.leftBorderColor} border-l-4`}
                                                     >
                                                         <CardHeader className="pb-3">
                                                             <div className="flex items-start justify-between">
-                                                                <div>
+                                                                <div className='flex flex-col'>
                                                                     <div className="mb-2 flex items-center gap-2">
                                                                         <div className="rounded-md bg-primary/5 p-1.5">
                                                                             <FileText className="h-4 w-4 text-primary" />
                                                                         </div>
-                                                                        <CardTitle className="text-base font-semibold">
+                                                                        <CardTitle className="text-xs font-semibold">
                                                                             Report
                                                                             #
                                                                             {
@@ -254,7 +240,7 @@ export default function Submissions({
                                                                     </p>
                                                                 </div>
                                                                 <div
-                                                                    className={`rounded-full px-3 py-1.5 ${statusDetails.bgColor} ${statusDetails.borderColor} border`}
+                                                                    className={`rounded-full px-3 py-1.5 ${statusDetails.bgColor} border ${statusDetails.borderColor}`}
                                                                 >
                                                                     <div className="flex items-center gap-1.5">
                                                                         <StatusIcon
@@ -268,28 +254,6 @@ export default function Submissions({
                                                                             }
                                                                         </span>
                                                                     </div>
-                                                                    <CardTitle className="text-sm font-semibold lg:text-base">
-                                                                        Report #
-                                                                        {
-                                                                            submission.id
-                                                                        }
-                                                                    </CardTitle>
-                                                                </div>
-                                                            </div>
-                                                            <div
-                                                                className={`rounded-full px-3 py-1.5 ${statusDetails.bgColor} ${statusDetails.borderColor} border`}
-                                                            >
-                                                                <div className="flex items-center gap-1.5">
-                                                                    <StatusIcon
-                                                                        className={`h-2.5 w-2.5 lg:h-3.5 lg:w-3.5 ${statusDetails.color}`}
-                                                                    />
-                                                                    <span
-                                                                        className={`text-xs font-medium ${statusDetails.color}`}
-                                                                    >
-                                                                        {
-                                                                            statusDetails.label
-                                                                        }
-                                                                    </span>
                                                                 </div>
                                                             </div>
                                                         </CardHeader>
@@ -311,6 +275,7 @@ export default function Submissions({
 
                                             return (
                                                 <Link
+                                                    key={submission.id}
                                                     href={ViewController.reportSubmissions(
                                                         [
                                                             submission.report!
@@ -320,14 +285,13 @@ export default function Submissions({
                                                     )}
                                                 >
                                                     <Card
-                                                        key={submission.id}
-                                                        className="group border-border/50 transition-all duration-200 hover:border-primary/20 hover:shadow"
+                                                        className={`group border border-border/50 transition-all duration-200 hover:shadow ${statusDetails.bgColor} ${statusDetails.leftBorderColor} border-l-4`}
                                                     >
                                                         <CardContent className="p-4">
                                                             <div className="flex items-center justify-between">
                                                                 <div className="flex items-center gap-4">
-                                                                    <div className="rounded-lg bg-primary/5 p-2">
-                                                                        <FileText className="h-5 w-5 text-primary" />
+                                                                    <div className={`rounded-lg p-2 ${statusDetails.bgColor}`}>
+                                                                        <FileText className={`h-5 w-5 ${statusDetails.color}`} />
                                                                     </div>
                                                                     <div>
                                                                         <div className="mb-1 flex items-center gap-2">
@@ -339,7 +303,7 @@ export default function Submissions({
                                                                                 }
                                                                             </h3>
                                                                             <div
-                                                                                className={`rounded-full px-2 py-1 ${statusDetails.bgColor} ${statusDetails.borderColor} border`}
+                                                                                className={`rounded-full px-2 py-1 ${statusDetails.bgColor} border ${statusDetails.borderColor}`}
                                                                             >
                                                                                 <div className="flex items-center gap-1.5">
                                                                                     <StatusIcon

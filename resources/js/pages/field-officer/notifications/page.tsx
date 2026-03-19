@@ -193,8 +193,8 @@ export default function NotificationsPage() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                        <h1 className="flex items-center gap-2 text-xl font-semibold text-foreground">
-                            <BellRing className="h-5 w-5 text-primary" />
+                        <h1 className="flex gap-2 items-center text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                            <BellRing className="h-5 w-5 text-primary dark:text-primary-400" />
                             Notifications
                         </h1>
                         <p className="mt-1 text-sm text-muted-foreground">
@@ -285,7 +285,7 @@ export default function NotificationsPage() {
                             </p>
                         </div>
                     ) : (
-                        <div className="space-y-3">
+                        <div className="space-y-3 h-[48vh] overflow-y-auto pr-3">
                             {filtered.map((item) => {
                                 const theme = getNotificationTheme(item.title);
                                 const isClickable = !!item.action_url;

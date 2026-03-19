@@ -188,7 +188,7 @@ export default function PendingReportsPage() {
                     </CardContent>
                 </Card>
 
-                <div className="grid gap-3 h-[48vh] overflow-y-auto">
+                <div className="grid gap-3 h-[48vh] overflow-y-auto pr-3">
                     {filteredReports.length === 0 ? (
                         <Card className="py-8 text-center dark:border-gray-700 dark:bg-gray-800/50">
                             <CardContent>

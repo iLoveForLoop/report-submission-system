@@ -62,6 +62,8 @@ export default function ReportSubmissionDrawer({
         return 'file';
     };
 
+    console.log(submission);
+
     return (
         <>
             {/* Backdrop */}
@@ -296,6 +298,75 @@ export default function ReportSubmissionDrawer({
                                     </div>
                                 </div>
                             )}
+
+                            {/* Activity Log */}
+                            {submission.activities &&
+                                submission.activities.length > 0 && (
+                                    <div className="space-y-3">
+                                        <h3 className="flex items-center gap-2 text-base font-semibold">
+                                            <Clock className="h-5 w-5" />
+                                            Activity History (
+                                            {submission.activities.length})
+                                        </h3>
+
+                                        <div className="space-y-2">
+                                            {submission.activities.map(
+                                                (log) => (
+                                                    <div
+                                                        key={log.id}
+                                                        className="flex items-start gap-3 rounded-lg border border-border bg-muted/30 p-3"
+                                                    >
+                                                        <Avatar className="h-8 w-8 flex-shrink-0">
+                                                            <AvatarFallback className="bg-gray-400 text-xs text-white">
+                                                                {log.causer?.name
+                                                                    ?.split(' ')
+                                                                    .map(
+                                                                        (
+                                                                            n: string,
+                                                                        ) =>
+                                                                            n[0],
+                                                                    )
+                                                                    .join('')
+                                                                    .toUpperCase() ||
+                                                                    '?'}
+                                                            </AvatarFallback>
+                                                        </Avatar>
+
+                                                        <div className="flex-1 space-y-1">
+                                                            <div className="flex items-center justify-between">
+                                                                <p className="text-sm font-medium">
+                                                                    {log.causer
+                                                                        ?.name ||
+                                                                        'System'}
+                                                                </p>
+                                                                <span className="text-xs text-muted-foreground">
+                                                                    {new Date(
+                                                                        log.created_at,
+                                                                    ).toLocaleDateString(
+                                                                        'en-US',
+                                                                        {
+                                                                            month: 'short',
+                                                                            day: 'numeric',
+                                                                            year: 'numeric',
+                                                                            hour: '2-digit',
+                                                                            minute: '2-digit',
+                                                                        },
+                                                                    )}
+                                                                </span>
+                                                            </div>
+
+                                                            <p className="text-sm text-muted-foreground">
+                                                                {
+                                                                    log.description
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                ),
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                         </div>
 
                         {/* Footer Actions */}

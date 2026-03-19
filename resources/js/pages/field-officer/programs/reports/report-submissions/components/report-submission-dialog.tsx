@@ -22,7 +22,6 @@ import {
     Calendar,
     CheckCircle2,
     Clock,
-    Download,
     FileText,
     FileUp,
     Folder,
@@ -121,7 +120,7 @@ export default function ReportSubmissionDialog({
                 </Button>
             )}
 
-            <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0">
+            <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col overflow-y-auto p-0">
                 <div className="sticky top-0 z-10 border-b border-border bg-card px-6 py-4">
                     <DialogHeader>
                         <div className="flex items-start justify-between">
@@ -444,74 +443,6 @@ export default function ReportSubmissionDialog({
                                     </div>
                                 )}
                             </div>
-
-                            {/* Reference Materials Section (if available) */}
-                            {(report.references?.length > 0 ||
-                                report.templates?.length > 0) && (
-                                <div className="space-y-5">
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
-                                            <Download className="h-3.5 w-3.5 text-primary" />
-                                        </div>
-                                        <h3 className="text-sm font-semibold text-foreground">
-                                            Reference Materials
-                                        </h3>
-                                    </div>
-
-                                    <div className="rounded-xl border border-border bg-card p-5">
-                                        <div className="grid gap-4 sm:grid-cols-2">
-                                            {report.references?.length > 0 && (
-                                                <div>
-                                                    <Label className="text-xs font-medium text-muted-foreground">
-                                                        Reference Files
-                                                    </Label>
-                                                    <ul className="mt-2 space-y-2">
-                                                        {report.references.map(
-                                                            (file, i) => (
-                                                                <li
-                                                                    key={i}
-                                                                    className="flex items-center gap-2 text-sm"
-                                                                >
-                                                                    <FileText className="h-4 w-4 text-primary" />
-                                                                    <span className="flex-1 truncate text-foreground">
-                                                                        {
-                                                                            file.name
-                                                                        }
-                                                                    </span>
-                                                                </li>
-                                                            ),
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                            {report.templates?.length > 0 && (
-                                                <div>
-                                                    <Label className="text-xs font-medium text-muted-foreground">
-                                                        Template Files
-                                                    </Label>
-                                                    <ul className="mt-2 space-y-2">
-                                                        {report.templates.map(
-                                                            (file, i) => (
-                                                                <li
-                                                                    key={i}
-                                                                    className="flex items-center gap-2 text-sm"
-                                                                >
-                                                                    <FileText className="h-4 w-4 text-primary" />
-                                                                    <span className="flex-1 truncate text-foreground">
-                                                                        {
-                                                                            file.name
-                                                                        }
-                                                                    </span>
-                                                                </li>
-                                                            ),
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
 
                             {/* Error Summary */}
                             {Object.keys(errors).length > 0 && (

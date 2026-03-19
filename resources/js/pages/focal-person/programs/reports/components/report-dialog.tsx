@@ -104,7 +104,7 @@ export default function ReportDialog({
                     </Button>
                 </div>
             </DialogTrigger>
-            <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto p-0">
+            <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col overflow-y-auto p-0">
                 <div className="sticky top-0 z-10 border-b border-border bg-card px-6 py-4">
                     <DialogHeader>
                         <DialogTitle className="text-xl text-foreground">

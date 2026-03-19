@@ -41,7 +41,7 @@ const STATUS_MAP = {
         borderColor: 'border-blue-500',
         bgColor: 'bg-blue-500/10 dark:bg-blue-500/20',
         icon: CheckCircle2,
-    }
+    },
 };
 
 export default function Page() {
@@ -111,7 +111,7 @@ export default function Page() {
 
                         <div className="relative gap-6 lg:flex lg:items-start lg:justify-between">
                             <div className="flex-1">
-                                <h1 className="mb-3 text-lg font-bold tracking-tight lg:text-3xl text-foreground dark:text-white">
+                                <h1 className="mb-3 text-lg font-bold tracking-tight text-foreground lg:text-3xl dark:text-white">
                                     {report.title}
                                 </h1>
                                 <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-gray-400">
@@ -119,10 +119,14 @@ export default function Page() {
                                     <span>Report Submission</span>
                                     {hasSubmitted && (
                                         <>
-                                            <span className="mx-2 dark:text-gray-600">•</span>
-                                            <div className="flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400">
+                                            <span className="mx-2 dark:text-gray-600">
+                                                •
+                                            </span>
+                                            <div
+                                                className={`flex items-center gap-1.5 rounded p-1 font-medium ${statusInfo.textColor} ${statusInfo.bgColor} ${statusInfo.borderColor}`}
+                                            >
                                                 <CheckCircle2 className="h-4 w-4" />
-                                                <span>Submitted</span>
+                                                <span>{statusInfo.text}</span>
                                             </div>
                                         </>
                                     )}
@@ -206,25 +210,24 @@ export default function Page() {
                                 Your Submission
                             </h2>
                             <div
-                                className={`
-                                    flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium
-                                    ${statusInfo.borderColor} ${statusInfo.bgColor} ${statusInfo.textColor}
-                                `}
+                                className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium ${statusInfo.borderColor} ${statusInfo.bgColor} ${statusInfo.textColor} `}
                             >
                                 <statusInfo.icon className="h-4 w-4" />
                                 <span>{statusInfo.text}</span>
                             </div>
                         </div>
 
-                        <div className={`group relative overflow-hidden rounded-2xl border-2 shadow-md transition-all duration-300 hover:shadow-lg dark:shadow-gray-900/50 ${
-                            reportSubmission?.status === 'returned'
-                                ? 'border-l-4 border-red-500 bg-red-50 dark:bg-red-950/20 dark:border-red-500'
-                                : reportSubmission?.status === 'accepted'
-                                    ? 'border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-950/20 dark:border-blue-500'
-                                    : reportSubmission?.status === 'submitted'
-                                        ? 'border-l-4 border-green-500 bg-green-50 dark:bg-green-950/20 dark:border-green-500'
+                        <div
+                            className={`group relative overflow-hidden rounded-2xl border-2 shadow-md transition-all duration-300 hover:shadow-lg dark:shadow-gray-900/50 ${
+                                reportSubmission?.status === 'returned'
+                                    ? 'border-l-4 border-red-500 bg-red-50 dark:border-red-500 dark:bg-red-950/20'
+                                    : reportSubmission?.status === 'accepted'
+                                      ? 'border-l-4 border-blue-500 bg-blue-50 dark:border-blue-500 dark:bg-blue-950/20'
+                                      : reportSubmission?.status === 'submitted'
+                                        ? 'border-l-4 border-green-500 bg-green-50 dark:border-green-500 dark:bg-green-950/20'
                                         : 'border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800/50'
-                            }`}>
+                            }`}
+                        >
                             {/* Decorative Background */}
                             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent dark:from-primary/10" />
                             <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-primary/10 blur-3xl dark:bg-primary/20" />
@@ -233,7 +236,7 @@ export default function Page() {
                                 {/* Main Content */}
                                 <div className="flex items-start gap-6">
                                     {/* Icon Section */}
-                                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/25 dark:from-primary-600 dark:to-primary-700">
+                                    <div className="dark:from-primary-600 dark:to-primary-700 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/25">
                                         <FileText className="h-8 w-8 text-primary-foreground dark:text-white" />
                                     </div>
 
@@ -254,8 +257,8 @@ export default function Page() {
                                         <div className="grid gap-4 sm:grid-cols-2">
                                             {/* Submitted By */}
                                             <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/50">
-                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 dark:bg-primary-900/50">
-                                                    <User className="h-5 w-5 text-primary dark:text-primary-400" />
+                                                <div className="dark:bg-primary-900/50 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                                                    <User className="dark:text-primary-400 h-5 w-5 text-primary" />
                                                 </div>
                                                 <div className="flex flex-col gap-1">
                                                     <span className="text-xs font-medium text-muted-foreground dark:text-gray-400">
@@ -271,8 +274,8 @@ export default function Page() {
 
                                             {/* Submission Date */}
                                             <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/50">
-                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 dark:bg-primary-900/50">
-                                                    <Calendar className="h-5 w-5 text-primary dark:text-primary-400" />
+                                                <div className="dark:bg-primary-900/50 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                                                    <Calendar className="dark:text-primary-400 h-5 w-5 text-primary" />
                                                 </div>
                                                 <div className="flex flex-col gap-1">
                                                     <span className="text-xs font-medium text-muted-foreground dark:text-gray-400">
@@ -281,31 +284,34 @@ export default function Page() {
                                                     <span className="text-sm font-semibold text-foreground lg:text-base dark:text-white">
                                                         {reportSubmission?.created_at
                                                             ? new Date(
-                                                                    reportSubmission.created_at,
-                                                                ).toLocaleDateString(
-                                                                    'en-US',
-                                                                    {
-                                                                        month: 'long',
-                                                                        day: 'numeric',
-                                                                        year: 'numeric',
-                                                                    },
-                                                                )
+                                                                  reportSubmission.created_at,
+                                                              ).toLocaleDateString(
+                                                                  'en-US',
+                                                                  {
+                                                                      month: 'long',
+                                                                      day: 'numeric',
+                                                                      year: 'numeric',
+                                                                  },
+                                                              )
                                                             : 'N/A'}
                                                     </span>
                                                 </div>
                                             </div>
 
-                                            {reportSubmission?.status === 'returned' && (
-                                                <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/50 sm:col-span-2">
-                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 dark:bg-primary-900/50">
-                                                        <MessageSquare className="h-5 w-5 text-primary dark:text-primary-400" />
+                                            {reportSubmission?.status ===
+                                                'returned' && (
+                                                <div className="flex items-start gap-3 rounded-xl border bg-background/50 p-4 backdrop-blur-sm sm:col-span-2 dark:border-gray-700 dark:bg-gray-800/50">
+                                                    <div className="dark:bg-primary-900/50 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                                                        <MessageSquare className="dark:text-primary-400 h-5 w-5 text-primary" />
                                                     </div>
-                                                    <div className="flex flex-col gap-1 flex-1">
+                                                    <div className="flex flex-1 flex-col gap-1">
                                                         <span className="text-xs font-medium text-muted-foreground dark:text-gray-400">
                                                             Remarks
                                                         </span>
                                                         <span className="text-sm font-semibold text-foreground lg:text-base dark:text-white">
-                                                            {reportSubmission.remarks}
+                                                            {
+                                                                reportSubmission.remarks
+                                                            }
                                                         </span>
                                                     </div>
                                                 </div>
@@ -322,15 +328,15 @@ export default function Page() {
                                             Uploaded{' '}
                                             {reportSubmission?.created_at
                                                 ? new Date(
-                                                        reportSubmission.created_at,
-                                                    ).toLocaleTimeString(
-                                                        'en-US',
-                                                        {
-                                                            hour: 'numeric',
-                                                            minute: '2-digit',
-                                                            hour12: true,
-                                                        },
-                                                    )
+                                                      reportSubmission.created_at,
+                                                  ).toLocaleTimeString(
+                                                      'en-US',
+                                                      {
+                                                          hour: 'numeric',
+                                                          minute: '2-digit',
+                                                          hour12: true,
+                                                      },
+                                                  )
                                                 : ''}
                                         </span>
                                     </div>

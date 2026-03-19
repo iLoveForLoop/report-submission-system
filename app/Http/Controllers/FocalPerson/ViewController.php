@@ -32,24 +32,109 @@ class ViewController extends Controller
 
     public function programs(Request $request)
     {
-        $programs = Program::query()
-            ->where('coordinator_id', auth()->id())           // focal person owns these
+        $query = Program::query()
+            ->where('coordinator_id', auth()->id())
             ->withCount([
-                'pendingSubmissions as pending_submissions_count', // how many to review
+                'pendingSubmissions as pending_submissions_count',
             ])
-            ->with(['coordinator:id,name'])
+            ->with(['coordinator:id,name']);
+
+        // ── Search by program name ────────────────────────────────────────────
+        if ($search = $request->input('search')) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        // ── Created year ──────────────────────────────────────────────────────
+        if ($year = $request->integer('year', 0)) {
+            $query->whereYear('created_at', $year);
+        }
+
+        // ── Created month (only applied when year is also set) ────────────────
+        if ($year && $month = $request->integer('month', 0)) {
+            $query->whereMonth('created_at', $month);
+        }
+
+        // ── Has pending submissions quick toggle ──────────────────────────────
+        if ($request->boolean('pending_only')) {
+            $query->has('pendingSubmissions');
+        }
+
+        $programs = $query
             ->latest()
             ->paginate(12)
             ->withQueryString();
 
+        // Build year options from the focal person's own programs
+        $availableYears = Program::where('coordinator_id', auth()->id())
+            ->selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderByDesc('year')
+            ->pluck('year');
+
         return inertia('focal-person/programs/page', [
-            'programs' => $programs,
-            'filters'  => $request->only('year'),
+            'programs'       => $programs,
+            'available_years' => $availableYears,
+            'filters'        => $request->only(['search', 'year', 'month', 'pending_only']),
+        ]);
+    }
+
+    public function reviewQueuePage()
+    {
+        $userId     = auth()->id();
+        $programIds = $this->assignedProgramIds($userId);
+
+        $submissions = ReportSubmission::with([
+                'report.program',
+                'fieldOfficer:id,name,email,cluster',
+            ])
+            ->whereHas('report', fn ($q) =>
+                $q->whereIn('program_id', $programIds)
+            )
+            ->where('status', 'submitted')
+            ->oldest() // oldest submitted first by default
+            ->get();
+
+        $queue = $submissions->map(fn ($sub) => [
+            'id'             => $sub->id,
+            'report_id'      => $sub->report_id,
+            'report_title'   => $sub->report?->title ?? 'N/A',
+            'program_id'     => $sub->report?->program_id ?? null,
+            'program'        => $sub->report?->program?->name ?? 'N/A',
+            'officer'        => $sub->fieldOfficer?->name ?? 'N/A',
+            'officer_id'     => $sub->fieldOfficer?->id,
+            'officer_avatar' => $this->getInitials($sub->fieldOfficer?->name),
+            'cluster'        => $sub->fieldOfficer?->cluster ?? 'N/A',
+            'submitted_at'   => $sub->created_at->toISOString(),
+            'deadline'       => $sub->report?->deadline?->toDateString(),
+            'is_overdue'     => $sub->report?->deadline
+                                    ? $sub->report->deadline->isPast()
+                                    : false,
+        ])->values()->all();
+
+        // Stats for the header cards
+        $oldestDays = $submissions->isNotEmpty()
+            ? (int) now()->diffInDays($submissions->first()->created_at)
+            : 0;
+
+        $overdueCount = $submissions->filter(
+            fn ($sub) => $sub->report?->deadline?->isPast()
+        )->count();
+
+        $stats = [
+            'total'       => $submissions->count(),
+            'overdue'     => $overdueCount,
+            'oldest_days' => $oldestDays,
+        ];
+
+        return inertia('focal-person/review-queue/page', [
+            'queue' => $queue,
+            'stats' => $stats,
         ]);
     }
 
     public function reports(Program $program)
     {
+
         $reports = auth()->user()
             ->createdReports()
             ->where('program_id', $program->id)
@@ -126,9 +211,10 @@ class ViewController extends Controller
 
     public function reportSubmissions(Program $program, Report $report){
 
-        $report->load('submissions.fieldOfficer');
+        $report->load([ 'submissions.fieldOfficer', ]);
 
-        $submissions = $report->submissions()->with(['fieldOfficer:id,name,email', 'media'])->get();
+        $submissions = $report->submissions()->with(['fieldOfficer:id,name,email', 'media', 'activities.causer'])
+        ->orderBy('updated_at', 'desc')->get();
 
 
         return inertia('focal-person/programs/reports/report-submissions/page', [
@@ -160,6 +246,13 @@ class ViewController extends Controller
             'notifications' => Inertia::scroll($notifications)
         ]);
     }
+
+
+
+
+
+
+
 
 
 
@@ -196,7 +289,7 @@ class ViewController extends Controller
         return ReportSubmission::whereHas('report', fn ($q) =>
             $q->whereIn('program_id', $this->assignedProgramIds($userId))
         )
-        ->where('status', 'approved')
+        ->where('status', 'accepted')
         ->whereBetween('updated_at', [now()->startOfWeek(), now()->endOfWeek()])
         ->count();
     }

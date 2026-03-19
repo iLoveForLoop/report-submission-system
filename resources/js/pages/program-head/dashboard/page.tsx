@@ -63,7 +63,7 @@ interface TopProgram {
 }
 
 interface DashboardProps {
-    auth: Auth,
+    auth: Auth;
     total_submissions: number;
     active_officers: number;
     approved_count: number;
@@ -144,15 +144,15 @@ function MonthFilter({
 function StatusBadge({
     status,
 }: {
-    status: 'approved' | 'pending' | 'returned';
+    status: 'accepted' | 'submitted' | 'returned';
 }) {
     const configMap = {
-        approved: {
+        accepted: {
             cls: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400',
             icon: CheckCircle2,
             label: 'Approved',
         },
-        pending: {
+        submitted: {
             cls: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
             icon: Hourglass,
             label: 'Pending',
@@ -367,8 +367,11 @@ export default function Dashboard() {
                     <div className="px-5 py-5">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h1 className="text-xl font-md tracking-tight text-foreground">
-                                    Welcome, <span className='font-bold'>{auth.user.name}</span>
+                                <h1 className="font-md text-xl tracking-tight text-foreground">
+                                    Welcome,{' '}
+                                    <span className="font-bold">
+                                        {auth.user.name}
+                                    </span>
                                 </h1>
                                 <p className="mt-0.5 text-sm text-muted-foreground">
                                     Overview of submissions, officers, and

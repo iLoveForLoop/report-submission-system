@@ -117,7 +117,7 @@ export default function ReportDialog({
                 </div>
 
                 <Form
-                    {...ReportController.store.form()}
+                    {...ReportController.storeForProgramHead.form(program)}
                     onSuccess={() => {
                         setOpen(false);
                         setFields([]);

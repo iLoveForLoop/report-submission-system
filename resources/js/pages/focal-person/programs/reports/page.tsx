@@ -1,256 +1,447 @@
-import ViewController from '@/actions/App/Http/Controllers/FocalPerson/ViewController';
 import Back from '@/components/back';
+import { useViewMode } from '@/hooks/use-view-mode';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, Program, Report } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { BreadcrumbItem, Program } from '@/types';
+import { usePage } from '@inertiajs/react';
 import {
-    CheckCircle2,
-    ClipboardCheck,
-    Clock,
-    EllipsisVertical,
     FileText,
-    Folder,
-    Users,
+    Grid2x2,
+    List,
+    Search,
+    SlidersHorizontal,
+    X,
 } from 'lucide-react';
-import { Activity, useState } from 'react';
+import { useMemo, useState } from 'react';
 import EmptyReport from '../components/empty-report';
+import { ReportWithCounts } from './components/report-card-parts';
 import ReportDialog from './components/report-dialog';
+import GridView from './components/reports-grid-view';
+import ListView from './components/reports-list-view';
 
-// ── Extended Report type for this page ──────────────────────────────────────
+// ─── Constants ────────────────────────────────────────────────────────────────
 
-interface ReportWithCounts extends Report {
-    submitted_count: number; // submissions with status = 'submitted'
-    total_count: number; // total assigned field officers
-    accepted_count: number; // submissions with status = 'accepted'
-}
+const MONTH_LABELS = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+];
 
-// ── Submission Progress Chip ─────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
-interface SubmissionChipProps {
-    submitted: number;
-    total: number;
-    accepted: number;
-}
-
-function SubmissionChip({ submitted, total, accepted }: SubmissionChipProps) {
-    // Nothing assigned yet — don't show a chip
-    if (total === 0) return null;
-
-    const allDone = submitted + accepted >= total;
-    const hasPending = submitted > 0;
-    const progressPct = Math.round(((submitted + accepted) / total) * 100);
-
-    if (allDone && accepted === total) {
-        // Every submission has been accepted — fully reviewed
-        return (
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:ring-emerald-800">
-                <CheckCircle2 className="h-3 w-3" />
-                All reviewed
-            </span>
-        );
-    }
-
-    if (hasPending) {
-        // There are submissions waiting for focal person action
-        return (
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-violet-200 dark:bg-violet-950/30 dark:text-violet-400 dark:ring-violet-800">
-                <ClipboardCheck className="h-3 w-3" />
-                {submitted} to review
-            </span>
-        );
-    }
-
-    // Submissions exist but none are in "submitted" state yet
-    return (
-        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-500 ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700">
-            <Clock className="h-3 w-3" />
-            {progressPct}% submitted
-        </span>
-    );
-}
-
-// ── Progress Bar ─────────────────────────────────────────────────────────────
-
-interface ProgressBarProps {
-    submitted: number;
-    accepted: number;
-    total: number;
-}
-
-function SubmissionProgressBar({
-    submitted,
-    accepted,
-    total,
-}: ProgressBarProps) {
-    if (total === 0) return null;
-
-    const acceptedPct = Math.round((accepted / total) * 100);
-    const submittedPct = Math.round((submitted / total) * 100);
-
-    return (
-        <div className="mt-3 space-y-1">
-            {/* Bar */}
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                {/* Accepted portion — emerald */}
-                <div
-                    className="h-full rounded-full bg-emerald-400 transition-all duration-500"
-                    style={{ width: `${acceptedPct + submittedPct}%` }}
-                >
-                    {/* Submitted (not yet accepted) overlaid as violet at the leading edge */}
-                    <div
-                        className="ml-auto h-full rounded-full bg-violet-400"
-                        style={{
-                            width:
-                                acceptedPct + submittedPct > 0
-                                    ? `${Math.round((submitted / (submitted + accepted || 1)) * 100)}%`
-                                    : '0%',
-                        }}
-                    />
-                </div>
-            </div>
-
-            {/* Label */}
-            <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                <span className="flex items-center gap-1">
-                    <Users className="h-3 w-3" />
-                    {submitted + accepted} / {total} submitted
-                </span>
-                {accepted > 0 && (
-                    <span className="text-emerald-600 dark:text-emerald-400">
-                        {accepted} accepted
-                    </span>
-                )}
-            </div>
-        </div>
-    );
-}
-
-// ── Page ─────────────────────────────────────────────────────────────────────
-
-export default function CreateReport() {
-    const [open, setOpen] = useState<boolean>(false);
-
+export default function ReportsPage() {
     const { program, reports } = usePage<{
         program: Program;
         reports: ReportWithCounts[];
     }>().props;
 
+    const [open, setOpen] = useState(false);
+    const { mode: viewMode, updateMode: setViewMode } = useViewMode();
+
+    // ── Filter state ──────────────────────────────────────────────────────────
+    const [search, setSearch] = useState('');
+    const [showFilters, setShowFilters] = useState(false);
+    const [deadlineFrom, setDeadlineFrom] = useState('');
+    const [deadlineTo, setDeadlineTo] = useState('');
+    const [createdYear, setCreatedYear] = useState('');
+    const [createdMonth, setCreatedMonth] = useState('');
+
+    const yearOptions = useMemo(
+        () =>
+            [
+                ...new Set(
+                    reports.map((r) => new Date(r.created_at).getFullYear()),
+                ),
+            ].sort((a, b) => b - a),
+        [reports],
+    );
+
+    const activeFilterCount = [
+        !!deadlineFrom,
+        !!deadlineTo,
+        !!createdYear,
+        !!createdMonth,
+    ].filter(Boolean).length;
+
+    const clearFilters = () => {
+        setSearch('');
+        setDeadlineFrom('');
+        setDeadlineTo('');
+        setCreatedYear('');
+        setCreatedMonth('');
+    };
+
+    // ── Filtered reports ──────────────────────────────────────────────────────
+    const filteredReports = useMemo(() => {
+        return reports.filter((report) => {
+            if (
+                search &&
+                !report.title.toLowerCase().includes(search.toLowerCase())
+            )
+                return false;
+
+            if (
+                deadlineFrom &&
+                report.deadline &&
+                new Date(report.deadline) < new Date(deadlineFrom)
+            )
+                return false;
+
+            if (deadlineTo && report.deadline) {
+                const to = new Date(deadlineTo);
+                to.setHours(23, 59, 59, 999);
+                if (new Date(report.deadline) > to) return false;
+            }
+
+            const createdAt = new Date(report.created_at);
+            if (createdYear && createdAt.getFullYear() !== Number(createdYear))
+                return false;
+            if (createdMonth && createdAt.getMonth() !== Number(createdMonth))
+                return false;
+
+            return true;
+        });
+    }, [reports, search, deadlineFrom, deadlineTo, createdYear, createdMonth]);
+
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: `Programs/${program.name}/Reports`,
-            href: ViewController.reports(program).url,
+            href: `/focal-person/programs/${program.id}/reports`,
         },
     ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <Back link={ViewController.programs()} />
+                <Back link="/focal-person/programs" />
 
-                <div className="flex items-center justify-between">
-                    <h1 className="text-lg font-semibold lg:text-xl">
+                {/* ── Top bar ───────────────────────────────────────────────── */}
+                <div className="flex items-center justify-between gap-3">
+                    <h1 className="truncate text-lg font-semibold lg:text-xl">
                         {program.name}
                     </h1>
-                    <ReportDialog
-                        program={program}
-                        open={open}
-                        setOpen={setOpen}
-                    />
+
+                    <div className="flex flex-shrink-0 items-center gap-2">
+                        {/* View toggle — only shown when reports exist */}
+                        {reports.length > 0 && (
+                            <div className="flex items-center gap-1 rounded-lg border bg-background p-1">
+                                <button
+                                    onClick={() => setViewMode('grid')}
+                                    className={`rounded p-2 transition-colors ${
+                                        viewMode === 'grid'
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'hover:bg-muted'
+                                    }`}
+                                    title="Grid view"
+                                >
+                                    <Grid2x2 className="h-4 w-4" />
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('list')}
+                                    className={`rounded p-2 transition-colors ${
+                                        viewMode === 'list'
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'hover:bg-muted'
+                                    }`}
+                                    title="List view"
+                                >
+                                    <List className="h-4 w-4" />
+                                </button>
+                            </div>
+                        )}
+                        <ReportDialog
+                            program={program}
+                            open={open}
+                            setOpen={setOpen}
+                        />
+                    </div>
                 </div>
 
-                {/* Empty state */}
-                <Activity mode={reports.length === 0 ? 'visible' : 'hidden'}>
+                {/* ── Empty state ───────────────────────────────────────────── */}
+                {reports.length === 0 ? (
                     <EmptyReport setIsOpen={setOpen} />
-                </Activity>
+                ) : (
+                    <>
+                        {/* ── Search + filter bar ───────────────────────────── */}
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                                {/* Search */}
+                                <div className="relative flex-1">
+                                    <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <input
+                                        type="text"
+                                        value={search}
+                                        onChange={(e) =>
+                                            setSearch(e.target.value)
+                                        }
+                                        placeholder="Search report title…"
+                                        className="h-9 w-full rounded-lg border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                                    />
+                                    {search && (
+                                        <button
+                                            onClick={() => setSearch('')}
+                                            className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 text-muted-foreground hover:text-foreground"
+                                        >
+                                            <X className="h-3.5 w-3.5" />
+                                        </button>
+                                    )}
+                                </div>
 
-                <Activity mode={reports.length > 0 ? 'visible' : 'hidden'}>
-                    {/* Summary banner — only visible when submissions need review */}
-
-                    <div className="grid grid-rows-1 gap-3 lg:grid-cols-3">
-                        {reports.map((report, index) => {
-                            const hasPending = report.submitted_count > 0;
-                            const hasAny = report.total_count > 0;
-
-                            return (
-                                <Link
-                                    href={ViewController.reportSubmissions([
-                                        program,
-                                        report,
-                                    ])}
-                                    key={index}
-                                    className={`group flex flex-col rounded-xl border bg-background/50 px-4 py-3 transition-all hover:shadow-md ${
-                                        hasPending
-                                            ? 'border-violet-200 hover:border-violet-300 dark:border-violet-800'
-                                            : 'hover:border-primary/20'
+                                {/* Filter toggle */}
+                                <button
+                                    onClick={() => setShowFilters((v) => !v)}
+                                    className={`relative flex h-9 items-center gap-2 rounded-lg border px-3 text-sm transition-colors ${
+                                        showFilters
+                                            ? 'border-primary bg-primary/5 text-primary'
+                                            : 'bg-background hover:bg-muted'
                                     }`}
                                 >
-                                    {/* Top row: icon + title + actions */}
-                                    <div className="flex items-start gap-3">
-                                        {/* Folder icon — tinted violet when there's pending work */}
-                                        <div
-                                            className={`mt-0.5 rounded-md p-2 transition-colors ${
-                                                hasPending
-                                                    ? 'bg-violet-100 text-violet-600 dark:bg-violet-950/50 dark:text-violet-400'
-                                                    : 'bg-muted text-muted-foreground'
-                                            }`}
-                                        >
-                                            <Folder className="h-4 w-4" />
+                                    <SlidersHorizontal className="h-4 w-4" />
+                                    <span className="hidden sm:inline">
+                                        Filters
+                                    </span>
+                                    {activeFilterCount > 0 && (
+                                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                                            {activeFilterCount}
+                                        </span>
+                                    )}
+                                </button>
+
+                                {/* Clear all */}
+                                {(activeFilterCount > 0 || search) && (
+                                    <button
+                                        onClick={clearFilters}
+                                        className="flex h-9 items-center gap-1.5 rounded-lg border border-dashed px-3 text-xs text-muted-foreground transition-colors hover:border-rose-400 hover:text-rose-500"
+                                    >
+                                        <X className="h-3.5 w-3.5" />
+                                        Clear
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Expanded filter panel */}
+                            {showFilters && (
+                                <div className="rounded-xl border bg-card p-4">
+                                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-muted-foreground">
+                                                Deadline from
+                                            </label>
+                                            <input
+                                                type="date"
+                                                value={deadlineFrom}
+                                                onChange={(e) =>
+                                                    setDeadlineFrom(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                                            />
                                         </div>
 
-                                        <div className="flex min-w-0 flex-1 flex-col">
-                                            {/* Title + chip on same line */}
-                                            <div className="flex flex-wrap items-center gap-2">
-                                                <h2 className="truncate text-sm font-semibold text-foreground">
-                                                    {report.title}
-                                                </h2>
-                                                <SubmissionChip
-                                                    submitted={
-                                                        report.submitted_count
-                                                    }
-                                                    total={report.total_count}
-                                                    accepted={
-                                                        report.accepted_count
-                                                    }
-                                                />
-                                            </div>
-
-                                            {/* Deadline */}
-                                            <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-                                                <FileText className="h-3 w-3 shrink-0" />
-                                                Deadline:{' '}
-                                                {new Date(
-                                                    report.deadline ??
-                                                        report.created_at,
-                                                ).toLocaleDateString('en-US', {
-                                                    month: 'short',
-                                                    day: 'numeric',
-                                                    year: 'numeric',
-                                                })}
-                                            </p>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-muted-foreground">
+                                                Deadline until
+                                            </label>
+                                            <input
+                                                type="date"
+                                                value={deadlineTo}
+                                                onChange={(e) =>
+                                                    setDeadlineTo(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                                            />
                                         </div>
 
-                                        {/* Ellipsis menu */}
-                                        <button
-                                            onClick={(e) => e.preventDefault()}
-                                            className="shrink-0 rounded p-1 opacity-0 transition-all group-hover:opacity-100 hover:bg-accent"
-                                        >
-                                            <EllipsisVertical className="h-4 w-4 text-muted-foreground" />
-                                        </button>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-muted-foreground">
+                                                Created year
+                                            </label>
+                                            <select
+                                                value={createdYear}
+                                                onChange={(e) => {
+                                                    setCreatedYear(
+                                                        e.target.value,
+                                                    );
+                                                    if (!e.target.value)
+                                                        setCreatedMonth('');
+                                                }}
+                                                className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                                            >
+                                                <option value="">
+                                                    All years
+                                                </option>
+                                                {yearOptions.map((y) => (
+                                                    <option key={y} value={y}>
+                                                        {y}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-medium text-muted-foreground">
+                                                Created month
+                                            </label>
+                                            <select
+                                                value={createdMonth}
+                                                onChange={(e) =>
+                                                    setCreatedMonth(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                disabled={!createdYear}
+                                                className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                <option value="">
+                                                    All months
+                                                </option>
+                                                {MONTH_LABELS.map(
+                                                    (label, i) => (
+                                                        <option
+                                                            key={i}
+                                                            value={i}
+                                                        >
+                                                            {label}
+                                                        </option>
+                                                    ),
+                                                )}
+                                            </select>
+                                        </div>
                                     </div>
 
-                                    {/* Progress bar — only when there are assigned field officers */}
-                                    {hasAny && (
-                                        <SubmissionProgressBar
-                                            submitted={report.submitted_count}
-                                            accepted={report.accepted_count}
-                                            total={report.total_count}
-                                        />
+                                    {/* Active filter chips */}
+                                    {activeFilterCount > 0 && (
+                                        <div className="mt-3 flex flex-wrap items-center gap-2 border-t pt-3">
+                                            <span className="text-xs text-muted-foreground">
+                                                Active:
+                                            </span>
+                                            {deadlineFrom && (
+                                                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                                                    From:{' '}
+                                                    {new Date(
+                                                        deadlineFrom,
+                                                    ).toLocaleDateString(
+                                                        'en-US',
+                                                        {
+                                                            month: 'short',
+                                                            day: 'numeric',
+                                                            year: 'numeric',
+                                                        },
+                                                    )}
+                                                    <button
+                                                        onClick={() =>
+                                                            setDeadlineFrom('')
+                                                        }
+                                                    >
+                                                        <X className="h-3 w-3" />
+                                                    </button>
+                                                </span>
+                                            )}
+                                            {deadlineTo && (
+                                                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                                                    Until:{' '}
+                                                    {new Date(
+                                                        deadlineTo,
+                                                    ).toLocaleDateString(
+                                                        'en-US',
+                                                        {
+                                                            month: 'short',
+                                                            day: 'numeric',
+                                                            year: 'numeric',
+                                                        },
+                                                    )}
+                                                    <button
+                                                        onClick={() =>
+                                                            setDeadlineTo('')
+                                                        }
+                                                    >
+                                                        <X className="h-3 w-3" />
+                                                    </button>
+                                                </span>
+                                            )}
+                                            {createdYear && (
+                                                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                                                    Year: {createdYear}
+                                                    <button
+                                                        onClick={() => {
+                                                            setCreatedYear('');
+                                                            setCreatedMonth('');
+                                                        }}
+                                                    >
+                                                        <X className="h-3 w-3" />
+                                                    </button>
+                                                </span>
+                                            )}
+                                            {createdMonth && (
+                                                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                                                    Month:{' '}
+                                                    {
+                                                        MONTH_LABELS[
+                                                            Number(createdMonth)
+                                                        ]
+                                                    }
+                                                    <button
+                                                        onClick={() =>
+                                                            setCreatedMonth('')
+                                                        }
+                                                    >
+                                                        <X className="h-3 w-3" />
+                                                    </button>
+                                                </span>
+                                            )}
+                                        </div>
                                     )}
-                                </Link>
-                            );
-                        })}
-                    </div>
-                </Activity>
+                                </div>
+                            )}
+
+                            {/* Result count */}
+                            <p className="text-xs text-muted-foreground">
+                                Showing{' '}
+                                <span className="font-medium text-foreground">
+                                    {filteredReports.length}
+                                </span>{' '}
+                                of {reports.length} reports
+                            </p>
+                        </div>
+
+                        {/* ── Content ───────────────────────────────────────── */}
+                        {filteredReports.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+                                <FileText className="h-10 w-10 text-muted-foreground/30" />
+                                <p className="text-sm font-medium text-muted-foreground">
+                                    No reports match the current filters
+                                </p>
+                                <button
+                                    onClick={clearFilters}
+                                    className="text-xs text-primary hover:underline"
+                                >
+                                    Clear filters
+                                </button>
+                            </div>
+                        ) : viewMode === 'grid' ? (
+                            <GridView
+                                reports={filteredReports}
+                                programId={program.id}
+                            />
+                        ) : (
+                            <ListView
+                                reports={filteredReports}
+                                programId={program.id}
+                            />
+                        )}
+                    </>
+                )}
             </div>
         </AppLayout>
     );

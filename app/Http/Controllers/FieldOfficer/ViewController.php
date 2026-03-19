@@ -187,8 +187,8 @@ class ViewController extends Controller
                 case 'accepted':
                     $query->whereIn('status', ['accepted', 'approved']);
                     break;
-                case 'rejected':
-                    $query->where('status', 'rejected');
+                case 'returned':
+                    $query->where('status', 'returned');
                     break;
             }
         }

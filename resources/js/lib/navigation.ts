@@ -6,7 +6,7 @@ import AdminDirectorNavigationPath from '@/actions/App/Http/Controllers/Admin/Vi
 
 
 import { NavItem } from '@/types';
-import { Bell, File, FileCheck, Layers, LayoutGrid, Users } from 'lucide-react';
+import { Bell, ClipboardList, File, FileCheck, Folder, Layers, LayoutGrid, Users } from 'lucide-react';
 
 export function mainNavigationPath(role: string): NavItem[] {
     switch (role) {
@@ -64,7 +64,16 @@ export function mainNavigationPath(role: string): NavItem[] {
                 {
                     title: 'Programs',
                     href: FocalPersonNavigationPath.programs().url,
-                    icon: File,
+                    icon: Folder,
+                    // badge: {
+                    //     countKey: 'pending_submissions_count', // amber — submissions to review
+                    //     variant: 'warning',
+                    // },
+                },
+                {
+                    title: 'Review Queue',
+                    href: FocalPersonNavigationPath.reviewQueuePage().url,
+                    icon: ClipboardList,
                     badge: {
                         countKey: 'pending_submissions_count', // amber — submissions to review
                         variant: 'warning',

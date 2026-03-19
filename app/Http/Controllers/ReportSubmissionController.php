@@ -202,8 +202,18 @@ class ReportSubmissionController extends Controller
 
         if ($request->file('submission_data')) {
             foreach ($request->file('submission_data') as $fieldId => $files) {
+
                 $files = is_array($files) ? $files : [$files];
-                $urls = $finalData[$fieldId] ?? [];
+
+                // 🔴 Delete all existing files for THIS field only
+                $submission->getMedia('submission_attachments')
+                    ->filter(fn($media) => $media->getCustomProperty('field_id') == $fieldId)
+                    ->each(fn($media) => $media->delete());
+
+                // Remove old URLs for this field
+                unset($finalData[$fieldId]);
+
+                $urls = [];
 
                 foreach ($files as $file) {
                     $media = $submission
@@ -242,15 +252,16 @@ class ReportSubmissionController extends Controller
         ]);
 
         // Optionally add a note about the update
-        activity()
-        ->causedBy(Auth::user())
-        ->withProperties([
-            'changes' => [
-                'description_changed' => true,
-                'files_updated' => true,
-            ]
-        ])
-        ->log('submission_updated');
+        // activity()
+        // ->causedBy(Auth::user())
+        // ->performedOn($submission)
+        // ->withProperties([
+        //     'changes' => [
+        //         'description_changed' => true,
+        //         'files_updated' => true,
+        //     ]
+        // ])
+        // ->log('submission_updated');
 
         return redirect()->back()->with('success', 'Report submission updated successfully.');
     }

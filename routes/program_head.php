@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\ProgramHead\ViewController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,8 @@ Route::middleware(['auth', 'verified', 'role:program_head'])->group(function () 
     // POST
     Route::post('/program-head/manage-users', [UserController::class, 'store'])->name('program-head.store');
     Route::post('/program-head/programs',[ProgramController::class, 'store'])->name('program-head.programs.store');
+    Route::post('/program-head/programs/{program}/report',[ReportController::class, 'storeForProgramHead'])->name('program-head.programs.reports.storeForProgramHead');
+
 
 
     // DELETE

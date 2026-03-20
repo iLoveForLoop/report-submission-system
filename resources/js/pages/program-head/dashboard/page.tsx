@@ -2,7 +2,7 @@
 // program-head/dashboard/page.tsx
 import AppLayout from '@/layouts/app-layout';
 import { Auth, type BreadcrumbItem } from '@/types';
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     ArrowUpRight,
     Award,
@@ -755,10 +755,13 @@ export default function Dashboard() {
                         icon={ClipboardList}
                         headerColor="bg-blue-500"
                         action={
-                            <button className="flex items-center gap-1 text-xs font-medium text-white/80 hover:text-white hover:underline">
+                            <Link
+                                href={'/program-head/submission-logs'}
+                                className="flex items-center gap-1 text-xs font-medium text-white/80 hover:text-white hover:underline"
+                            >
                                 View all
                                 <ArrowUpRight className="h-3.5 w-3.5" />
-                            </button>
+                            </Link>
                         }
                     />
 
@@ -848,10 +851,13 @@ export default function Dashboard() {
                     )}
 
                     <div className="flex justify-center border-t-2 border-border px-5 py-3">
-                        <button className="flex cursor-pointer items-center gap-1.5 text-xs font-medium text-primary hover:underline">
+                        <Link
+                            href={'/program-head/submission-logs'}
+                            className="flex cursor-pointer items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                        >
                             View All Submissions
                             <ArrowUpRight className="h-3 w-3" />
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>

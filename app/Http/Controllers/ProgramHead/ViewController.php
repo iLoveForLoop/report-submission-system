@@ -113,56 +113,112 @@ class ViewController extends Controller
     ]);
 }
 
-    public function manageUsers()
+    public function manageUsers(Request $request)
     {
         $users = User::query()
-        ->select([
-            'id',
-            'employee_code',
-            'first_name',
-            'middle_name',
-            'last_name',
-            'gender',
-            'department',
-            'position',
-            'cluster',
-            'birthday',
-            'email',
-            'email_verified_at',
-            'created_at',
-            'updated_at',
-        ])
-        ->with('media') // required for Spatie
-        ->latest()
-        ->paginate(10)
-        ->through(fn (User $user) => [
-            'id' => $user->id,
-            'employee_code' => $user->employee_code,
-            'name' => trim("{$user->first_name} {$user->last_name}"),
-            'first_name' => $user->first_name,
-            'middle_name' => $user->middle_name,
-            'last_name' => $user->last_name,
-            'gender' => $user->gender,
-            'department' => $user->department,
-            'position' => $user->position,
-            'cluster' => $user->cluster,
-            'birthday' => $user->birthday?->toDateString(),
-            'email' => $user->email,
-            'email_verified_at' => $user->email_verified_at,
-            'avatar_url' => $user->getFirstMediaUrl('avatar'),
-            'created_at' => $user->created_at->toISOString(),
-            'updated_at' => $user->updated_at->toISOString(),
-            'role' => $user->roles->pluck('name')->first(), // if using Spatie Roles
-        ]);
+            ->select([
+                'id',
+                'employee_code',
+                'first_name',
+                'middle_name',
+                'last_name',
+                'gender',
+                'department',
+                'position',
+                'cluster',
+                'birthday',
+                'email',
+                'email_verified_at',
+                'created_at',
+                'updated_at',
+            ])
+            ->with('media')
+            ->with('roles') // needed for role filter
 
-    return inertia('program-head/manage-users/page', [
-        'users' => $users,
-    ]);
+            // ── Search: name, email, employee_code ────────────────────────────
+            ->when($request->input('search'), function ($q, $search) {
+                $q->where(function ($inner) use ($search) {
+                    $inner->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"])
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('employee_code', 'like', "%{$search}%");
+                });
+            })
+
+            // ── Role ──────────────────────────────────────────────────────────
+            ->when($request->input('role'), function ($q, $role) {
+                $q->whereHas('roles', fn ($r) => $r->where('name', $role));
+            })
+
+            // ── Cluster ───────────────────────────────────────────────────────
+            ->when($request->input('cluster'), function ($q, $cluster) {
+                $q->where('cluster', $cluster);
+            })
+
+            // ── Department ────────────────────────────────────────────────────
+            ->when($request->input('department'), function ($q, $department) {
+                $q->where('department', $department);
+            })
+
+            // ── Position ──────────────────────────────────────────────────────
+            ->when($request->input('position'), function ($q, $position) {
+                $q->where('position', $position);
+            })
+
+            ->latest()
+            ->paginate(10)
+            ->withQueryString()
+            ->through(fn (User $user) => [
+                'id'                 => $user->id,
+                'employee_code'      => $user->employee_code,
+                'name'               => trim("{$user->first_name} {$user->last_name}"),
+                'first_name'         => $user->first_name,
+                'middle_name'        => $user->middle_name,
+                'last_name'          => $user->last_name,
+                'gender'             => $user->gender,
+                'department'         => $user->department,
+                'position'           => $user->position,
+                'cluster'            => $user->cluster,
+                'birthday'           => $user->birthday?->toDateString(),
+                'email'              => $user->email,
+                'email_verified_at'  => $user->email_verified_at,
+                'avatar_url'         => $user->getFirstMediaUrl('avatar'),
+                'created_at'         => $user->created_at->toISOString(),
+                'updated_at'         => $user->updated_at->toISOString(),
+                'role'               => $user->roles->pluck('name')->first(),
+            ]);
+
+        // Distinct values for filter dropdowns — scoped to existing data
+        $departments = User::whereNotNull('department')
+            ->distinct()
+            ->orderBy('department')
+            ->pluck('department');
+
+        $positions = User::whereNotNull('position')
+            ->distinct()
+            ->orderBy('position')
+            ->pluck('position');
+
+        return inertia('program-head/manage-users/page', [
+            'users'       => $users,
+            'departments' => $departments,
+            'positions'   => $positions,
+            'filters'     => $request->only(['search', 'role', 'cluster', 'department', 'position']),
+        ]);
     }
 
     public function viewUser(User $user){
         return inertia('program-head/manage-users/view', [
             'user' => $user,
+        ]);
+    }
+
+    public function submissionLogs() {
+
+        $reports = $this->getReports();
+
+        return inertia('provincial-director/submission-logs/page', [
+            'reports' => $reports,
+            'summary' => $this->getSummary($reports),
         ]);
     }
 
@@ -288,6 +344,95 @@ class ViewController extends Controller
         }
 
         return strtoupper(substr($name, 0, 2));
+    }
+
+    // SUBMISSION LOGS
+    private function getReports(): array
+    {
+        // All field officers — the denominator for "not submitted"
+        $allOfficers = User::role('field_officer')
+            ->select('id', 'name', 'email', 'cluster')
+            ->get();
+
+        $totalOfficers = $allOfficers->count();
+
+        return Report::with(['program', 'submissions.fieldOfficer'])
+            ->orderByDesc('deadline')
+            ->get()
+            ->map(fn ($report) => $this->formatReport($report, $allOfficers, $totalOfficers))
+            ->all();
+    }
+
+    private function formatReport(Report $report, \Illuminate\Support\Collection $allOfficers, int $totalOfficers): array
+    {
+        $submissions       = $report->submissions;
+        $submittedOfficerIds = $submissions->pluck('field_officer_id')->all();
+
+        // Officers who have NOT submitted
+        $notSubmitted = $allOfficers
+            ->whereNotIn('id', $submittedOfficerIds)
+            ->map(fn ($officer) => [
+                'id'           => $officer->id,
+                'name'         => $officer->name,
+                'email'        => $officer->email,
+                'cluster'      => $officer->cluster,
+                'submitted_at' => null,
+                'reviewed_at'  => null,
+                'status'       => 'not_submitted',
+            ])
+            ->values()
+            ->all();
+
+        $submitted = $submissions->map(function ($sub) use ($report) {
+            $isLate = $report->deadline && $sub->created_at->gt($report->deadline);
+
+            return [
+                'id'           => $sub->fieldOfficer?->id,
+                'name'         => $sub->fieldOfficer?->name ?? 'N/A',
+                'email'        => $sub->fieldOfficer?->email ?? 'N/A',
+                'cluster'      => $sub->fieldOfficer?->cluster ?? 'N/A',
+                'submitted_at' => $sub->created_at->toISOString(),
+                'reviewed_at'  => $sub->reviewed_at?->toISOString(),
+                'status'       => match ($sub->status) {
+                    'approved' => $isLate ? 'submitted_late' : 'submitted_on_time',
+                    'returned' => 'returned',
+                    default    => $isLate ? 'submitted_late' : 'pending',
+                },
+                'submission_status' => $sub->status, // raw: pending | approved | returned
+            ];
+        })->all();
+
+        $submittedCount = $submissions->count();
+        $isOverdue      = $report->deadline && now()->gt($report->deadline);
+        $reportStatus   = match (true) {
+            $submittedCount === $totalOfficers => 'completed',
+            $isOverdue                         => 'overdue',
+            default                            => 'open',
+        };
+
+        return [
+            'id'              => $report->id,
+            'title'           => $report->title,
+            'program'         => $report->program?->name ?? 'N/A',
+            'deadline'        => $report->deadline?->toDateString(),
+            'final_deadline'  => $report->final_deadline?->toDateString(),
+            'submitted_count' => $submittedCount,
+            'total_officers'  => $totalOfficers,
+            'report_status'   => $reportStatus,
+            'officers'        => array_merge($submitted, $notSubmitted),
+        ];
+    }
+
+    private function getSummary(array $reports): array
+    {
+        $statuses = collect($reports)->pluck('report_status');
+
+        return [
+            'total'     => count($reports),
+            'open'      => $statuses->filter(fn ($s) => $s === 'open')->count(),
+            'overdue'   => $statuses->filter(fn ($s) => $s === 'overdue')->count(),
+            'completed' => $statuses->filter(fn ($s) => $s === 'completed')->count(),
+        ];
     }
 
 }

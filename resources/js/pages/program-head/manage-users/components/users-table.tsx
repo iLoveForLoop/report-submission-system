@@ -59,6 +59,21 @@ export default function UsersTable({
         setSelectedUsers(newSelected);
     };
 
+    const roleFormat = (role: string) => {
+        switch (role) {
+            case 'field_officer':
+                return 'Field Officer';
+            case 'focal_person':
+                return 'Focal Person';
+            case 'program_head':
+                return 'Program Head';
+            case 'provincial_director':
+                return 'Provincial Director';
+            default:
+                'Unknown';
+        }
+    };
+
     return (
         <Table>
             <TableHeader>
@@ -125,11 +140,7 @@ export default function UsersTable({
                         <TableCell className="capitalize">
                             {user.department}
                         </TableCell>
-                        <TableCell>
-                            {user.role === 'field_officer'
-                                ? 'Field Officer'
-                                : 'Focal Person'}
-                        </TableCell>
+                        <TableCell>{roleFormat(user.role)}</TableCell>
                         <TableCell>
                             {new Date(user.created_at).toLocaleDateString(
                                 'en-US',

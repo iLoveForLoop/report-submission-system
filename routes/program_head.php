@@ -14,9 +14,11 @@ Route::middleware(['auth', 'verified', 'role:program_head'])->group(function () 
     Route::get('/program-head/manage-users',[ViewController::class, 'manageUsers'])->name('prgram-head.manage-users');
     Route::get('/program-head/manage-users/{user}', [ViewController::class, 'viewUser'])->name('program-head.manage-users.view');
     Route::get('/program-head/notifications', [ViewController::class, 'notifications'])->name('program-head.notifications');
+    Route::get('/program-head/submission-logs', [ViewController::class, 'submissionLogs'])->name('program-head.submission-logs');
 
     // POST
     Route::post('/program-head/manage-users', [UserController::class, 'store'])->name('program-head.store');
+    Route::put('/program-heade/manage-users/{user}', [UserController::class, 'update']);
     Route::post('/program-head/programs',[ProgramController::class, 'store'])->name('program-head.programs.store');
     Route::post('/program-head/programs/{program}/report',[ReportController::class, 'storeForProgramHead'])->name('program-head.programs.reports.storeForProgramHead');
 

@@ -49,7 +49,7 @@ export default function DeleteMultipleDialog({ users_id }: Props) {
                     }}
                 >
                     <div>
-                        <p className='text-sm text-center mb-1 lg:text-left'>
+                        <p className="mb-1 text-center text-sm lg:text-left">
                             Are you sure you want to delete {users_id.length}{' '}
                             {users_id.length === 1 ? 'user' : 'users'}?
                         </p>
@@ -65,7 +65,14 @@ export default function DeleteMultipleDialog({ users_id }: Props) {
                     ))}
 
                     <DialogFooter>
-                        <Button>Cancel</Button>
+                        <Button
+                            type="button"
+                            onClick={() => {
+                                setOpen(false);
+                            }}
+                        >
+                            Cancel
+                        </Button>
                         <Button variant="destructive">Delete</Button>
                     </DialogFooter>
                 </Form>

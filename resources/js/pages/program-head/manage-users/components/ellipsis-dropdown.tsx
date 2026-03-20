@@ -7,9 +7,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { User } from '@/types';
 import { Link } from '@inertiajs/react';
-import { EllipsisVertical, Eye, Trash } from 'lucide-react';
+import { EllipsisVertical, Eye, Pencil, Trash } from 'lucide-react';
+import { useState } from 'react';
+import EditUserDialog from './edit-user-dialog';
 
 export default function EllipsisDropdown({ user }: { user: User }) {
+    const [isEditOpen, setIsEditOpen] = useState(false);
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -17,31 +21,48 @@ export default function EllipsisDropdown({ user }: { user: User }) {
                     <EllipsisVertical className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
                 </button>
             </DropdownMenuTrigger>
+
             <DropdownMenuContent
                 align="end"
-                className="w-40 border shadow-lg"
+                className="w-44 rounded-xl border shadow-md"
                 sideOffset={8}
             >
-                <DropdownMenuItem>
+                {/* View */}
+                <DropdownMenuItem asChild>
                     <Link
                         href={ViewController.viewUser(user)}
-                        className="flex w-full cursor-pointer items-center justify-between gap-2 py-2.5 text-sm transition-colors hover:bg-muted focus:bg-muted"
+                        className="flex items-center gap-3"
                     >
+                        <Eye className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground" />
                         <span>View</span>
-                        <Eye className="h-4 w-4 text-muted-foreground" />
                     </Link>
                 </DropdownMenuItem>
+
+                {/* Edit */}
+                <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
+                    <div className="flex items-center gap-3">
+                        <Pencil className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground" />
+                        <span>Edit</span>
+                    </div>
+                </DropdownMenuItem>
+
+                {/* Delete */}
                 <DropdownMenuItem
-                    className="flex cursor-pointer items-center justify-between gap-2 py-2.5 text-sm text-destructive transition-colors hover:bg-destructive/10 hover:text-destructive focus:bg-destructive/10 focus:text-destructive"
-                    onClick={() => {
-                        // Add your delete handler here
-                        console.log('Delete user:', user.id);
-                    }}
+                    onClick={() => console.log('Delete user:', user.id)}
+                    className="text-destructive focus:text-destructive"
                 >
-                    <span>Delete</span>
-                    <Trash className="h-4 w-4" />
+                    <div className="flex items-center gap-3">
+                        <Trash className="h-4 w-4" />
+                        <span>Delete</span>
+                    </div>
                 </DropdownMenuItem>
             </DropdownMenuContent>
+
+            <EditUserDialog
+                openDialog={isEditOpen}
+                closeDialog={() => setIsEditOpen(false)}
+                user={user}
+            />
         </DropdownMenu>
     );
 }

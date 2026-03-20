@@ -29,7 +29,7 @@ public function store(Request $request)
         'cluster' => ['required', 'string'],
 
         // Role (Spatie Permission)
-        'role' => ['required', 'in:focal_person,field_officer'],
+        'role' => ['required', 'in:focal_person,field_officer,program_head,provincial_director'],
 
         // Account Info
         'email' => ['required', 'email', 'unique:users,email'],
@@ -61,6 +61,72 @@ public function store(Request $request)
     }
 
     return redirect()->back()->with('success', 'User created successfully.');
+}
+
+public function update(Request $request, User $user)
+{
+    $validated = $request->validate([
+        // Avatar
+        'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+
+        // Employee Info
+        'employee_code' => ['nullable', 'string', 'max:50'],
+
+        // Personal Info
+        'first_name'  => ['required', 'string', 'max:255'],
+        'middle_name' => ['nullable', 'string', 'max:255'],
+        'last_name'   => ['required', 'string', 'max:255'],
+        'gender'      => ['required', 'in:male,female'],
+        'birthday'    => ['nullable', 'date'],
+
+        // Work Info
+        'department' => ['required', 'string', 'max:255'],
+        'position'   => ['required', 'string', 'max:255'],
+        'cluster'    => ['required', 'string'],
+
+        // Role
+        'role' => ['required', 'in:focal_person,field_officer,program_head,provincial_director'],
+
+        // Account — email must be unique except for the current user
+        'email' => ['required', 'email', 'unique:users,email,' . $user->id],
+
+        // Password is optional on update — only validated when provided
+        'password' => ['nullable', 'confirmed', 'min:8'],
+    ]);
+
+    // Rebuild full name
+    $validated['name'] = trim(
+        $validated['first_name'] . ' ' .
+        ($validated['middle_name'] ? $validated['middle_name'] . ' ' : '') .
+        $validated['last_name']
+    );
+
+    // Only hash + set password when the field was actually filled
+    if (!empty($validated['password'])) {
+        $validated['password'] = bcrypt($validated['password']);
+    } else {
+        unset($validated['password']);
+        unset($validated['password_confirmation']); // never stored, but clean up
+    }
+
+    // Extract fields not going into the users table
+    $role   = $validated['role'];
+    $avatar = $request->file('avatar');
+    $userData = collect($validated)->except(['avatar', 'role'])->toArray();
+
+    // Update user record
+    $user->update($userData);
+
+    // Sync role (removes old role, assigns new one)
+    $user->syncRoles([$role]);
+
+    // Replace avatar if a new file was uploaded
+    if ($avatar) {
+        $user->clearMediaCollection('avatar');
+        $user->addMediaFromRequest('avatar')->toMediaCollection('avatar');
+    }
+
+    return redirect()->back()->with('success', 'User updated successfully.');
 }
 
 public function deleteMultipleUsers(Request $request)

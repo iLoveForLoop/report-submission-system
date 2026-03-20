@@ -69,7 +69,7 @@ interface AssignedProgram {
 }
 
 interface DashboardProps {
-    auth: Auth,
+    auth: Auth;
     pending_count: number;
     approved_today: number;
     approved_this_week: number;
@@ -253,8 +253,11 @@ export default function Dashboard() {
                     <div className="px-5 py-5">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h1 className="text-xl font-md tracking-tight text-foreground">
-                                    Welcome, <span className='font-bold'>{auth.user.name}</span>
+                                <h1 className="font-md text-xl tracking-tight text-foreground">
+                                    Welcome,{' '}
+                                    <span className="font-bold">
+                                        {auth.user.name}
+                                    </span>
                                 </h1>
                                 <div className="mt-1 flex flex-wrap items-center gap-3 text-muted-foreground">
                                     <p className="text-sm text-muted-foreground">
@@ -285,7 +288,7 @@ export default function Dashboard() {
                                     My Programs
                                 </Link>
                                 <Link
-                                    href="/focal-person/submissions?filter=pending"
+                                    href="/focal-person/review-queue"
                                     className="flex items-center gap-1.5 rounded border-2 border-primary bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                                 >
                                     <ClipboardList className="h-3.5 w-3.5" />
@@ -337,7 +340,7 @@ export default function Dashboard() {
                                 headerColor="bg-blue-500"
                                 action={{
                                     label: 'View all',
-                                    href: '/focal-person/submissions?filter=pending',
+                                    href: '/focal-person/review-queue',
                                 }}
                             />
 
@@ -583,7 +586,7 @@ export default function Dashboard() {
 
                             <div className="border-t-2 border-border px-4 py-3">
                                 <Link
-                                    href="/focal-person/submissions"
+                                    href="/focal-person/submission-logs"
                                     className="flex items-center justify-center gap-1 text-xs text-muted-foreground hover:text-foreground"
                                 >
                                     View all submissions

@@ -1,8 +1,13 @@
 // Import images using relative paths from this file
-import Ernest from '../../../../images/developers/ernest.jpg';
+// import Ernest from '../../../../images/developers/ernest.jpg';
 import Jeric from '../../../../images/developers/jeric.jpg';
+import Jacob from '../../../../images/developers/jacob.jpg';
+import Victor from '../../../..//images/developers/victor.jpg';
+import Jeferson from '../../../../images/developers/jeferson.jpg';
+import Benjie from '../../../../images/developers/benjie.jpg';
+import Bruce from '../../../../images/developers/bruce.jpg';
 import MDC_LOGO from '../../../../images/developers/MDC_LOGO.png';
-
+import Cdu from '../../../../images/developers/cdu.jpg';
 // Types
 export interface Developer {
     name: string;
@@ -28,8 +33,8 @@ export interface Adviser {
 // Adviser data
 export const adviserData: Adviser = {
     name: 'Benjie A. Lenteria',
-    image: Ernest,
-    email: 'balenteria@materdeicollege.edu.ph',
+    image: Benjie,
+    email: 'hawkmanlentrix@gmail.com',
     role: 'Adviser',
     department: 'IT Department',
     bio: 'IT Department Adviser at Mater Dei College with expertise in software development and project management.',
@@ -45,7 +50,7 @@ export const adviserData: Adviser = {
 export const developersData: Developer[] = [
     {
         name: 'Ernesto Cabarrubias Jr.',
-        image: Ernest,
+        image: Cdu,
         email: 'ernestojrcabarrubias@gmail.com',
         github: 'https://github.com/Cduken',
         bio: 'Full-stack developer with expertise in React, TypeScript, and cloud technologies.',
@@ -59,7 +64,7 @@ export const developersData: Developer[] = [
     },
     {
         name: 'Jeferson Bayking',
-        image: Ernest,
+        image: Jeferson,
         email: 'jefersonbayking@example.com',
         github: 'https://github.com/iLoveForLoop',
         bio: 'Frontend specialist with focus on user experience and modern web technologies.',
@@ -92,7 +97,7 @@ export const developersData: Developer[] = [
     },
     {
         name: 'Jose Victor Alampayan',
-        image: Ernest,
+        image: Victor,
         email: 'josevictoralampayan@example.com',
         github: 'https://github.com/josevictoralampayan',
         bio: 'Versatile developer experienced in both frontend and backend technologies.',
@@ -106,7 +111,7 @@ export const developersData: Developer[] = [
     },
     {
         name: 'Paul Jacob Tocmo',
-        image: Ernest,
+        image: Jacob,
         email: 'pauljacobtocmo@example.com',
         github: 'https://github.com/Jacodesit',
         bio: 'UI/UX focused developer with attention to detail and responsive design.',
@@ -119,7 +124,7 @@ export const developersData: Developer[] = [
     },
     {
         name: 'Bruce Unabia',
-        image: Ernest,
+        image: Bruce,
         email: 'bruceunabia@example.com',
         github: 'https://github.com/bruceunabia',
         bio: 'QA specialist ensuring software quality through rigorous testing and validation.',

@@ -85,7 +85,7 @@ class ViewController extends Controller
 
         $submissions = ReportSubmission::with([
                 'report.program',
-                'fieldOfficer:id,name,email,cluster',
+                'fieldOfficer:id,name,first_name,last_name,email,cluster',
             ])
             ->whereHas('report', fn ($q) =>
                 $q->whereIn('program_id', $programIds)
@@ -100,7 +100,7 @@ class ViewController extends Controller
             'report_title'   => $sub->report?->title ?? 'N/A',
             'program_id'     => $sub->report?->program_id ?? null,
             'program'        => $sub->report?->program?->name ?? 'N/A',
-            'officer'        => $sub->fieldOfficer?->name ?? 'N/A',
+            'officer'        => $sub->fieldOfficer?->name ? $sub->fieldOfficer->first_name . ' ' . $sub->fieldOfficer->last_name : 'N/A',
             'officer_id'     => $sub->fieldOfficer?->id,
             'officer_avatar' => $this->getInitials($sub->fieldOfficer?->name),
             'cluster'        => $sub->fieldOfficer?->cluster ?? 'N/A',
@@ -213,7 +213,7 @@ class ViewController extends Controller
 
         $report->load([ 'submissions.fieldOfficer', ]);
 
-        $submissions = $report->submissions()->with(['fieldOfficer:id,name,email', 'media', 'activities.causer'])
+        $submissions = $report->submissions()->with(['fieldOfficer:id,name,first_name,last_name,email', 'media', 'activities.causer'])
         ->orderBy('updated_at', 'desc')->get();
 
 

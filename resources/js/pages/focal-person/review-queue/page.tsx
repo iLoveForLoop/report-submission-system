@@ -19,10 +19,8 @@ import {
     FileSearch,
     Search,
     TimerReset,
-    User,
     Users,
 } from 'lucide-react';
-import { P } from 'node_modules/framer-motion/dist/types.d-DagZKalS';
 import { useMemo, useState } from 'react';
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -35,7 +33,7 @@ interface ReviewQueueItem {
     program: string;
     officer: string;
     officer_id: number;
-    officer_avatar: string; // initials
+    officer_avatar: string;
     cluster: string;
     submitted_at: string;
     deadline: string | null;
@@ -47,8 +45,6 @@ interface QueueStats {
     overdue: number;
     oldest_days: number;
 }
-
-// ── Breadcrumbs ──────────────────────────────────────────────────────────────
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/focal-person/dashboard' },
@@ -139,10 +135,9 @@ function StatCard({ label, value, icon, variant = 'default' }: StatCardProps) {
     );
 }
 
-// ── Avatar Initials ───────────────────────────────────────────────────────────
+// ── Avatar ────────────────────────────────────────────────────────────────────
 
 function Avatar({ initials, cluster }: { initials: string; cluster: string }) {
-    // Different color per cluster
     const colors: Record<string, string> = {
         'M&M': 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300',
         "D'ONE":
@@ -154,7 +149,7 @@ function Avatar({ initials, cluster }: { initials: string; cluster: string }) {
 
     return (
         <div
-            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold ${color}`}
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold ${color}`}
         >
             {initials}
         </div>
@@ -171,7 +166,6 @@ function UrgencyBadge({
     isOverdue: boolean;
 }) {
     if (!deadline) return null;
-
     const days = daysUntil(deadline);
 
     if (isOverdue || (days !== null && days < 0)) {
@@ -198,7 +192,7 @@ function UrgencyBadge({
     );
 }
 
-// ── Waiting Badge (how long the submission has been sitting) ──────────────────
+// ── Waiting Badge ─────────────────────────────────────────────────────────────
 
 function WaitingBadge({ submittedAt }: { submittedAt: string }) {
     const days = daysSince(submittedAt);
@@ -220,10 +214,120 @@ function WaitingBadge({ submittedAt }: { submittedAt: string }) {
         );
     }
     return (
-        <span className="inline-flex items-center gap-1 rounded-md bg-violet-50 px-2 py-1 text-[10px] font-medium text-green-600 ring-1 ring-green-200 dark:bg-green-950/20 dark:text-green-400 dark:ring-green-800">
+        <span className="inline-flex items-center gap-1 rounded-md bg-green-50 px-2 py-1 text-[10px] font-medium text-green-600 ring-1 ring-green-200 dark:bg-green-950/20 dark:text-green-400 dark:ring-green-800">
             <ClipboardCheck className="h-3 w-3" />
             New
         </span>
+    );
+}
+
+// ── Queue Card ────────────────────────────────────────────────────────────────
+
+function QueueCard({ item }: { item: ReviewQueueItem }) {
+    return (
+        <Card
+            className={`group relative overflow-hidden transition-all hover:shadow-md ${
+                item.is_overdue
+                    ? 'border-l-4 border-l-red-500 bg-red-50/50 dark:bg-red-950/10'
+                    : 'border-l-4 border-l-amber-400 bg-amber-50/50 dark:bg-amber-950/10'
+            }`}
+        >
+            <CardContent className="p-4 sm:p-5">
+                {/* Top row: avatar + info + badges */}
+                <div className="flex items-start justify-between gap-3">
+                    {/* Left: avatar + officer + report */}
+                    <div className="flex min-w-0 items-start gap-3">
+                        <div className="relative mt-0.5 shrink-0">
+                            <Avatar
+                                initials={item.officer_avatar}
+                                cluster={item.cluster}
+                            />
+                            {item.is_overdue && (
+                                <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
+                                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-destructive" />
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="min-w-0">
+                            {/* Officer name + cluster */}
+                            <div className="flex flex-wrap items-center gap-1.5">
+                                <span className="text-sm font-bold text-foreground">
+                                    {item.officer}
+                                </span>
+                                {item.cluster && item.cluster !== 'N/A' && (
+                                    <span className="inline-flex items-center rounded bg-secondary px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-secondary-foreground uppercase">
+                                        {item.cluster}
+                                    </span>
+                                )}
+                            </div>
+                            {/* Report title */}
+                            <p className="mt-0.5 text-sm leading-snug font-semibold text-foreground transition-colors group-hover:text-primary">
+                                {item.report_title}
+                            </p>
+                            {/* Program */}
+                            <p className="mt-0.5 text-xs text-muted-foreground/80">
+                                {item.program}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Right: status badges */}
+                    <div className="flex shrink-0 flex-col items-end gap-1.5">
+                        <WaitingBadge submittedAt={item.submitted_at} />
+                        <UrgencyBadge
+                            deadline={item.deadline}
+                            isOverdue={item.is_overdue}
+                        />
+                    </div>
+                </div>
+
+                {/* Divider + meta row + CTA — always visible */}
+                <div className="mt-4 flex flex-col gap-3 border-t border-border/40 pt-3 sm:flex-row sm:items-center sm:justify-between">
+                    {/* Meta info */}
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-medium text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                            <Clock3 className="h-3 w-3" />
+                            {formatRelative(item.submitted_at)}
+                            <span className="opacity-60">
+                                ({formatDate(item.submitted_at)})
+                            </span>
+                        </span>
+
+                        {item.deadline && (
+                            <>
+                                <span className="hidden text-border sm:block">
+                                    ·
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <CalendarClock className="h-3 w-3 text-amber-500" />
+                                    Due {formatDate(item.deadline)}
+                                </span>
+                            </>
+                        )}
+
+                        <span className="hidden text-border sm:block">·</span>
+                        <span className="flex items-center gap-1">
+                            <Users className="h-3 w-3" />
+                            {item.cluster !== 'N/A' ? item.cluster : 'General'}
+                        </span>
+                    </div>
+
+                    {/* CTA — always on same row on sm+, below on mobile */}
+                    <Link
+                        href={ViewController.reportSubmissions.url({
+                            program: item.program_id,
+                            report: item.report_id,
+                        })}
+                        className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98]"
+                    >
+                        Review Submission
+                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+                </div>
+            </CardContent>
+        </Card>
     );
 }
 
@@ -242,7 +346,6 @@ export default function ReviewQueuePage() {
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
-
         const results = (queue ?? []).filter((item) => {
             if (!q) return true;
             return (
@@ -253,19 +356,16 @@ export default function ReviewQueuePage() {
         });
 
         return [...results].sort((a, b) => {
-            if (sortBy === 'oldest') {
+            if (sortBy === 'oldest')
                 return (
                     new Date(a.submitted_at).getTime() -
                     new Date(b.submitted_at).getTime()
                 );
-            }
-            if (sortBy === 'newest') {
+            if (sortBy === 'newest')
                 return (
                     new Date(b.submitted_at).getTime() -
                     new Date(a.submitted_at).getTime()
                 );
-            }
-            // deadline — overdue first, then soonest
             const da = daysUntil(a.deadline) ?? 9999;
             const db = daysUntil(b.deadline) ?? 9999;
             return da - db;
@@ -278,24 +378,22 @@ export default function ReviewQueuePage() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Review Queue" />
 
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <CardHeader className="">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
-                                <ClipboardList className="h-5 w-5 text-primary dark:text-primary-400" />
-                                Review Queue
-                            </CardTitle>
-                            <CardDescription>
-                                Submissions awaiting your review, sorted by
-                                oldest first by default.
-                            </CardDescription>
-                        </div>
-                    </div>
+            <div className="flex flex-col gap-4 p-4">
+                {/* ── Page Header ── */}
+                <CardHeader className="px-0 pt-0">
+                    <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                        <ClipboardList className="dark:text-primary-400 h-5 w-5 text-primary" />
+                        Review Queue
+                    </CardTitle>
+                    <CardDescription>
+                        Submissions awaiting your review, sorted by oldest first
+                        by default.
+                    </CardDescription>
                 </CardHeader>
-                {/* ── Header Card ── */}
-                <Card className="gap-4 py-5 bg-background">
-                    <CardContent className="space-y-4 px-5">
+
+                {/* ── Stats + Filters Card ── */}
+                <Card className="bg-background">
+                    <CardContent className="space-y-4 p-4 sm:p-5">
                         {/* Stats */}
                         <div className="grid gap-3 sm:grid-cols-3">
                             <StatCard
@@ -334,7 +432,7 @@ export default function ReviewQueuePage() {
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     placeholder="Search report, officer, or program..."
-                                    className="w-full rounded-md border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-violet-400/30"
+                                    className="w-full rounded-md border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/30"
                                 />
                             </div>
 
@@ -376,8 +474,8 @@ export default function ReviewQueuePage() {
                     </CardContent>
                 </Card>
 
-                {/* ── Queue List ── */}
-                <div className="grid gap-3 h-[48vh] overflow-y-auto pr-3">
+                {/* ── Queue List — no fixed height, natural scroll ── */}
+                <div className="flex flex-col gap-3">
                     {isEmpty ? (
                         <Card className="py-10 text-center">
                             <CardContent className="flex flex-col items-center gap-2">
@@ -407,105 +505,7 @@ export default function ReviewQueuePage() {
                         </Card>
                     ) : (
                         filtered.map((item) => (
-                            <Card
-                                key={item.id}
-                                className={`group relative overflow-hidden transition-all hover:shadow-lg ${
-                                    item.is_overdue
-                                        ? 'border-l-4 border-l-red-500 bg-red-50 dark:bg-red-950/20'
-                                        : 'border-l-4 border-l-amber-500 bg-amber-50 dark:bg-amber-950/20'
-                                }`}
-                            >
-                                <CardContent className="p-5">
-                                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-
-                                        {/* Left Section: Context & Identity */}
-                                        <div className="flex items-start gap-4">
-                                            <div className="relative">
-                                                <Avatar
-                                                    initials={item.officer_avatar}
-                                                    cluster={item.cluster}
-                                                    className="h-12 w-12 border-2 border-background shadow-sm"
-                                                />
-                                                {item.is_overdue && (
-                                                    <span className="absolute -right-1 -top-1 flex h-3 w-3">
-                                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75"></span>
-                                                        <span className="relative inline-flex h-3 w-3 rounded-full bg-destructive"></span>
-                                                    </span>
-                                                )}
-                                            </div>
-
-                                            <div className="space-y-1 min-w-0">
-                                                <div className="flex flex-wrap items-center gap-2">
-                                                    <span className="text-sm font-bold tracking-tight text-foreground">
-                                                        {item.officer}
-                                                    </span>
-                                                    {item.cluster && item.cluster !== 'N/A' && (
-                                                        <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-secondary-foreground">
-                                                            {item.cluster}
-                                                        </span>
-                                                    )}
-                                                </div>
-
-                                                <h3 className="text-base font-semibold leading-tight text-foreground group-hover:text-primary transition-colors">
-                                                    {item.report_title}
-                                                </h3>
-
-                                                <p className="text-xs font-medium text-muted-foreground/80">
-                                                    {item.program}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {/* Right Section: Status Badges */}
-                                        <div className="flex items-center gap-2 self-end sm:self-start">
-                                            <WaitingBadge submittedAt={item.submitted_at} />
-                                            <UrgencyBadge
-                                                deadline={item.deadline}
-                                                isOverdue={item.is_overdue}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Enhanced Meta Row with Separators */}
-                                    <div className="mt-5 flex flex-wrap items-center gap-y-2 text-[11px] font-medium text-muted-foreground border-t border-border/50 pt-4">
-                                        <div className="flex items-center gap-1.5">
-                                            <Clock3 className="h-3.5 w-3.5" />
-                                            <span>Submitted {formatRelative(item.submitted_at)}</span>
-                                            <span className="opacity-50">({formatDate(item.submitted_at)})</span>
-                                        </div>
-
-                                        <span className="hidden mx-2 text-border sm:block">|</span>
-
-                                        {item.deadline && (
-                                            <div className="flex items-center gap-1.5">
-                                                <CalendarClock className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
-                                                <span>Deadline: {formatDate(item.deadline)}</span>
-                                            </div>
-                                        )}
-
-                                        <span className="hidden mx-2 text-border sm:block">|</span>
-
-                                        <div className="flex items-center gap-1.5">
-                                            <Users className="h-3.5 w-3.5" />
-                                            <span>{item.cluster !== 'N/A' ? item.cluster : 'General'}</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Call to Action */}
-                                    <div className="mt-5">
-                                        <Link
-                                            href={ViewController.reportSubmissions.url({
-                                                program: item.program_id,
-                                                report: item.report_id,
-                                            })}
-                                            className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98] sm:w-auto"
-                                        >
-                                            Review Submission
-                                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                                        </Link>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                            <QueueCard key={item.id} item={item} />
                         ))
                     )}
                 </div>
@@ -514,7 +514,8 @@ export default function ReviewQueuePage() {
                 {!isEmpty && (
                     <p className="pb-2 text-center text-xs text-muted-foreground">
                         Showing {filtered.length} of {queue?.length ?? 0}{' '}
-                        submission{(queue?.length ?? 0) !== 1 ? 's' : ''}
+                        submission
+                        {(queue?.length ?? 0) !== 1 ? 's' : ''}
                     </p>
                 )}
             </div>

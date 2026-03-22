@@ -110,7 +110,7 @@ interface ActivityLog {
 export interface ReportSubmission {
     id: string;
     report_id: string;
-    field_officer: User<Pick<User, 'id' | 'name' | 'email' | 'avatar'>>;
+    field_officer: User;
     status: 'draft' | 'submitted' | 'accepted' | 'returned';
     timeliness: string | null;
     media: Media[];

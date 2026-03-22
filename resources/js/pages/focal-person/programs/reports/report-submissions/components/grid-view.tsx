@@ -157,8 +157,7 @@ export default function GridView({
 
                         {/* Officer name */}
                         <h3 className="text-sm font-semibold text-foreground lg:text-base">
-                            {submission.field_officer?.name ??
-                                'Unknown Officer'}
+                            {`${submission.field_officer.first_name} ${submission.field_officer.last_name}`}
                         </h3>
 
                         {/* Cluster */}

@@ -39,6 +39,7 @@ class ViewController extends Controller
                     'name' => $program->name,
                     'description' => $program->description,
                     'coordinator' => $program->coordinator,
+                    'created_at' => $program->created_at,
 
                     // add this indicator
                     'has_pending_reports' => $program->hasPendingReportsForUser($user->id),
@@ -62,6 +63,7 @@ class ViewController extends Controller
                     'title'             => $report->title,
                     'description'       => $report->description,
                     'deadline'          => $report->deadline,
+                    'created_at'        => $report->created_at,
                     'final_deadline'    => $report->final_deadline,
                     'submission_status' => $report->submissionStatusForUser($user->id),
                 ];

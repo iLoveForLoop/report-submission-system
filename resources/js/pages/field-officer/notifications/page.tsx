@@ -193,8 +193,8 @@ export default function NotificationsPage() {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                        <h1 className="flex gap-2 items-center text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
-                            <BellRing className="h-5 w-5 text-primary dark:text-primary-400" />
+                        <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                            <BellRing className="dark:text-primary-400 h-5 w-5 text-primary" />
                             Notifications
                         </h1>
                         <p className="mt-1 text-sm text-muted-foreground">
@@ -215,15 +215,15 @@ export default function NotificationsPage() {
                 <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
                     {/* Stats - Updated colors to match filter buttons */}
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-lg border border-border bg-muted dark:bg-muted/20 px-4 py-3">
-                            <p className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
+                        <div className="rounded-lg border border-border bg-muted px-4 py-3 dark:bg-muted/20">
+                            <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Total
                             </p>
                             <p className="mt-1 text-lg font-semibold text-foreground">
                                 {notifications.total}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-amber-200 bg-amber-50 dark:bg-amber-950/20 px-4 py-3">
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:bg-amber-950/20">
                             <p className="text-xs font-medium tracking-wide text-amber-600 uppercase">
                                 Unread
                             </p>
@@ -231,7 +231,7 @@ export default function NotificationsPage() {
                                 {unreadCount}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-green-200 bg-green-50 dark:bg-green-950/20 px-4 py-3">
+                        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 dark:bg-green-950/20">
                             <p className="text-xs font-medium tracking-wide text-green-600 uppercase">
                                 Read
                             </p>
@@ -261,8 +261,8 @@ export default function NotificationsPage() {
                                                 ? value === 'unread'
                                                     ? 'bg-amber-500 text-white'
                                                     : value === 'read'
-                                                        ? 'bg-green-500 text-white'
-                                                        : 'bg-primary text-primary-foreground'
+                                                      ? 'bg-green-500 text-white'
+                                                      : 'bg-primary text-primary-foreground'
                                                 : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                                         }`}
                                     >
@@ -285,7 +285,7 @@ export default function NotificationsPage() {
                             </p>
                         </div>
                     ) : (
-                        <div className="space-y-3 h-[48vh] overflow-y-auto pr-3">
+                        <div className="h-[48vh] space-y-3 overflow-y-auto pr-3">
                             {filtered.map((item) => {
                                 const theme = getNotificationTheme(item.title);
                                 const isClickable = !!item.action_url;
@@ -306,19 +306,29 @@ export default function NotificationsPage() {
                                                 : 'cursor-default'
                                         }`}
                                     >
-                                        <div className="flex flex-col sm:flex-row sm:flex-wrap items-start justify-between gap-2">
-                                            <div className="min-w-0 flex-1 w-full sm:w-auto">
+                                        <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:flex-wrap">
+                                            <div className="w-full min-w-0 flex-1 sm:w-auto">
                                                 <div className="flex flex-wrap items-center gap-2">
                                                     {!item.isRead && (
-                                                        <span className={`h-2 w-2 flex-shrink-0 rounded-full ${
-                                                            item.title.toLowerCase().includes('approved')
-                                                                ? 'bg-green-500'
-                                                                : item.title.toLowerCase().includes('rejected')
-                                                                    ? 'bg-red-500'
-                                                                    : 'bg-amber-500'
-                                                        }`} />
+                                                        <span
+                                                            className={`h-2 w-2 flex-shrink-0 rounded-full ${
+                                                                item.title
+                                                                    .toLowerCase()
+                                                                    .includes(
+                                                                        'approved',
+                                                                    )
+                                                                    ? 'bg-green-500'
+                                                                    : item.title
+                                                                            .toLowerCase()
+                                                                            .includes(
+                                                                                'rejected',
+                                                                            )
+                                                                      ? 'bg-red-500'
+                                                                      : 'bg-amber-500'
+                                                            }`}
+                                                        />
                                                     )}
-                                                    <p className="text-sm font-semibold text-foreground break-words">
+                                                    <p className="text-sm font-semibold break-words text-foreground">
                                                         {item.title}
                                                     </p>
                                                     {!item.isRead && (
@@ -329,20 +339,24 @@ export default function NotificationsPage() {
                                                         </span>
                                                     )}
                                                 </div>
-                                                <p className="mt-1 text-sm text-muted-foreground break-words">
+                                                <p className="mt-1 text-sm break-words text-muted-foreground">
                                                     {item.message}
                                                 </p>
                                             </div>
 
-                                            <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto">
+                                            <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-end">
                                                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                                     <Clock3 className="h-3.5 w-3.5 flex-shrink-0" />
                                                     <span className="whitespace-nowrap">
-                                                        {formatDateTime(item.created_at)}
+                                                        {formatDateTime(
+                                                            item.created_at,
+                                                        )}
                                                     </span>
                                                 </div>
                                                 <button
-                                                    onClick={(e) => handleRemove(e, item.id)}
+                                                    onClick={(e) =>
+                                                        handleRemove(e, item.id)
+                                                    }
                                                     className="rounded p-1 text-muted-foreground/50 opacity-0 transition-all group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
                                                     title="Dismiss notification"
                                                 >
@@ -354,20 +368,34 @@ export default function NotificationsPage() {
                                         {!item.isRead && (
                                             <div className="mt-3 flex flex-wrap items-center gap-2">
                                                 <button
-                                                    onClick={(e) => handleMarkAsRead(e, item.id)}
+                                                    onClick={(e) =>
+                                                        handleMarkAsRead(
+                                                            e,
+                                                            item.id,
+                                                        )
+                                                    }
                                                     className={`inline-flex cursor-pointer items-center justify-center gap-1 rounded-md border bg-card px-2.5 py-1.5 text-xs font-medium transition-colors ${theme.markReadBtn}`}
                                                 >
                                                     <CheckCheck className="h-3.5 w-3.5 flex-shrink-0" />
-                                                    <span className="whitespace-nowrap">Mark as read</span>
+                                                    <span className="whitespace-nowrap">
+                                                        Mark as read
+                                                    </span>
                                                 </button>
 
                                                 {item.action_url && (
                                                     <button
-                                                        onClick={(e) => handleViewClick(e, item)}
+                                                        onClick={(e) =>
+                                                            handleViewClick(
+                                                                e,
+                                                                item,
+                                                            )
+                                                        }
                                                         className={`inline-flex cursor-pointer items-center justify-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-white transition-colors ${theme.viewBtn}`}
                                                     >
                                                         <ExternalLink className="h-3.5 w-3.5 flex-shrink-0" />
-                                                        <span className="whitespace-nowrap">View Report</span>
+                                                        <span className="whitespace-nowrap">
+                                                            View Report
+                                                        </span>
                                                     </button>
                                                 )}
                                             </div>
@@ -377,7 +405,9 @@ export default function NotificationsPage() {
                                             <div className="mt-2">
                                                 <span className="inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors group-hover:text-primary">
                                                     <ExternalLink className="h-3 w-3 flex-shrink-0" />
-                                                    <span className="break-words">Click to view report</span>
+                                                    <span className="break-words">
+                                                        Click to view report
+                                                    </span>
                                                 </span>
                                             </div>
                                         )}

@@ -2,7 +2,7 @@ import Developers from '@/components/developers/developers';
 import Header from '@/components/header/header';
 import { login } from '@/routes';
 // import { type SharedData } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 
 // Animation variants
@@ -218,7 +218,6 @@ export default function Welcome({
 }) {
     return (
         <>
-            <Head title="Welcome" />
             <motion.main
                 className="landing-page relative min-h-screen"
                 initial="hidden"
@@ -273,8 +272,6 @@ export default function Welcome({
                                 >
                                     {description}
                                 </motion.p> */}
-
-
 
                                 {/* CTA */}
                                 <motion.div

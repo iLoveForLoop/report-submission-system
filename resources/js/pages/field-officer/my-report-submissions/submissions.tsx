@@ -14,8 +14,6 @@ import {
     TrendingUp,
 } from 'lucide-react';
 
-// ─── Status config ────────────────────────────────────────────────────────────
-
 const STATUS_CONFIG = {
     pending: {
         label: 'Pending Review',
@@ -51,8 +49,6 @@ const STATUS_CONFIG = {
     },
 } as const;
 
-// ─── Timeliness config ────────────────────────────────────────────────────────
-
 const TIMELINESS_CONFIG = {
     early: {
         label: 'Early',
@@ -75,17 +71,16 @@ type StatusKey = keyof typeof STATUS_CONFIG;
 type TimelinessKey = keyof typeof TIMELINESS_CONFIG;
 type ViewMode = 'grid' | 'list';
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 function StatusBadge({ status }: { status: string }) {
     const cfg = STATUS_CONFIG[status as StatusKey] ?? STATUS_CONFIG.pending;
     const Icon = cfg.icon;
     return (
         <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${cfg.badge}`}
+            className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${cfg.badge}`}
         >
             <Icon className="h-3 w-3 flex-shrink-0" />
-            {cfg.label}
+            <span className="hidden sm:inline">{cfg.label}</span>
+            <span className="sm:hidden">{cfg.label.split(' ')[0]}</span>
         </span>
     );
 }
@@ -97,7 +92,7 @@ function TimelinessBadge({ timeliness }: { timeliness?: string | null }) {
     const Icon = cfg.icon;
     return (
         <span
-            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${cfg.className}`}
+            className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${cfg.className}`}
         >
             <Icon className="h-3 w-3 flex-shrink-0" />
             {cfg.label}
@@ -119,25 +114,23 @@ const formatTime = (value: string) =>
         hour12: true,
     });
 
-// ─── Grid Card ────────────────────────────────────────────────────────────────
-
 function GridCard({ submission }: { submission: ReportSubmission }) {
     const cfg =
         STATUS_CONFIG[submission.status as StatusKey] ?? STATUS_CONFIG.pending;
-    console.log(submission.status)
+
     return (
         <Link
             href={ViewController.reportSubmissions([
                 submission.report!.program,
                 submission.report!,
             ])}
-            className={`group flex flex-col rounded-xl border border-l-4 border-border/60 p-5 transition-all hover:shadow-md ${cfg.leftBorder} ${cfg.glow} ${cfg.bg}`}
+            className={`group flex flex-col rounded-xl border border-l-4 border-border/60 p-4 transition-all hover:shadow-md ${cfg.leftBorder} ${cfg.glow} ${cfg.bg}`}
         >
             {/* Top: title + status */}
             <div className="flex items-start justify-between gap-2">
                 <div className="flex min-w-0 items-center gap-2">
                     <div className="shrink-0 rounded-md bg-primary/10 p-1.5">
-                        <FileText className="h-4 w-4 text-primary" />
+                        <FileText className="h-3.5 w-3.5 text-primary" />
                     </div>
                     <p className="truncate text-sm font-semibold text-foreground">
                         {submission.report?.title ??
@@ -151,16 +144,17 @@ function GridCard({ submission }: { submission: ReportSubmission }) {
             {submission.report?.program?.name && (
                 <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
                     <MapPin className="h-3 w-3 shrink-0" />
-                    {submission.report.program.name}
+                    <span className="truncate">
+                        {submission.report.program.name}
+                    </span>
                 </p>
             )}
 
-            <div className="mt-4 border-t pt-3">
-                {/* Timeliness + file count */}
+            <div className="mt-3 border-t pt-3">
                 <div className="flex items-center justify-between">
                     <TimelinessBadge timeliness={submission.timeliness} />
                     <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <FileText className="h-3.5 w-3.5" />
+                        <FileText className="h-3 w-3" />
                         {submission.media?.length ?? 0}{' '}
                         {(submission.media?.length ?? 0) === 1
                             ? 'file'
@@ -168,13 +162,15 @@ function GridCard({ submission }: { submission: ReportSubmission }) {
                     </span>
                 </div>
 
-                {/* Dates */}
-                <div className="mt-2.5 space-y-1">
+                <div className="mt-2 space-y-1">
                     <div className="flex items-center justify-between text-xs">
                         <span className="text-muted-foreground">Submitted</span>
                         <span className="font-medium text-foreground">
-                            {formatDate(submission.created_at)} ·{' '}
-                            {formatTime(submission.created_at)}
+                            {formatDate(submission.created_at)}
+                            <span className="hidden sm:inline">
+                                {' '}
+                                · {formatTime(submission.created_at)}
+                            </span>
                         </span>
                     </div>
                     {submission.report?.deadline && (
@@ -193,8 +189,6 @@ function GridCard({ submission }: { submission: ReportSubmission }) {
     );
 }
 
-// ─── List Row ─────────────────────────────────────────────────────────────────
-
 function ListRow({ submission }: { submission: ReportSubmission }) {
     const cfg =
         STATUS_CONFIG[submission.status as StatusKey] ?? STATUS_CONFIG.pending;
@@ -205,44 +199,48 @@ function ListRow({ submission }: { submission: ReportSubmission }) {
                 submission.report!.program,
                 submission.report!,
             ])}
-            className={`group flex items-center gap-4 rounded-xl border border-l-4 border-border/60 bg-card px-4 py-3.5 transition-all hover:shadow-md ${cfg.leftBorder} ${cfg.glow}`}
+            className={`group flex items-center gap-3 rounded-xl border border-l-4 border-border/60 bg-card px-3 py-3 transition-all hover:shadow-md sm:gap-4 sm:px-4 ${cfg.leftBorder} ${cfg.glow}`}
         >
             {/* Icon */}
-            <div className="shrink-0 rounded-md bg-primary/10 p-2">
-                <FileText className="h-4 w-4 text-primary" />
+            <div className="shrink-0 rounded-md bg-primary/10 p-1.5 sm:p-2">
+                <FileText className="h-3.5 w-3.5 text-primary sm:h-4 sm:w-4" />
             </div>
 
             {/* Main info */}
             <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                     <p className="truncate text-sm font-semibold text-foreground">
                         {submission.report?.title ??
                             `Submission #${submission.id}`}
                     </p>
                     <StatusBadge status={submission.status} />
-                    <TimelinessBadge timeliness={submission.timeliness} />
+                    <span className="hidden sm:inline">
+                        <TimelinessBadge timeliness={submission.timeliness} />
+                    </span>
                 </div>
-                <div className="mt-0.5 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground sm:gap-3">
                     {submission.report?.program?.name && (
                         <span className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {submission.report.program.name}
+                            <MapPin className="h-3 w-3 shrink-0" />
+                            <span className="max-w-[120px] truncate sm:max-w-none">
+                                {submission.report.program.name}
+                            </span>
                         </span>
                     )}
                     <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
+                        <Clock className="h-3 w-3 shrink-0" />
                         {formatTime(submission.created_at)}
                     </span>
                     {submission.report?.deadline && (
-                        <span className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
+                        <span className="hidden items-center gap-1 sm:flex">
+                            <Calendar className="h-3 w-3 shrink-0" />
                             Due: {formatDate(submission.report.deadline)}
                         </span>
                     )}
                 </div>
             </div>
 
-            {/* Trailing */}
+            {/* Trailing — desktop only */}
             <div className="hidden shrink-0 flex-col items-end gap-1 sm:flex">
                 <span className="text-xs font-medium text-foreground">
                     {formatDate(submission.created_at)}
@@ -260,29 +258,26 @@ function ListRow({ submission }: { submission: ReportSubmission }) {
     );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
-
 interface SubmissionsProps {
     submissions?: LaravelPaginator<ReportSubmission>;
     filter?: FilterType;
-    viewMode: ViewMode; // ← received from parent, not from hook
+    viewMode: ViewMode;
 }
 
 export default function Submissions({
     submissions,
     viewMode,
 }: SubmissionsProps) {
-    // ── Empty state ───────────────────────────────────────────────────────────
     if (!submissions || submissions.data.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-20 text-center">
                 <div className="mb-4 rounded-full bg-muted/40 p-4">
                     <FileText className="h-10 w-10 text-muted-foreground/40" />
                 </div>
-                <h3 className="mb-1 text-sm font-semibold text-foreground lg:text-base">
+                <h3 className="mb-1 text-sm font-semibold text-foreground">
                     No submissions yet
                 </h3>
-                <p className="max-w-sm text-xs text-muted-foreground lg:text-sm">
+                <p className="max-w-xs text-xs text-muted-foreground sm:max-w-sm sm:text-sm">
                     Your submitted reports will appear here once you start
                     submitting.
                 </p>
@@ -290,7 +285,6 @@ export default function Submissions({
         );
     }
 
-    // ── Group by submitted date ───────────────────────────────────────────────
     const groupedSubmissions = submissions.data.reduce(
         (acc, submission) => {
             const key = formatDate(submission.created_at);
@@ -303,42 +297,37 @@ export default function Submissions({
 
     return (
         <div className="space-y-6">
-            {/* ── Result count ─────────────────────────────────────────────── */}
-            <div>
-                <p className="text-xs text-muted-foreground">
-                    Showing{' '}
-                    <span className="font-medium text-foreground">
-                        {submissions.from}–{submissions.to}
-                    </span>{' '}
-                    of {submissions.total} submissions
-                </p>
-            </div>
+            <p className="text-xs text-muted-foreground">
+                Showing{' '}
+                <span className="font-medium text-foreground">
+                    {submissions.from}–{submissions.to}
+                </span>{' '}
+                of {submissions.total} submissions
+            </p>
 
-            {/* ── Date-grouped content ──────────────────────────────────────── */}
             {Object.entries(groupedSubmissions).map(
                 ([date, dateSubmissions]) => (
                     <div key={date} className="space-y-3">
                         {/* Date header */}
                         <div className="flex items-center gap-3">
-                            <div className="rounded-lg bg-primary/10 p-2">
-                                <Calendar className="h-4 w-4 text-primary" />
+                            <div className="rounded-lg bg-primary/10 p-1.5 sm:p-2">
+                                <Calendar className="h-3.5 w-3.5 text-primary sm:h-4 sm:w-4" />
                             </div>
                             <div>
-                                <p className="text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
+                                <p className="text-[10px] font-medium tracking-wider text-muted-foreground uppercase sm:text-[11px]">
                                     Submitted on
                                 </p>
-                                <p className="text-sm font-semibold text-foreground lg:text-base">
+                                <p className="text-sm font-semibold text-foreground">
                                     {date}
                                 </p>
                             </div>
-                            <span className="ml-auto rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+                            <span className="ml-auto rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                                 {dateSubmissions.length}
                             </span>
                         </div>
 
-                        {/* Grid or list */}
                         {viewMode === 'grid' ? (
-                            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                                 {dateSubmissions.map((submission) => (
                                     <GridCard
                                         key={submission.id}
@@ -360,7 +349,6 @@ export default function Submissions({
                 ),
             )}
 
-            {/* ── Pagination ────────────────────────────────────────────────── */}
             <Pagination paginator={submissions} />
         </div>
     );

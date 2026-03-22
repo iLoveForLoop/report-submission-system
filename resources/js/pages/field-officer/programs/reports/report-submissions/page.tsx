@@ -123,9 +123,9 @@ export default function Page() {
                                                 •
                                             </span>
                                             <div
-                                                className={`flex items-center gap-1.5 rounded p-1 font-medium ${statusInfo.textColor} ${statusInfo.bgColor} ${statusInfo.borderColor}`}
+                                                className={`flex items-center gap-1.5 rounded-2xl px-3 py-1 font-medium ${statusInfo.textColor} ${statusInfo.bgColor} ${statusInfo.borderColor}`}
                                             >
-                                                <CheckCircle2 className="h-4 w-4" />
+                                                {/* <CheckCircle2 className="h-4 w-4" /> */}
                                                 <span>{statusInfo.text}</span>
                                             </div>
                                         </>

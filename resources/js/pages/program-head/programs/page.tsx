@@ -183,7 +183,7 @@ export default function ProgramsPage() {
                                                     setSearch(e.target.value)
                                                 }
                                                 placeholder="Search programs…"
-                                                className="h-9 w-full rounded-lg border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/40 dark:border-gray-700 dark:bg-gray-900"
+                                                className="h-9 w-full rounded-lg border bg-card py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/40 "
                                             />
                                             {search && (
                                                 <button
@@ -205,7 +205,7 @@ export default function ProgramsPage() {
                                             className={`relative flex h-9 items-center gap-2 rounded-lg border px-3 text-sm transition-colors ${
                                                 showFilters
                                                     ? 'border-primary bg-primary/5 text-primary'
-                                                    : 'bg-background hover:bg-muted dark:border-gray-700 dark:bg-gray-900'
+                                                    : 'hover:bg-muted bg-card'
                                             }`}
                                         >
                                             <SlidersHorizontal className="h-4 w-4" />
@@ -235,7 +235,7 @@ export default function ProgramsPage() {
 
                                     {/* Expanded filter panel */}
                                     {showFilters && (
-                                        <div className="rounded-xl border bg-card p-4 dark:border-gray-700">
+                                        <div className="rounded-xl border p-4 bg-card">
                                             <div className="grid gap-4 sm:grid-cols-2">
                                                 {/* Year */}
                                                 <div className="space-y-1.5">
@@ -250,7 +250,7 @@ export default function ProgramsPage() {
                                                             );
                                                             setMonth('');
                                                         }}
-                                                        className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 dark:border-gray-700 dark:bg-gray-900"
+                                                        className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 dark:border-gray-700 "
                                                     >
                                                         <option value="">
                                                             All years
@@ -281,7 +281,7 @@ export default function ProgramsPage() {
                                                             )
                                                         }
                                                         disabled={!year}
-                                                        className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900"
+                                                        className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700"
                                                     >
                                                         <option value="">
                                                             All months

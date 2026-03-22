@@ -60,7 +60,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 function PendingReviewChip({ count }: { count: number }) {
     if (count <= 0) return null;
     return (
-        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-violet-200 dark:bg-violet-950/30 dark:text-violet-400 dark:ring-violet-800">
+        <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-amber-700 ring-1 ring-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:ring-amber-800">
             <ClipboardCheck className="h-3 w-3" />
             {count > 99 ? '99+' : count} to review
         </span>
@@ -140,17 +140,17 @@ function ProgramGridCard({
                 e.preventDefault();
                 router.visit(href);
             }}
-            className={`group block rounded-xl border bg-card p-4 transition-all hover:shadow-md ${
+            className={`group block rounded-xl border p-4 transition-all hover:shadow-md ${
                 hasPending
-                    ? 'border-l-amber-400 bg-amber-50 dark:bg-amber-950/20'
-                    : 'hover:border-primary/20'
+                    ? 'border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/20'
+                    : 'bg-card-elevated hover:border-primary/20'
             }`}
         >
             <div className="flex items-start gap-3">
                 <div
                     className={`rounded-lg p-2.5 transition-colors ${
                         hasPending
-                            ? 'bg-violet-100 text-violet-600 dark:bg-violet-950/50 dark:text-violet-400'
+                            ? 'bg-amber-100 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400'
                             : 'bg-muted text-muted-foreground'
                     }`}
                 >
@@ -198,13 +198,13 @@ function ProgramListRow({ program, href }: { program: Program; href: string }) {
             }}
             className={`group grid grid-cols-12 items-center gap-4 border-b px-4 py-3 transition-colors last:border-b-0 ${
                 hasPending
-                    ? 'bg-violet-50/50 hover:bg-violet-50 dark:bg-violet-950/10 dark:hover:bg-violet-950/20'
-                    : 'hover:bg-accent/50'
+                    ? 'bg-amber-50/50 hover:bg-amber-50 dark:bg-amber-950/10 dark:hover:bg-amber-950/20'
+                    : 'bg-card-elevated hover:bg-accent/50'
             }`}
         >
             <div className="col-span-5 flex min-w-0 items-center gap-2">
                 <Folders
-                    className={`h-4 w-4 shrink-0 ${hasPending ? 'text-violet-500' : 'text-muted-foreground'}`}
+                    className={`h-4 w-4 shrink-0 ${hasPending ? 'text-amber-500' : 'text-muted-foreground'}`}
                 />
                 <span className="truncate text-sm font-medium text-foreground">
                     {program.name}
@@ -418,7 +418,7 @@ export default function Programs() {
                             onClick={() => handlePendingToggle(!pendingOnly)}
                             className={`flex h-9 items-center gap-2 rounded-lg border px-3 text-sm transition-colors ${
                                 pendingOnly
-                                    ? 'border-violet-300 bg-violet-50 text-violet-700 dark:border-violet-700 dark:bg-violet-950/40 dark:text-violet-300'
+                                    ? 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-300'
                                     : 'bg-background hover:bg-muted'
                             }`}
                             title="Show only programs with pending submissions"
@@ -517,7 +517,7 @@ export default function Programs() {
                                         }
                                         className={`flex h-9 w-full items-center gap-2 rounded-lg border px-3 text-sm transition-colors ${
                                             pendingOnly
-                                                ? 'border-violet-300 bg-violet-50 text-violet-700 dark:border-violet-700 dark:bg-violet-950/40 dark:text-violet-300'
+                                                ? 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-300'
                                                 : 'bg-background text-muted-foreground hover:bg-muted'
                                         }`}
                                     >
@@ -561,7 +561,7 @@ export default function Programs() {
                                         </span>
                                     )}
                                     {pendingOnly && (
-                                        <span className="inline-flex items-center gap-1 rounded-full bg-violet-100 px-2.5 py-0.5 text-xs font-medium text-violet-700 dark:bg-violet-950/30 dark:text-violet-300">
+                                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-300">
                                             Needs review
                                             <button
                                                 onClick={() =>

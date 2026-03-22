@@ -22,6 +22,7 @@ import {
     User,
     Users,
 } from 'lucide-react';
+import { P } from 'node_modules/framer-motion/dist/types.d-DagZKalS';
 import { useMemo, useState } from 'react';
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -376,7 +377,7 @@ export default function ReviewQueuePage() {
                 </Card>
 
                 {/* ── Queue List ── */}
-                <div className="grid gap-3">
+                <div className="grid gap-3 h-[48vh] overflow-y-auto pr-3">
                     {isEmpty ? (
                         <Card className="py-10 text-center">
                             <CardContent className="flex flex-col items-center gap-2">
@@ -408,53 +409,56 @@ export default function ReviewQueuePage() {
                         filtered.map((item) => (
                             <Card
                                 key={item.id}
-                                className={`gap-3 py-4 transition-all hover:shadow-md ${
+                                className={`group relative overflow-hidden transition-all hover:shadow-lg ${
                                     item.is_overdue
-                                        ? 'border-red-200 dark:border-red-800'
-                                        : ''
+                                        ? 'border-l-4 border-l-red-500 bg-red-50 dark:bg-red-950/20'
+                                        : 'border-l-4 border-l-amber-500 bg-amber-50 dark:bg-amber-950/20'
                                 }`}
                             >
-                                <CardContent className="px-4">
-                                    <div className="flex flex-wrap items-start justify-between gap-3">
-                                        {/* Left: officer + report info */}
-                                        <div className="flex min-w-0 items-start gap-3">
-                                            <Avatar
-                                                initials={item.officer_avatar}
-                                                cluster={item.cluster}
-                                            />
-                                            <div className="min-w-0">
-                                                {/* Officer name + cluster */}
+                                <CardContent className="p-5">
+                                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+
+                                        {/* Left Section: Context & Identity */}
+                                        <div className="flex items-start gap-4">
+                                            <div className="relative">
+                                                <Avatar
+                                                    initials={item.officer_avatar}
+                                                    cluster={item.cluster}
+                                                    className="h-12 w-12 border-2 border-background shadow-sm"
+                                                />
+                                                {item.is_overdue && (
+                                                    <span className="absolute -right-1 -top-1 flex h-3 w-3">
+                                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75"></span>
+                                                        <span className="relative inline-flex h-3 w-3 rounded-full bg-destructive"></span>
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <div className="space-y-1 min-w-0">
                                                 <div className="flex flex-wrap items-center gap-2">
-                                                    <span className="flex items-center gap-1 text-sm font-semibold text-foreground">
-                                                        <User className="h-3.5 w-3.5 text-muted-foreground" />
+                                                    <span className="text-sm font-bold tracking-tight text-foreground">
                                                         {item.officer}
                                                     </span>
-                                                    {item.cluster &&
-                                                        item.cluster !==
-                                                            'N/A' && (
-                                                            <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                                                                {item.cluster}
-                                                            </span>
-                                                        )}
+                                                    {item.cluster && item.cluster !== 'N/A' && (
+                                                        <span className="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-secondary-foreground">
+                                                            {item.cluster}
+                                                        </span>
+                                                    )}
                                                 </div>
 
-                                                {/* Report title */}
-                                                <p className="mt-0.5 text-sm font-medium text-foreground">
+                                                <h3 className="text-base font-semibold leading-tight text-foreground group-hover:text-primary transition-colors">
                                                     {item.report_title}
-                                                </p>
+                                                </h3>
 
-                                                {/* Program */}
-                                                <p className="text-xs text-muted-foreground">
+                                                <p className="text-xs font-medium text-muted-foreground/80">
                                                     {item.program}
                                                 </p>
                                             </div>
                                         </div>
 
-                                        {/* Right: badges */}
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <WaitingBadge
-                                                submittedAt={item.submitted_at}
-                                            />
+                                        {/* Right Section: Status Badges */}
+                                        <div className="flex items-center gap-2 self-end sm:self-start">
+                                            <WaitingBadge submittedAt={item.submitted_at} />
                                             <UrgencyBadge
                                                 deadline={item.deadline}
                                                 isOverdue={item.is_overdue}
@@ -462,45 +466,42 @@ export default function ReviewQueuePage() {
                                         </div>
                                     </div>
 
-                                    {/* Meta row */}
-                                    <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-                                        <span className="inline-flex items-center gap-1.5">
+                                    {/* Enhanced Meta Row with Separators */}
+                                    <div className="mt-5 flex flex-wrap items-center gap-y-2 text-[11px] font-medium text-muted-foreground border-t border-border/50 pt-4">
+                                        <div className="flex items-center gap-1.5">
                                             <Clock3 className="h-3.5 w-3.5" />
-                                            Submitted{' '}
-                                            {formatRelative(item.submitted_at)}
-                                            <span className="text-muted-foreground/60">
-                                                ({formatDate(item.submitted_at)}
-                                                )
-                                            </span>
-                                        </span>
+                                            <span>Submitted {formatRelative(item.submitted_at)}</span>
+                                            <span className="opacity-50">({formatDate(item.submitted_at)})</span>
+                                        </div>
+
+                                        <span className="hidden mx-2 text-border sm:block">|</span>
+
                                         {item.deadline && (
-                                            <span className="inline-flex items-center gap-1.5">
-                                                <CalendarClock className="h-3.5 w-3.5" />
-                                                Deadline:{' '}
-                                                {formatDate(item.deadline)}
-                                            </span>
+                                            <div className="flex items-center gap-1.5">
+                                                <CalendarClock className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                                                <span>Deadline: {formatDate(item.deadline)}</span>
+                                            </div>
                                         )}
-                                        <span className="inline-flex items-center gap-1.5">
+
+                                        <span className="hidden mx-2 text-border sm:block">|</span>
+
+                                        <div className="flex items-center gap-1.5">
                                             <Users className="h-3.5 w-3.5" />
-                                            {item.cluster !== 'N/A'
-                                                ? item.cluster
-                                                : 'No cluster'}
-                                        </span>
+                                            <span>{item.cluster !== 'N/A' ? item.cluster : 'General'}</span>
+                                        </div>
                                     </div>
 
-                                    {/* Action */}
-                                    <div className="mt-4">
+                                    {/* Call to Action */}
+                                    <div className="mt-5">
                                         <Link
-                                            href={ViewController.reportSubmissions.url(
-                                                {
-                                                    program: item.program_id,
-                                                    report: item.report_id,
-                                                },
-                                            )}
-                                            className="inline-flex items-center gap-2 rounded-md bg-gray-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-black"
+                                            href={ViewController.reportSubmissions.url({
+                                                program: item.program_id,
+                                                report: item.report_id,
+                                            })}
+                                            className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:opacity-90 active:scale-[0.98] sm:w-auto"
                                         >
-                                            <ArrowRight className="h-4 w-4" />
                                             Review Submission
+                                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                                         </Link>
                                     </div>
                                 </CardContent>

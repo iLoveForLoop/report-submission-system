@@ -42,7 +42,7 @@ export function SubmissionChip({
     }
     if (submitted > 0) {
         return (
-            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-violet-50 px-2 py-1 text-xs font-medium text-violet-700 ring-1 ring-violet-200 dark:bg-violet-950/30 dark:text-violet-400 dark:ring-violet-800">
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 ring-1 ring-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:ring-amber-800">
                 <ClipboardCheck className="h-3 w-3" />
                 {submitted} to review
             </span>
@@ -80,7 +80,7 @@ export function SubmissionProgressBar({
                     style={{ width: `${acceptedPct + submittedPct}%` }}
                 >
                     <div
-                        className="ml-auto h-full rounded-full bg-violet-400"
+                        className="ml-auto h-full rounded-full bg-amber-400"
                         style={{
                             width:
                                 acceptedPct + submittedPct > 0

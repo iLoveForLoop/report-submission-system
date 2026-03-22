@@ -46,15 +46,15 @@ export default function ListView({
                             href={`/focal-person/programs/${programId}/reports/${report.id}/report-submissions`}
                             className={`group flex flex-col px-4 py-4 transition-colors hover:bg-muted/40 lg:grid lg:grid-cols-[32px_1fr_160px_140px_140px_32px] lg:items-center lg:gap-4 lg:py-3 ${
                                 hasPending
-                                    ? 'border-l-2 border-l-violet-400'
-                                    : ''
+                                    ? ' dark:bg-amber-950/20'
+                                    : 'bg-card-elevated'
                             }`}
                         >
                             {/* Icon — desktop */}
                             <div
                                 className={`hidden h-8 w-8 items-center justify-center rounded-md lg:flex ${
                                     hasPending
-                                        ? 'bg-violet-100 text-violet-600 dark:bg-violet-950/50 dark:text-violet-400'
+                                        ? 'bg-amber-100 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400'
                                         : 'bg-muted text-muted-foreground'
                                 }`}
                             >
@@ -68,7 +68,7 @@ export default function ListView({
                                     <div
                                         className={`flex h-6 w-6 shrink-0 items-center justify-center rounded lg:hidden ${
                                             hasPending
-                                                ? 'bg-violet-100 text-violet-600 dark:bg-violet-950/50 dark:text-violet-400'
+                                                ? 'bg-violet-100 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400'
                                                 : 'bg-muted text-muted-foreground'
                                         }`}
                                     >

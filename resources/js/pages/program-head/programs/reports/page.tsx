@@ -3,7 +3,7 @@ import Back from '@/components/back';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Program, Report } from '@/types';
 import { Deferred, Link, usePage } from '@inertiajs/react';
-import { FileText, Folder, Search, SlidersHorizontal, X } from 'lucide-react';
+import { Clock, FileText, Folder, Search, SlidersHorizontal, X } from 'lucide-react';
 import { Activity, useMemo, useState } from 'react';
 import ReportDialog from './components/report-dialog';
 // import ReportEllipsis from './components/report-ellipsis';
@@ -22,6 +22,15 @@ const MONTH_LABELS = [
     'November',
     'December',
 ];
+
+export const formatDate = (date: string | Date) => {
+    if (!date) return '';
+    return new Date(date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+    });
+};
 
 export default function Reports() {
     const { reports, program } = usePage<{
@@ -105,7 +114,7 @@ export default function Reports() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex h-full flex-1 flex-col">
                 {/* Toolbar */}
-                <div className="flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex justify-between gap-3 border-b px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-2">
                         <Back link={ViewController.programs()} />
                         <div className="h-4 w-px bg-border" />
@@ -144,7 +153,7 @@ export default function Reports() {
                                                 setSearch(e.target.value)
                                             }
                                             placeholder="Search report title…"
-                                            className="h-9 w-full rounded-lg border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/40 dark:border-gray-700 dark:bg-gray-900"
+                                            className="h-9 w-full rounded-lg border bg-card py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/40"
                                         />
                                         {search && (
                                             <button
@@ -161,10 +170,10 @@ export default function Reports() {
                                         onClick={() =>
                                             setShowFilters((v) => !v)
                                         }
-                                        className={`relative flex h-9 items-center gap-2 rounded-lg border px-3 text-sm transition-colors ${
+                                        className={`relative flex h-9 items-center bg-card gap-2 rounded-lg border px-3 text-sm transition-colors ${
                                             showFilters
                                                 ? 'border-primary bg-primary/5 text-primary'
-                                                : 'bg-background hover:bg-muted dark:border-gray-700 dark:bg-gray-900'
+                                                : 'bg-background hover:bg-muted'
                                         }`}
                                     >
                                         <SlidersHorizontal className="h-4 w-4" />
@@ -208,7 +217,7 @@ export default function Reports() {
                                                             e.target.value,
                                                         )
                                                     }
-                                                    className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 dark:border-gray-700 dark:bg-gray-900"
+                                                    className="h-9 w-full rounded-lg border bg-card-elevated px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
                                                 />
                                             </div>
 
@@ -224,7 +233,7 @@ export default function Reports() {
                                                             e.target.value,
                                                         )
                                                     }
-                                                    className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 dark:border-gray-700 dark:bg-gray-900"
+                                                    className="h-9 w-full rounded-lg border bg-card-elevated px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
                                                 />
                                             </div>
 
@@ -241,7 +250,7 @@ export default function Reports() {
                                                         if (!e.target.value)
                                                             setCreatedMonth('');
                                                     }}
-                                                    className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 dark:border-gray-700 dark:bg-gray-900"
+                                                    className="h-9 w-full rounded-lg border bg-card-elevated px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
                                                 >
                                                     <option value="">
                                                         All years
@@ -269,7 +278,7 @@ export default function Reports() {
                                                         )
                                                     }
                                                     disabled={!createdYear}
-                                                    className="h-9 w-full rounded-lg border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900"
+                                                    className="h-9 w-full rounded-lg border bg-card-elevated px-3 text-sm outline-none focus:ring-2 focus:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-50"
                                                 >
                                                     <option value="">
                                                         All months
@@ -441,66 +450,47 @@ export default function Reports() {
                                             (report, index) => (
                                                 <Link
                                                     key={index}
-                                                    href={ViewController.submissions(
-                                                        report,
-                                                    )}
-                                                    className="group flex flex-col gap-3 rounded-xl border bg-card p-4 transition-all duration-200 hover:shadow-sm dark:border-gray-700 dark:bg-gray-900/50"
+                                                    href={ViewController.submissions(report)}
+                                                    className="group flex flex-col gap-4 rounded-xl border bg-card-elevated p-4 transition-all duration-200 hover:border-primary/30 hover:shadow-md dark:border-gray-800"
                                                 >
-                                                    {/* Icon + title + ellipsis */}
+                                                    {/* Icon + title section */}
                                                     <div className="flex items-start justify-between gap-3">
-                                                        <div className="flex items-start gap-3">
-                                                            <div className="rounded-lg bg-muted p-2.5 dark:bg-gray-800">
-                                                                <FileText className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
+                                                        <div className="flex items-start gap-3 min-w-0">
+                                                            {/* Folder/File Icon with distinct background */}
+                                                            <div className="shrink-0 rounded-lg bg-muted p-2.5 transition-colors group-hover:bg-primary/10 dark:bg-gray-800">
+                                                                <FileText className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary dark:text-gray-400" />
                                                             </div>
-                                                            <div className="min-w-0">
-                                                                <h2 className="truncate text-sm font-medium text-foreground dark:text-white">
-                                                                    {
-                                                                        report.title
-                                                                    }
+
+                                                            {/* Title and Deadline */}
+                                                            <div className="min-w-0 flex-1">
+                                                                <h2 className="truncate text-sm font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary dark:text-white">
+                                                                    {report.title}
                                                                 </h2>
-                                                                {report.deadline && (
-                                                                    <p className="mt-0.5 text-xs text-muted-foreground dark:text-gray-400">
-                                                                        Deadline:{' '}
-                                                                        {new Date(
-                                                                            report.deadline,
-                                                                        ).toLocaleDateString(
-                                                                            'en-US',
-                                                                            {
-                                                                                month: 'short',
-                                                                                day: 'numeric',
-                                                                                year: 'numeric',
-                                                                            },
-                                                                        )}
+
+                                                                {report.deadline ? (
+                                                                    <p className="mt-0.5 text-[11px] font-medium text-muted-foreground dark:text-gray-400">
+                                                                        Deadline: {formatDate(report.deadline)}
+                                                                    </p>
+                                                                ) : (
+                                                                    <p className="mt-0.5 text-[11px] italic text-muted-foreground/60">
+                                                                        No deadline set
                                                                     </p>
                                                                 )}
                                                             </div>
                                                         </div>
-                                                        {/* <div
-                                                            onClick={(e) =>
-                                                                e.preventDefault()
-                                                            }
-                                                        >
-                                                            <ReportEllipsis
-                                                                report={report}
-                                                            />
-                                                        </div> */}
+
+                                                        {/* If you re-enable the ellipsis, it goes here */}
                                                     </div>
 
-                                                    {/* Footer: created date */}
-                                                    <div className="flex items-center justify-between border-t pt-2 dark:border-gray-700">
-                                                        <span className="text-xs text-muted-foreground dark:text-gray-500">
-                                                            Created{' '}
-                                                            {new Date(
-                                                                report.created_at,
-                                                            ).toLocaleDateString(
-                                                                'en-US',
-                                                                {
-                                                                    month: 'short',
-                                                                    day: 'numeric',
-                                                                    year: 'numeric',
-                                                                },
-                                                            )}
-                                                        </span>
+                                                    {/* Footer: Metadata Row */}
+                                                    <div className="mt-auto flex items-center justify-between border-t border-border pt-3 dark:border-gray-700/50">
+                                                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground dark:text-gray-500">
+                                                            <Clock className="h-3 w-3 opacity-70" />
+                                                            <span>Created {formatDate(report.created_at)}</span>
+                                                        </div>
+
+                                                        {/* Status Indicator (Optional) */}
+                                                        <div className="h-1.5 w-1.5 rounded-full bg-border group-hover:bg-primary transition-colors" />
                                                     </div>
                                                 </Link>
                                             ),

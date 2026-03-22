@@ -286,7 +286,7 @@ export default function Dashboard() {
             icon: FileWarning,
             accent: 'border-l-red-500',
             valueColor: 'text-red-600 dark:text-red-400',
-            link: '/field-officer/my-report-submissions?filter=returned',
+            link: '/field-officer/pending-reports',
         },
     ];
 
@@ -305,9 +305,9 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="px-5 py-5 bg-card-elevated">
+                    <div className="bg-card-elevated px-5 py-5">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                            <div className=''>
+                            <div className="">
                                 <h1 className="font-md text-xl tracking-tight text-foreground">
                                     Welcome,{' '}
                                     <span className="font-bold">

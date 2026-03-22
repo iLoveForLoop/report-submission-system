@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-// focal-person/submission-logs/page.tsx
 import {
     Dialog,
     DialogContent,
@@ -274,6 +272,8 @@ export default function SubmissionLogs() {
         const start = (officerPage - 1) * OFFICERS_PER_PAGE;
         return filteredOfficers.slice(start, start + OFFICERS_PER_PAGE);
     }, [filteredOfficers, officerPage]);
+
+    console.log(paginatedOfficers);
 
     // Reset page on filter change
     useEffect(() => {

@@ -133,11 +133,10 @@ export default function EditReportSubmissionDialog({
                 <Button
                     type="button"
                     variant="outline"
-                    // size="default" (h-10) or "sm" (h-9) for a more substantial hit area
                     className={cn(
                         'h-9 border-2 px-4 transition-all active:scale-95',
-                        'border-primary/20 bg-primary/5 text-primary',
-                        'hover:border-primary hover:bg-primary hover:text-white',
+                        'border-primary/20 bg-primary text-white',
+                        'hover:border-primary hover:bg-primary/5 hover:text-primary',
                     )}
                 >
                     {submission.status === 'returned' ? (

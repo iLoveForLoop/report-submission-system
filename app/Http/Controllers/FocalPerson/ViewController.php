@@ -472,6 +472,8 @@ class ViewController extends Controller
                 'name'         => $sub->fieldOfficer?->name ?? 'N/A',
                 'email'        => $sub->fieldOfficer?->email ?? 'N/A',
                 'cluster'      => $sub->fieldOfficer?->cluster ?? 'N/A',
+                'first_name'   => $sub->fieldOfficer?->first_name ?? 'N/A',
+                'last_name'    => $sub->fieldOfficer?->last_name ?? 'N/A',
                 'submitted_at' => $sub->created_at->toISOString(),
                 'reviewed_at'  => $sub->reviewed_at?->toISOString(),
                 'status'       => match ($sub->status) {

@@ -98,7 +98,10 @@ export default function ReportDialog({
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <div className="flex justify-end">
-                    <Button type="button" variant={'secondary'}>
+                    <Button
+                        type="button"
+                        className="gap-2 bg-primary text-sm font-medium text-primary-foreground shadow-sm transition-all hover:cursor-pointer hover:bg-primary/90 hover:shadow-md active:scale-[0.98]"
+                    >
                         <Folder className="mr-2 h-4 w-4" />
                         <span className="text-xs">Create New Report</span>
                     </Button>

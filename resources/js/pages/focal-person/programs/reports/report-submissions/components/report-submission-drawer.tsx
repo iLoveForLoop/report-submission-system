@@ -400,7 +400,7 @@ export default function ReportSubmissionDrawer({
                                                 />
                                                 <Button
                                                     type="submit"
-                                                    className="w-full bg-gray-500 dark:bg-green-500 hover:bg-gray-600 dark:hover:bg-green-700"
+                                                    className="w-full bg-green-600 hover:bg-green-800 dark:bg-green-500 dark:hover:bg-green-700"
                                                 >
                                                     Accept Submission
                                                 </Button>

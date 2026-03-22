@@ -51,7 +51,7 @@ class ViewController extends Controller
                     ]);
 
         $coordinators = User::role('focal_person')
-                        ->select('id', 'name', 'email')
+                        ->select('id', 'first_name', 'last_name', 'email')
                         ->get();
 
 
@@ -217,7 +217,7 @@ class ViewController extends Controller
 
         $reports = $this->getReports();
 
-        return inertia('provincial-director/submission-logs/page', [
+        return inertia('program-head/submission-logs/page', [
             'reports' => $reports,
             'summary' => $this->getSummary($reports),
         ]);
@@ -352,7 +352,7 @@ class ViewController extends Controller
     {
         // All field officers — the denominator for "not submitted"
         $allOfficers = User::role('field_officer')
-            ->select('id', 'name', 'email', 'cluster')
+            ->select('id', 'name', 'first_name', 'last_name','email', 'cluster')
             ->get();
 
         $totalOfficers = $allOfficers->count();
@@ -375,6 +375,8 @@ class ViewController extends Controller
             ->map(fn ($officer) => [
                 'id'           => $officer->id,
                 'name'         => $officer->name,
+                'first_name'         => $officer->first_name,
+                'last_name'         => $officer->last_name,
                 'email'        => $officer->email,
                 'cluster'      => $officer->cluster,
                 'submitted_at' => null,

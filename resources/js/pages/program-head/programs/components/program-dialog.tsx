@@ -24,7 +24,7 @@ import { User } from '@/types';
 import { Form } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 
-type Coordinator = Pick<User, 'id' | 'name' | 'email' | 'avatar'>;
+type Coordinator = User;
 
 export default function ProgramDialog({
     coordinators,
@@ -101,7 +101,8 @@ export default function ProgramDialog({
                                                     key={coordinator.id}
                                                     value={coordinator.id.toString()}
                                                 >
-                                                    {coordinator.name}
+                                                    {coordinator.first_name}{' '}
+                                                    {coordinator.last_name}
                                                 </SelectItem>
                                             ))}
                                         </SelectGroup>

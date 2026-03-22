@@ -25,9 +25,9 @@ export default function GridView({
                     <Link
                         key={report.id}
                         href={`/focal-person/programs/${programId}/reports/${report.id}/report-submissions`}
-                        className={`group flex flex-col rounded-xl border bg-background/50 px-4 py-3 transition-all hover:shadow-md ${
+                        className={`group flex flex-col rounded-xl border bg-card px-4 py-3 transition-all hover:shadow-md ${
                             hasPending
-                                ? 'border-violet-200 hover:border-violet-300 dark:border-violet-800'
+                                ? 'border-amber-200 hover:border-amber-300 dark:borde-amber-800'
                                 : 'hover:border-primary/20'
                         }`}
                     >

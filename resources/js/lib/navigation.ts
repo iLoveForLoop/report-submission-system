@@ -116,12 +116,12 @@ export function mainNavigationPath(role: string): NavItem[] {
                     href: ProgramHeadNavigationPath.manageUsers().url,
                     icon: Users,
                 },
-                {
-                    title: 'Notifications',
-                    href: ProgramHeadNavigationPath.notifications().url,
-                    icon: Bell,
-                    showNotificationBadge: true,
-                },
+                // {
+                //     title: 'Notifications',
+                //     href: ProgramHeadNavigationPath.notifications().url,
+                //     icon: Bell,
+                //     showNotificationBadge: true,
+                // },
             ];
 
         case 'provincial_director':

@@ -59,7 +59,7 @@ export default function ProgramsPage() {
 
     const { programs } = usePage<{ programs: Program[] }>().props;
     const { coordinators } = usePage<{
-        coordinators: Pick<User, 'id' | 'name' | 'email' | 'avatar'>[];
+        coordinators: User[];
     }>().props;
 
     const availableYears = useMemo(() => {
@@ -106,9 +106,8 @@ export default function ProgramsPage() {
                 {/* Toolbar */}
                 <div className="flex flex-col gap-3 border-b px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-2">
-                        <div className='flex items-center gap-2'>
-                            <h1
-                                className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                        <div className="flex items-center gap-2">
+                            <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
                                 <Layers className="dark:text-primary-400 h-5 w-5 text-primary" />
                                 All Programs
                             </h1>
@@ -118,7 +117,6 @@ export default function ProgramsPage() {
                                 </span>
                             )}
                         </div>
-
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">

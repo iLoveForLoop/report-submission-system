@@ -199,7 +199,7 @@ function ListRow({ submission }: { submission: ReportSubmission }) {
                 submission.report!.program,
                 submission.report!,
             ])}
-            className={`group flex items-center gap-3 rounded-xl border border-l-4 border-border/60 bg-card px-3 py-3 transition-all hover:shadow-md sm:gap-4 sm:px-4 ${cfg.leftBorder} ${cfg.glow}`}
+            className={`group flex items-center gap-4 rounded-xl border border-l-4 border-border/60 bg-card px-4 py-3.5 transition-all hover:shadow-md ${cfg.leftBorder} ${cfg.glow} ${cfg.bg}`}
         >
             {/* Icon */}
             <div className="shrink-0 rounded-md bg-primary/10 p-1.5 sm:p-2">

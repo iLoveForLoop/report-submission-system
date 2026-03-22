@@ -40,6 +40,58 @@ class ViewController extends Controller
         ]);
     }
 
+    public function reports(Program $program)
+    {
+        $reports = $program->load("reports");
+
+        return Inertia::render('provincial-director/programs/reports/page', [
+            'program' => $program,
+            'reports' => Inertia::defer(fn () => $reports->reports)
+        ]);
+    }
+
+    public function submissions(Report $report)
+    {
+
+        // Load submissions with relationships
+        $report->load(['submissions' => function($query) {
+            $query->with([
+                'fieldOfficer',
+                'media' // Load Spatie media
+            ])->latest();
+        }]);
+
+        // Format the submissions to ensure media matches your interface
+        $formattedSubmissions = $report->submissions->map(function ($submission) {
+            return [
+                'id' => $submission->id,
+                'report_id' => $submission->report_id,
+                'field_officer' => $submission->fieldOfficer,
+                'status' => $submission->status,
+                'timeliness' => $submission->timeliness,
+                'description' => $submission->description,
+                'remarks' => $submission->remarks,
+                'created_at' => $submission->created_at,
+                'updated_at' => $submission->updated_at,
+                'media' => $submission->media->map(function ($media) {
+                    return [
+                        'id' => (string) $media->id,
+                        'name' => $media->name,
+                        'file_name' => $media->file_name,
+                        'mime_type' => $media->mime_type,
+                        'size' => $media->size,
+                        'original_url' => $media->getUrl(),
+                    ];
+                }),
+            ];
+        });
+
+        return Inertia::render('provincial-director/programs/reports/report-submissions/page', [
+            'report' => $report,
+            'submissions' => Inertia::defer(fn () => $formattedSubmissions)
+        ]);
+    }
+
 
     public function submissionLogs() {
 
@@ -172,7 +224,7 @@ class ViewController extends Controller
     {
         // All field officers — the denominator for "not submitted"
         $allOfficers = User::role('field_officer')
-            ->select('id', 'name', 'email', 'cluster')
+            ->select('id', 'name', 'first_name', 'last_name', 'email', 'cluster')
             ->get();
 
         $totalOfficers = $allOfficers->count();
@@ -195,6 +247,8 @@ class ViewController extends Controller
             ->map(fn ($officer) => [
                 'id'           => $officer->id,
                 'name'         => $officer->name,
+                'first_name'         => $officer->first_name,
+                'last_name'         => $officer->last_name,
                 'email'        => $officer->email,
                 'cluster'      => $officer->cluster,
                 'submitted_at' => null,

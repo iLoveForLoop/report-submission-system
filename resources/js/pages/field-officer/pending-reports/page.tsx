@@ -92,6 +92,7 @@ export default function PendingReportsPage() {
             );
     }, [pendingReports, query, filter]);
 
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pending Reports" />
@@ -115,50 +116,36 @@ export default function PendingReportsPage() {
                         View Programs
                     </Link>
                 </div>
-                <Card className="gap-4 dark:border-gray-700">
-                    <CardContent className="space-y-4 px-5">
+                <Card className="gap-4 bg-background border">
+                    <CardContent className="space-y-4 px-5 ">
                         <div className="flex flex-col justify-between md:flex-row md:items-center">
                             <div className="relative w-full md:max-w-sm">
-                                <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground dark:text-gray-500" />
+                                <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+
                                 <input
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     placeholder="Search title or program..."
-                                    className="w-full rounded-md border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/30 dark:border-gray-700 dark:text-white dark:placeholder-gray-500 dark:focus:ring-primary-400/30"
+                                    className="bg-card-elevated w-full rounded-md border border-border py-2 pr-3 pl-9 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/30"
                                 />
                             </div>
 
-                            <div className="flex flex-wrap gap-2 mt-5 md:mt-0">
+                            <div className="mt-5 flex flex-wrap gap-2 md:mt-0">
                                 {[
-                                    {
-                                        key: 'all',
-                                        label: 'All',
-                                        icon: FileText,
-
-                                    },
-                                    {
-                                        key: 'overdue',
-                                        label: 'Overdue',
-                                        icon: AlertTriangle,
-                                    },
-                                    {
-                                        key: 'due_soon',
-                                        label: 'Due Soon',
-                                        icon: Clock3,
-                                    },
+                                    { key: 'all', label: 'All', icon: FileText },
+                                    { key: 'overdue', label: 'Overdue', icon: AlertTriangle },
+                                    { key: 'due_soon', label: 'Due Soon', icon: Clock3 },
                                 ].map((item) => (
                                     <button
                                         key={item.key}
-                                        onClick={() =>
-                                            setFilter(item.key as FilterKey)
-                                        }
-                                        className={`rounded-md border px-3 py-1.5 text-sm ${
+                                        onClick={() => setFilter(item.key as FilterKey)}
+                                        className={`flex items-center rounded-md border px-3 py-1.5 text-sm transition-colors ${
                                             filter === item.key
-                                                ? 'border-primary bg-primary/10 text-primary dark:border-primary-400 dark:bg-primary-400/10 dark:text-primary-400'
-                                                : 'hover:bg-accent dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white'
+                                                ? 'border-primary bg-primary/10 text-primary'
+                                                : 'border-border text-muted-foreground hover:bg-accent hover:text-foreground'
                                         }`}
                                     >
-                                        <item.icon className="mr-1 inline h-3.5 w-3.5" />
+                                        <item.icon className="mr-1 h-3.5 w-3.5" />
                                         {item.label}
                                     </button>
                                 ))}
@@ -168,21 +155,22 @@ export default function PendingReportsPage() {
                             <StatCard
                                 label="Total Pending"
                                 value={stats.total}
-                                icon={<FileText className="h-4 w-4" />}
+                                icon={FileText}
+                                variant="neutral"
                             />
+
                             <StatCard
                                 label="Overdue"
                                 value={stats.overdue}
-                                icon={
-                                    <AlertTriangle className="h-4 w-4 text-rose-500 dark:text-rose-400" />
-                                }
+                                icon={AlertTriangle}
+                                variant="danger"
                             />
+
                             <StatCard
                                 label="Due in 7 Days"
                                 value={stats.dueSoon}
-                                icon={
-                                    <Clock3 className="h-4 w-4 text-amber-500 dark:text-amber-400" />
-                                }
+                                icon={Clock3}
+                                variant="warning"
                             />
                         </div>
                     </CardContent>

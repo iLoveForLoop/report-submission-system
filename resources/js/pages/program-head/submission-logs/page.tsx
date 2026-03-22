@@ -43,6 +43,8 @@ type ClusterFilter = 'all' | 'M&M' | "D'ONE";
 interface OfficerRow {
     id: number;
     name: string;
+    first_name: string;
+    last_name: string;
     email: string;
     cluster: string;
     submitted_at: string | null;
@@ -294,14 +296,14 @@ export default function SubmissionLogs() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Submission Logs" />
 
-            <div className='p-4'>
+            <div className="p-4">
                 <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
-                    <FileCheck className='dark:text-primary-400 h-5 w-5 text-primary' />
+                    <FileCheck className="dark:text-primary-400 h-5 w-5 text-primary" />
                     Submission Logs
                 </h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    Click a report row to see the submission status of all
-                    field officers.
+                    Click a report row to see the submission status of all field
+                    officers.
                 </p>
             </div>
 
@@ -638,14 +640,12 @@ export default function SubmissionLogs() {
                                                         >
                                                             <td className="px-6 py-3 lg:py-4">
                                                                 <p className="text-sm font-medium">
-                                                                    {
-                                                                        officer.name
-                                                                    }
+                                                                    {`${officer.first_name} ${officer.last_name}`}
                                                                 </p>
                                                                 <p className="text-xs text-muted-foreground">
                                                                     {
                                                                         officer.email
-                                                                    }
+                                                                    }{' '}
                                                                 </p>
                                                             </td>
                                                             <td className="px-6 py-4 text-sm uppercase">

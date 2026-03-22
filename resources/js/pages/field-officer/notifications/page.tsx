@@ -212,9 +212,9 @@ export default function NotificationsPage() {
                     </button>
                 </div>
                 {/* Header Card */}
-                <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+                <div className="rounded-xl border border-border bg-background p-4 shadow-sm">
                     {/* Stats - Updated colors to match filter buttons */}
-                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                    <div className="grid gap-3 sm:grid-cols-3">
                         <div className="rounded-lg border border-border bg-muted px-4 py-3 dark:bg-muted/20">
                             <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                                 Total
@@ -223,19 +223,19 @@ export default function NotificationsPage() {
                                 {notifications.total}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:bg-amber-950/20">
+                        <div className="rounded-lg border border-amber-500 bg-amber-50 px-4 py-3 dark:bg-amber-950/20">
                             <p className="text-xs font-medium tracking-wide text-amber-600 uppercase">
                                 Unread
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-amber-600">
+                            <p className="mt-1 text-lg font-semibold text-amber-600 dark:text-white">
                                 {unreadCount}
                             </p>
                         </div>
-                        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 dark:bg-green-950/20">
+                        <div className="rounded-lg border border-green-500 bg-green-50 px-4 py-3 dark:bg-green-950/20">
                             <p className="text-xs font-medium tracking-wide text-green-600 uppercase">
                                 Read
                             </p>
-                            <p className="mt-1 text-lg font-semibold text-green-600">
+                            <p className="mt-1 text-lg font-semibold text-green-600 dark:text-white">
                                 {readCount}
                             </p>
                         </div>
@@ -243,7 +243,7 @@ export default function NotificationsPage() {
                 </div>
 
                 {/* List Card */}
-                <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+                <div className="rounded-xl border border-border bg-background p-4 shadow-sm">
                     {/* Filter row */}
                     <div className="mb-4 flex items-center gap-2">
                         <Filter className="h-4 w-4 text-muted-foreground" />
@@ -298,7 +298,7 @@ export default function NotificationsPage() {
                                         }
                                         className={`group rounded-lg border px-4 py-3 transition-all ${
                                             item.isRead
-                                                ? 'border-border bg-card'
+                                                ? 'border-border bg-card-elevated'
                                                 : `${theme.unreadBorder} ${theme.unreadBg}`
                                         } ${
                                             isClickable

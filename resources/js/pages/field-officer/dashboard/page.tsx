@@ -305,9 +305,9 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className="px-5 py-5">
+                    <div className="px-5 py-5 bg-card-elevated">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                            <div>
+                            <div className=''>
                                 <h1 className="font-md text-xl tracking-tight text-foreground">
                                     Welcome,{' '}
                                     <span className="font-bold">
@@ -355,7 +355,7 @@ export default function Dashboard() {
                         <Link
                             key={i}
                             href={stat.link}
-                            className={`group flex items-center gap-4 rounded border-2 border-l-4 border-border bg-card p-4 transition-colors hover:bg-muted/50 ${stat.accent}`}
+                            className={`group flex items-center gap-4 rounded border-2 border-l-4 border-border bg-card-elevated p-4 transition-colors hover:bg-muted/50 ${stat.accent}`}
                         >
                             <div className="min-w-0 flex-1">
                                 <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
@@ -377,7 +377,7 @@ export default function Dashboard() {
                     {/* Left — 2/3 width */}
                     <div className="space-y-5 lg:col-span-2">
                         {/* Active Programs */}
-                        <div className="rounded border-2 border-border bg-card">
+                        <div className="rounded border-2 border-border bg-card-elevated">
                             <SectionHeader
                                 title="Active Programs"
                                 badge={`${recent_programs.length} enrolled`}
@@ -463,7 +463,7 @@ export default function Dashboard() {
                         </div>
 
                         {/* Reports Due */}
-                        <div className="rounded border-2 border-border bg-card">
+                        <div className="rounded border-2 border-border bg-card-elevated">
                             <SectionHeader
                                 title="Reports Due"
                                 badge={`${pending_reports_count} pending`}
@@ -562,7 +562,7 @@ export default function Dashboard() {
                     {/* Right — 1/3 width */}
                     <div className="space-y-5">
                         {/* Recent Submissions */}
-                        <div className="rounded border-2 border-border bg-card">
+                        <div className="rounded border-2 border-border bg-card-elevated">
                             <SectionHeader
                                 title="Recent Submissions"
                                 headerColor="bg-slate-600"
@@ -630,7 +630,7 @@ export default function Dashboard() {
                         </div>
 
                         {/* Upcoming Deadlines */}
-                        <div className="rounded border-2 border-border bg-card">
+                        <div className="rounded border-2 border-border bg-card-elevated">
                             <SectionHeader
                                 title="Upcoming Deadlines"
                                 headerColor="bg-slate-600"
@@ -697,7 +697,7 @@ export default function Dashboard() {
                         </div>
 
                         {/* Quick Actions */}
-                        <div className="rounded border-2 border-border bg-card">
+                        <div className="rounded border-2 border-border bg-card-elevated">
                             <SectionHeader
                                 title="Quick Actions"
                                 headerColor="bg-slate-600"

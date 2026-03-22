@@ -219,7 +219,7 @@ function WaitingBadge({ submittedAt }: { submittedAt: string }) {
         );
     }
     return (
-        <span className="inline-flex items-center gap-1 rounded-md bg-violet-50 px-2 py-1 text-[10px] font-medium text-violet-600 ring-1 ring-violet-200 dark:bg-violet-950/20 dark:text-violet-400 dark:ring-violet-800">
+        <span className="inline-flex items-center gap-1 rounded-md bg-violet-50 px-2 py-1 text-[10px] font-medium text-green-600 ring-1 ring-green-200 dark:bg-green-950/20 dark:text-green-400 dark:ring-green-800">
             <ClipboardCheck className="h-3 w-3" />
             New
         </span>
@@ -293,7 +293,7 @@ export default function ReviewQueuePage() {
                     </div>
                 </CardHeader>
                 {/* ── Header Card ── */}
-                <Card className="gap-4 py-5">
+                <Card className="gap-4 py-5 bg-background">
                     <CardContent className="space-y-4 px-5">
                         {/* Stats */}
                         <div className="grid gap-3 sm:grid-cols-3">
@@ -410,7 +410,7 @@ export default function ReviewQueuePage() {
                                 key={item.id}
                                 className={`gap-3 py-4 transition-all hover:shadow-md ${
                                     item.is_overdue
-                                        ? 'border-rose-200 dark:border-rose-800'
+                                        ? 'border-red-200 dark:border-red-800'
                                         : ''
                                 }`}
                             >
@@ -497,7 +497,7 @@ export default function ReviewQueuePage() {
                                                     report: item.report_id,
                                                 },
                                             )}
-                                            className="inline-flex items-center gap-2 rounded-md bg-violet-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-700"
+                                            className="inline-flex items-center gap-2 rounded-md bg-gray-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-black"
                                         >
                                             <ArrowRight className="h-4 w-4" />
                                             Review Submission

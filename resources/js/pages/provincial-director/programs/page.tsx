@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { breadcrumbs } from '@/pages/field-officer/dashboard/page';
 import { Program } from '@/types';
 import { Deferred, Head, usePage } from '@inertiajs/react';
-import { FolderOpen } from 'lucide-react';
+import { FolderOpen, Layers } from 'lucide-react';
 import GridView from './components/grid-view';
 
 export default function Page() {
@@ -15,14 +15,13 @@ export default function Page() {
             <Head title="Programs" />
 
             {/* Header Section */}
-            <div className="border-b border-border bg-card p-4 sm:p-6">
+            <div className="border-b border-border  p-4">
                 <div>
-                    <h1 className="text-2xl font-semibold text-foreground">
+                    <h1 className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                        <Layers className="dark:text-primary-400 h-5 w-5 text-primary" />
                         Programs
                     </h1>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                        Manage and view all your programs
-                    </p>
+                    <p className='mt-1 text-sm text-muted-foreground'>Manage and view all the programs </p>
                 </div>
             </div>
 

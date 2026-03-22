@@ -310,7 +310,7 @@ export default function SubmissionLogs() {
             <div className="flex-1 space-y-6 bg-background p-4 pt-0">
                 {/* Summary cards */}
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div className="rounded-sm   border bg-card p-4">
+                    <div className="rounded-sm   border bg-card-elevated p-4">
                         <div className="mb-3 inline-flex rounded-md bg-muted p-3">
                             <File className="h-5 w-5" />
                         </div>
@@ -321,7 +321,7 @@ export default function SubmissionLogs() {
                             Total Reports
                         </p>
                     </div>
-                    <div className="rounded-sm   border bg-card p-4">
+                    <div className="rounded-sm   border bg-card-elevated p-4">
                         <div className="mb-3 inline-flex rounded-md bg-emerald-500/10 p-3">
                             <FolderOpen className="h-5 w-5 text-emerald-500" />
                         </div>
@@ -332,7 +332,7 @@ export default function SubmissionLogs() {
                             Open Reports
                         </p>
                     </div>
-                    <div className="rounded-sm   border bg-card p-4">
+                    <div className="rounded-sm   border bg-card-elevated p-4">
                         <div className="mb-3 inline-flex rounded-md bg-amber-500/10 p-3">
                             <FileClock className="h-5 w-5 text-amber-500" />
                         </div>
@@ -343,7 +343,7 @@ export default function SubmissionLogs() {
                             Overdue Reports
                         </p>
                     </div>
-                    <div className="rounded-sm   border bg-card p-4">
+                    <div className="rounded-sm   border bg-card-elevated p-4">
                         <div className="mb-3 inline-flex rounded-md bg-blue-500/10 p-3">
                             <FileCheck className="h-5 w-5 text-blue-500" />
                         </div>
@@ -357,7 +357,7 @@ export default function SubmissionLogs() {
                 </div>
 
                 {/* Filters */}
-                <div className="rounded-sm   border bg-card p-4 md:p-6">
+                <div className="rounded-sm   border bg-card-elevated p-4 md:p-6">
                     <div className="grid gap-3 md:grid-cols-2">
                         <div className="relative">
                             <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -368,7 +368,7 @@ export default function SubmissionLogs() {
                                     setReportSearch(e.target.value)
                                 }
                                 placeholder="Search by report title or program…"
-                                className="w-full rounded-lg border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                                className="w-full rounded-lg border bg-card py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/40"
                             />
                         </div>
                         <select
@@ -378,7 +378,7 @@ export default function SubmissionLogs() {
                                     e.target.value as ReportStatusFilter,
                                 )
                             }
-                            className="w-full rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                            className="w-full rounded-lg border bg-card px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
                         >
                             <option value="all">All Report Statuses</option>
                             <option value="open">Open</option>
@@ -389,7 +389,7 @@ export default function SubmissionLogs() {
                 </div>
 
                 {/* Reports table */}
-                <div className="overflow-hidden rounded-sm   border bg-card">
+                <div className="overflow-hidden rounded-sm   border bg-card-elevated">
                     <div className="border-b px-6 py-4">
                         <h2 className="text-sm font-semibold md:text-base">
                             Report List ({filteredReports.length})
@@ -431,7 +431,7 @@ export default function SubmissionLogs() {
                                         <tr
                                             key={report.id}
                                             onClick={() => openModal(report)}
-                                            className="cursor-pointer border-t transition-colors hover:bg-muted/40"
+                                            className="cursor-pointer border-t transition-colors hover:bg-gray-200 dark:hover:bg-gray-600/20"
                                             title="Click to view officer submissions"
                                         >
                                             <td className="px-6 py-4">

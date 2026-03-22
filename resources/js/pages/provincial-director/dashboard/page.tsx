@@ -355,7 +355,7 @@ export default function Dashboard() {
 
             <div className="flex-1 space-y-6 bg-background p-6 md:p-8">
                 {/* ── System Header (traffic lights) ───────────────────── */}
-                <div className="border border-border bg-card">
+                <div className="border border-border bg-card-elevated">
                     <div className="flex items-center gap-3 border-b border-border/50 bg-muted/30 px-5 py-2">
                         <div className="flex items-center gap-1.5">
                             <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
@@ -381,7 +381,7 @@ export default function Dashboard() {
 
                             <div className="flex items-center gap-2">
                                 {/* Month filter */}
-                                <div className="flex items-center gap-2 bg-card px-3 py-1.5">
+                                <div className="flex items-center gap-2 bg-card-elevated px-3 py-1.5">
                                     <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
                                     <MonthFilter
                                         value={selectedMonth}
@@ -405,7 +405,7 @@ export default function Dashboard() {
                     {stats.map((stat, i) => (
                         <div
                             key={i}
-                            className={`group flex items-center gap-4 rounded border-2 border-l-4 border-border bg-card p-4 ${stat.accent}`}
+                            className={`group flex items-center gap-4 rounded border-2 border-l-4 border-border bg-card-elevated p-4 ${stat.accent}`}
                         >
                             <div className="min-w-0 flex-1">
                                 <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
@@ -698,7 +698,7 @@ export default function Dashboard() {
                                 {top_programs.map((program, index) => (
                                     <div
                                         key={program.name}
-                                        className="rounded border-2 border-border bg-muted/30 p-4 transition-colors hover:bg-muted/50"
+                                        className="bg-card-elevated rounded border-2 border-border p-4 transition-colors hover:bg-muted/50"
                                     >
                                         <div className="mb-3 flex items-center justify-between">
                                             <div className="rounded bg-blue-50 p-2 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400">
@@ -748,7 +748,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* ── Recent Submissions ── */}
-                <div className="overflow-hidden rounded border-2 border-border bg-card">
+                <div className="overflow-hidden rounded border-2 border-border bg-card-elevated">
                     <SectionHeader
                         title="Recent Submissions"
                         // subtitle="Latest activity from field officers"

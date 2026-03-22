@@ -368,7 +368,7 @@ export default function SubmissionLogs() {
                                     setReportSearch(e.target.value)
                                 }
                                 placeholder="Search by report title or program…"
-                                className="w-full rounded-lg border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                                className="w-full rounded-lg border bg-card-elevated py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/40"
                             />
                         </div>
                         <select
@@ -378,7 +378,7 @@ export default function SubmissionLogs() {
                                     e.target.value as ReportStatusFilter,
                                 )
                             }
-                            className="w-full rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                            className="w-full rounded-lg border bg-card-elevated px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
                         >
                             <option value="all">All Report Statuses</option>
                             <option value="open">Open</option>
@@ -389,7 +389,7 @@ export default function SubmissionLogs() {
                 </div>
 
                 {/* Reports table */}
-                <div className="overflow-hidden rounded-sm   border bg-card">
+                <div className="overflow-hidden rounded-sm   border bg-card-elevated">
                     <div className="border-b px-6 py-4">
                         <h2 className="text-sm font-semibold md:text-base">
                             Report List ({filteredReports.length})

@@ -31,10 +31,10 @@ export default function GridView({
                         }
                         className={cn(
                             'group relative flex cursor-pointer flex-col justify-between rounded-2xl p-5 transition-all duration-300',
-                            'border bg-card shadow-sm hover:-translate-y-1 hover:shadow-md',
+                            'bg-card-elevated shadow-sm hover:-translate-y-1 hover:shadow-md',
                             isSelected
                                 ? 'border-primary ring-1 ring-primary/30 bg-primary/[0.03] dark:bg-primary/[0.08]'
-                                : 'border-slate-200/60 dark:border-gray-800 dark:bg-gray-900/50'
+                                : 'border-slate-200/60 '
                         )}
                     >
                         <div className="space-y-4">

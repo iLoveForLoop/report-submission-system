@@ -197,7 +197,7 @@ export default function Header({
                         value={search}
                         onChange={(e) => handleSearchChange(e.target.value)}
                         placeholder="Search name, email, employee code…"
-                        className="h-9 w-full rounded-lg border bg-background py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                        className="h-9 w-full rounded-lg border bg-card-elevated py-2 pr-3 pl-9 text-sm outline-none focus:ring-2 focus:ring-primary/40"
                     />
                     {search && (
                         <button
@@ -212,10 +212,10 @@ export default function Header({
                 {/* Filters toggle */}
                 <button
                     onClick={() => setShowPanel((v) => !v)}
-                    className={`relative flex h-9 items-center gap-2 rounded-lg border px-3 text-sm transition-colors ${
+                    className={`relative flex h-9 items-center gap-2 rounded-lg px-3 text-sm transition-colors ${
                         showPanel
                             ? 'border-primary bg-primary/5 text-primary'
-                            : 'bg-background hover:bg-muted'
+                            : 'bg-card-elevated hover:bg-muted'
                     }`}
                 >
                     <SlidersHorizontal className="h-4 w-4" />

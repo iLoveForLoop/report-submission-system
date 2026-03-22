@@ -56,7 +56,7 @@ export default function EllipsisPopover({ program }: { program: Program }) {
                     </button>
                 </PopoverTrigger>
                 <PopoverContent
-                    className="w-48 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-gray-800 dark:bg-gray-950"
+                    className="w-48 overflow-hidden rounded-xl border-slate-200 dark:bg-black p-1.5 shadow-xl dark:border-0"
                     align="end"
                     sideOffset={8}
                     onClick={(e) => e.stopPropagation()}

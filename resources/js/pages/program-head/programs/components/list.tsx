@@ -18,9 +18,9 @@ export default function ListView({
     setSelecReviewProgram,
 }: Props) {
     return (
-        <div className="flex flex-col overflow-hidden rounded-xl border dark:border-gray-700">
+        <div className="flex flex-col overflow-hidden rounded-xl border ">
             {/* Header — hidden on mobile */}
-            <div className="hidden grid-cols-12 gap-4 border-b bg-muted/40 px-4 py-2 text-xs font-medium tracking-wide text-muted-foreground uppercase sm:grid dark:border-gray-700 dark:bg-gray-800/50">
+            <div className="hidden grid-cols-12 gap-4 border-b bg-card px-4 py-2 text-xs font-medium tracking-wide text-muted-foreground uppercase sm:grid ">
                 <div className="col-span-5">Name</div>
                 <div className="col-span-4">Coordinator</div>
                 <div className="col-span-2">Description</div>
@@ -40,8 +40,8 @@ export default function ListView({
                         className={cn(
                             'cursor-pointer border-b transition-colors last:border-b-0 dark:border-gray-700',
                             isSelected
-                                ? 'bg-muted dark:bg-gray-800'
-                                : 'hover:bg-muted/50 dark:hover:bg-gray-800/50',
+                                ? 'bg-muted dark:bg-gray-700/20'
+                                : 'hover:bg-muted/50 dark:hover:bg-gray-600/20',
                         )}
                     >
                         {/* Mobile layout */}

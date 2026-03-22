@@ -170,7 +170,7 @@ export default function ListView({
                         <button
                             key={submission.id}
                             onClick={() => onRowClick(submission)}
-                            className="group flex w-full cursor-pointer items-center gap-4 px-4 py-3.5 text-left transition-colors hover:bg-muted/40 lg:grid lg:grid-cols-[auto_1fr_160px_120px_140px_140px_80px_40px]"
+                            className="group flex w-full cursor-pointer items-center gap-4 px-4 py-3.5 text-left transition-colors hover:bg-muted/40 lg:grid lg:grid-cols-[auto_1fr_160px_120px_140px_140px_80px_40px] "
                         >
                             {/* Avatar + status dot */}
                             <div className="relative flex-shrink-0">

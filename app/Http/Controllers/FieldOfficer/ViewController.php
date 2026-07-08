@@ -132,7 +132,7 @@ class ViewController extends Controller
         ];
 
         $submission = $report->submissions()
-            ->select('id', 'report_id', 'field_officer_id', 'description', 'data', 'status', 'remarks', 'created_at', 'updated_at')
+            ->select('id', 'report_id', 'field_officer_id', 'description', 'data', 'status', 'remarks', 'timeliness', 'created_at', 'updated_at')
             ->whereBelongsTo(auth()->user(), 'fieldOfficer')
             ->with([
                 'fieldOfficer:id,name,email',
@@ -170,7 +170,7 @@ class ViewController extends Controller
         $filter = $request->get('filter', 'all');
 
         $query = ReportSubmission::query()
-            ->select('id', 'report_id', 'field_officer_id', 'status', 'created_at', 'updated_at')
+            ->select('id', 'report_id', 'field_officer_id', 'status', 'created_at', 'updated_at', 'timeliness')
             ->whereBelongsTo(auth()->user(), 'fieldOfficer')
             ->with([
                 'fieldOfficer:id,name,email',
@@ -204,62 +204,75 @@ class ViewController extends Controller
         ]);
     }
 
-public function pendingReports()
-{
-    $user = auth()->user();
+    public function pendingReports()
+    {
+        $user = auth()->user();
 
-    $pendingReports = Report::with([
-            'program:id,name,description',
-            'coordinator:id,name,email',
-            'media' // Load all media at once
-        ])
-        ->where(function ($query) use ($user) {
-            $query->whereDoesntHave('submissions', function ($q) use ($user) {
-                $q->where('field_officer_id', $user->id);
+        $pendingReports = Report::with([
+                'program:id,name,description',
+                'coordinator:id,name,email',
+                'media', // Load all media at once
+                'submissions' => function ($q) use ($user) {
+                    $q->where('field_officer_id', $user->id);
+                }
+            ])
+            ->where(function ($query) use ($user) {
+                $query->whereDoesntHave('submissions', function ($q) use ($user) {
+                    $q->where('field_officer_id', $user->id);
+                })
+                ->orWhereHas('submissions', function ($q) use ($user) {
+                    $q->where('field_officer_id', $user->id)
+                        ->where('status', 'returned');
+                });
             })
-            ->orWhereHas('submissions', function ($q) use ($user) {
-                $q->where('field_officer_id', $user->id)
-                    ->where('status', 'returned');
+            ->orderBy('deadline')
+            ->get()
+            ->map(function ($report) {
+                // Filter media by collection
+                $templates = $report->media->where('collection_name', 'templates');
+                $references = $report->media->where('collection_name', 'references');
+
+                $submission = $report->submissions->first();
+
+                if (!$submission) {
+                    $status = 'not_submitted';
+                } elseif ($submission->status === 'returned') {
+                    $status = 'returned';
+                } else {
+                    $status = null; // shouldn't happen due to your filter, but safe fallback
+                }
+
+                // Helper function to format media
+                $formatMedia = fn($media) => [
+                    'id' => $media->id,
+                    'name' => $media->name,
+                    'file_name' => $media->file_name,
+                    'mime_type' => $media->mime_type,
+                    'size' => $media->size,
+                    'original_url' => $media->original_url,
+                ];
+
+                return [
+                    'id' => $report->id,
+                    'title' => $report->title,
+                    'description' => $report->description,
+                    'program' => $report->program,
+                    'created_by' => $report->coordinator,
+                    'deadline' => $report->deadline->toISOString(),
+                    'final_deadline' => $report->final_deadline ? $report->final_deadline->toISOString() : null,
+                    'form_schema' => $report->form_schema,
+                    'templates' => $templates->map($formatMedia)->values(),
+                    'references' => $references->map($formatMedia)->values(),
+                    'created_at' => $report->created_at,
+                    'updated_at' => $report->updated_at,
+                    'submission_status' => $status
+                ];
             });
-        })
-        ->orderBy('deadline')
-        ->get()
-        ->map(function ($report) {
-            // Filter media by collection
-            $templates = $report->media->where('collection_name', 'templates');
-            $references = $report->media->where('collection_name', 'references');
 
-            // Helper function to format media
-            $formatMedia = fn($media) => [
-                'id' => $media->id,
-                'name' => $media->name,
-                'file_name' => $media->file_name,
-                'mime_type' => $media->mime_type,
-                'size' => $media->size,
-                'original_url' => $media->original_url,
-            ];
-
-            return [
-                'id' => $report->id,
-                'title' => $report->title,
-                'description' => $report->description,
-                'program' => $report->program,
-                'created_by' => $report->coordinator,
-                'deadline' => $report->deadline->toISOString(),
-                'final_deadline' => $report->final_deadline ? $report->final_deadline->toISOString() : null,
-                'form_schema' => $report->form_schema,
-                'templates' => $templates->map($formatMedia)->values(),
-                'references' => $references->map($formatMedia)->values(),
-                'created_at' => $report->created_at,
-                'updated_at' => $report->updated_at,
-                'submission_status' => $report->submission_status
-            ];
-        });
-
-    return inertia('field-officer/pending-reports/page', [
-        'pendingReports' => $pendingReports
-    ]);
-}
+        return inertia('field-officer/pending-reports/page', [
+            'pendingReports' => $pendingReports
+        ]);
+    }
     public function notifications()
     {
         $notifications = auth()->user()

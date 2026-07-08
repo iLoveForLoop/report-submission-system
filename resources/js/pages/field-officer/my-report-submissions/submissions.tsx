@@ -214,9 +214,8 @@ function ListRow({ submission }: { submission: ReportSubmission }) {
                             `Submission #${submission.id}`}
                     </p>
                     <StatusBadge status={submission.status} />
-                    <span className="hidden sm:inline">
-                        <TimelinessBadge timeliness={submission.timeliness} />
-                    </span>
+                    <TimelinessBadge timeliness={submission.timeliness} />
+                    <span className="sm:inline"></span>
                 </div>
                 <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground sm:gap-3">
                     {submission.report?.program?.name && (

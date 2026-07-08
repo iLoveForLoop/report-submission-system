@@ -26,7 +26,7 @@ public function store(Request $request)
         // Work Info
         'department' => ['required', 'string', 'max:255'],
         'position' => ['required', 'string', 'max:255'],
-        'cluster' => ['required', 'string'],
+        'cluster' => ['nullable', 'string'],
 
         // Role (Spatie Permission)
         'role' => ['required', 'in:focal_person,field_officer,program_head,provincial_director'],
@@ -65,9 +65,13 @@ public function store(Request $request)
 
 public function update(Request $request, User $user)
 {
+    if ($request->cluster === 'none') {
+        $request->merge(['cluster' => null]);
+    }
+
     $validated = $request->validate([
         // Avatar
-        'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+        'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:20048'],
 
         // Employee Info
         'employee_code' => ['nullable', 'string', 'max:50'],
@@ -82,7 +86,7 @@ public function update(Request $request, User $user)
         // Work Info
         'department' => ['required', 'string', 'max:255'],
         'position'   => ['required', 'string', 'max:255'],
-        'cluster'    => ['required', 'string'],
+        'cluster'    => ['nullable', 'string'],
 
         // Role
         'role' => ['required', 'in:focal_person,field_officer,program_head,provincial_director'],
@@ -129,22 +133,31 @@ public function update(Request $request, User $user)
     return redirect()->back()->with('success', 'User updated successfully.');
 }
 
-public function deleteMultipleUsers(Request $request)
-{
+    public function deleteMultipleUsers(Request $request)
+    {
 
-    $request->validate([
-        'users_id' => 'required|array',
-        'users_id.*' => 'integer|exists:users,id',
-    ]);
+        $request->validate([
+            'users_id' => 'required|array',
+            'users_id.*' => 'integer|exists:users,id',
+        ]);
 
-    $users = User::whereIn('id', $request->users_id)->get();
+        $users = User::whereIn('id', $request->users_id)->get();
 
-    foreach ($users as $user) {
-        $user->clearMediaCollection('avatar'); // remove avatar files
-        $user->delete();
+        foreach ($users as $user) {
+            $user->clearMediaCollection('avatar'); // remove avatar files
+            $user->delete();
+        }
+
+        return redirect()->back()->with('success', count($users) . ' user(s) deleted successfully.');
     }
 
-    return redirect()->back()->with('success', count($users) . ' user(s) deleted successfully.');
-}
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted successfully.');
+    }
+
+
 
 }

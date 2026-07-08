@@ -19,5 +19,9 @@ Route::middleware(['auth', 'verified', 'role:focal_person'])->group(function () 
 
     //patch
     Route::patch('/focal-person/report-submissions/{reportSubmission}/update-status', [ReportSubmissionController::class, 'updateStatus'])->name('focal-person.programs.reports.report-submissions.update-status');
+    Route::patch('/focal-person/reports/{report}', [ReportController::class, 'update'])->name('focal-person.programs.reports.update');
+
+    //delete
+    Route::delete('/focal-person/report/{report}',[ReportController::class, 'destroy'])->name('focal-person.reports.destroy');
 
 });

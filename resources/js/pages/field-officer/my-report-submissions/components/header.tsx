@@ -1,5 +1,5 @@
 import { FilterType } from '@/types';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { FileCheck, Grid2x2, List } from 'lucide-react';
 
 type ViewMode = 'grid' | 'list';
@@ -25,6 +25,9 @@ export default function Header({
     const handleFilterClick = (filter: FilterType) => {
         router.get(window.location.pathname, { filter });
     };
+
+    const returnedCount =
+        usePage().props.auth?.user?.returned_submissions_count ?? 0;
 
     return (
         <div className="flex flex-col">
@@ -68,6 +71,9 @@ export default function Header({
             <div className="flex items-center gap-1 overflow-x-auto border-b px-4 dark:border-gray-700">
                 {filters.map((filter) => {
                     const isActive = activeFilter === filter.key;
+                    const showDot =
+                        filter.key === 'returned' && returnedCount > 0;
+
                     return (
                         <button
                             key={filter.key}
@@ -78,7 +84,17 @@ export default function Header({
                                     : 'text-muted-foreground hover:text-foreground'
                             }`}
                         >
-                            {filter.label}
+                            <span className="flex items-center gap-1.5">
+                                {filter.label}
+
+                                {showDot && (
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
+                                        <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+                                    </span>
+                                )}
+                            </span>
+
                             {isActive && (
                                 <span className="absolute right-0 bottom-0 left-0 h-0.5 rounded-t-full bg-primary" />
                             )}

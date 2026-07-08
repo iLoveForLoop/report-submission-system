@@ -161,6 +161,9 @@ export default function NotificationsPage() {
         const next: Record<string, boolean> = {};
         normalized.forEach((n) => (next[n.id] = true));
         setLocalReadMap(next);
+        router.reload({
+            only: ['auth'],
+        });
     };
 
     const handleCardClick = (item: NotificationItem & { isRead: boolean }) => {

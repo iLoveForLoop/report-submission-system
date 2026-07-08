@@ -160,9 +160,9 @@ class ViewController extends Controller
                 'form_schema' => $report->form_schema,
                 'deadline'    => $report->deadline?->toISOString(),
 
-                'submitted_count' => $report->submitted_count,
-                'accepted_count'  => $report->accepted_count,
-                'total_count'     => $report->total_count,
+                'submitted_count' => (int) $report->submitted_count,
+                'accepted_count'  => (int) $report->accepted_count,
+                'total_count'     => (int) $report->total_count,
 
                 'program' => [
                     'id'          => $report->program->id,
@@ -211,7 +211,7 @@ class ViewController extends Controller
 
     public function reportSubmissions(Program $program, Report $report){
 
-        $report->load([ 'submissions.fieldOfficer', ]);
+        // $report->load([ 'submissions.fieldOfficer', ]);
 
         $submissions = $report->submissions()->with(['fieldOfficer:id,name,first_name,last_name,email', 'media', 'activities.causer'])
         ->orderBy('updated_at', 'desc')->get();
@@ -477,7 +477,7 @@ class ViewController extends Controller
                 'submitted_at' => $sub->created_at->toISOString(),
                 'reviewed_at'  => $sub->reviewed_at?->toISOString(),
                 'status'       => match ($sub->status) {
-                    'approved' => $isLate ? 'submitted_late' : 'submitted_on_time',
+                    'accepted' => $isLate ? 'submitted_late' : 'submitted_on_time',
                     'returned' => 'returned',
                     default    => $isLate ? 'submitted_late' : 'pending',
                 },

@@ -124,6 +124,7 @@ class ReportSubmissionController extends Controller
 
         $data = [
             'status' => $request->status,
+            'reviewed_at' => now()
         ];
 
         if ($request->status === 'returned') {
@@ -151,9 +152,9 @@ class ReportSubmissionController extends Controller
         $report = $submission->report;
 
         // Check if user is authorized
-        if ($submission->field_officer_id !== Auth::id()) {
-            abort(403, 'You are not authorized to update this submission.');
-        }
+        // if ($submission->field_officer_id !== Auth::id()) {
+        //     abort(403, 'You are not authorized to update this submission.');
+        // }
 
 
         $deadlinePassed = $report->deadline && now()->gt($report->deadline);
@@ -243,25 +244,31 @@ class ReportSubmissionController extends Controller
             $isResubmitted = true;
         }
 
+        $report = Report::findOrFail($request->report_id);
+
+        $submittedAt = now();
+        $deadline = $report->deadline;
+
+        $submittedDate = $submittedAt->startOfDay();
+        $deadlineDate = $deadline->startOfDay();
+
+        if ($submittedDate->lt($deadlineDate)) {
+            $timeliness = 'early';
+        } elseif ($submittedDate->eq($deadlineDate)) {
+            $timeliness = 'on_time';
+        } else {
+            $timeliness = 'late';
+        }
+
         // Update the submission
         $submission->update([
             'description' => $request->description,
             'data' => $finalData,
             'status' => $isResubmitted ? 'submitted' : $submission->status,
             'updated_at' => now(),
+            'reviewed_at' => null,
+            'timeliness' => $timeliness
         ]);
-
-        // Optionally add a note about the update
-        // activity()
-        // ->causedBy(Auth::user())
-        // ->performedOn($submission)
-        // ->withProperties([
-        //     'changes' => [
-        //         'description_changed' => true,
-        //         'files_updated' => true,
-        //     ]
-        // ])
-        // ->log('submission_updated');
 
         return redirect()->back()->with('success', 'Report submission updated successfully.');
     }

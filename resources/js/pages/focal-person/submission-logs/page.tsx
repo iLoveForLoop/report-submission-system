@@ -26,6 +26,7 @@ import { useEffect, useMemo, useState } from 'react';
 type OfficerStatus =
     | 'submitted_on_time'
     | 'submitted_late'
+    // | 'accepted'
     | 'pending' // submitted but awaiting focal review
     | 'returned' // focal person returned it
     | 'not_submitted'; // never submitted
@@ -35,6 +36,7 @@ type ReportStatusFilter = 'all' | ReportStatus;
 type OfficerStatusFilter =
     | 'all'
     | 'submitted'
+    | 'accepted'
     | 'pending'
     | 'returned'
     | 'not_submitted';
@@ -50,7 +52,7 @@ interface OfficerRow {
     submitted_at: string | null;
     reviewed_at: string | null;
     status: OfficerStatus;
-    submission_status?: 'pending' | 'approved' | 'returned';
+    submission_status?: 'pending' | 'returned' | 'accepted';
 }
 
 interface ReportItem {
@@ -132,6 +134,11 @@ const OFFICER_STATUS_CONFIG: Record<
     OfficerStatus,
     { label: string; className: string; icon: React.ElementType }
 > = {
+    // accepted: {
+    //     label: 'Submitted',
+    //     className: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+    //     icon: CheckCircle2,
+    // },
     submitted_on_time: {
         label: 'Submitted',
         className: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
@@ -175,6 +182,7 @@ function ReportStatusBadge({ status }: { status: ReportStatus }) {
 }
 
 function OfficerStatusBadge({ status }: { status: OfficerStatus }) {
+    console.log(status);
     const cfg = OFFICER_STATUS_CONFIG[status];
     const Icon = cfg.icon;
     return (

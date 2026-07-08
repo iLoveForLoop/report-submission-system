@@ -1,5 +1,5 @@
-import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { FlashToaster } from '@/components/flash-toaster';
+import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type ReactNode } from 'react';
 
@@ -8,9 +8,13 @@ interface AppLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
 }
 
-export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
-    <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
-        <FlashToaster />
-        {children}
-    </AppLayoutTemplate>
-);
+export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => {
+    // useAuthPolling(5000);
+
+    return (
+        <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
+            <FlashToaster />
+            {children}
+        </AppLayoutTemplate>
+    );
+};

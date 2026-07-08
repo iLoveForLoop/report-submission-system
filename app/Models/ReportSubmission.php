@@ -34,12 +34,14 @@ class ReportSubmission extends Model implements HasMedia
         'timeliness',
         'remarls',
         'description',
+        'reviewed_at',
         'data',
         'remarks',
     ];
 
     protected $casts = [
         'data' => 'array',
+        'reviewed_at' => 'datetime',
     ];
 
     public function getActivitylogOptions(): LogOptions

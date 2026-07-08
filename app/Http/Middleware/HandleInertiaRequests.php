@@ -53,10 +53,13 @@ class HandleInertiaRequests extends Middleware
                     'pending_submissions_count' => $role === 'focal_person'
                         ? $user->pendingSubmissionsToReviewCount()
                         : 0,
+                    'returned_submissions_count' => $role === 'field_officer' ? $user->returnedSubmissionsCount() : 0,
                     'id' => $request->user()->id,
                     'name' => $request->user()->name,
+                    'first_name' => $request->user()->first_name,
+                    'last_name' => $request->user()->last_name,
                     'email' => $request->user()->email,
-                    'avatar' => $request->user()->avatar ?? null,
+                    'avatar_url' => $request->user()->getFirstMediaUrl('avatar') ?? null,
                     'email_verified_at' => $request->user()->email_verified_at,
                     'two_factor_enabled' => $request->user()->two_factor_secret !== null,
                     'created_at' => $request->user()->created_at,

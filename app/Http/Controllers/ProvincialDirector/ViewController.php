@@ -110,22 +110,32 @@ class ViewController extends Controller
 
     private function getTotalSubmissions(): int
     {
-        return ReportSubmission::count();
+        return ReportSubmission::whereHas('fieldOfficer', function ($q) {
+            $q->whereIn('cluster', ["M&M", "D'ONE"]);
+        })->count();
     }
 
     private function getActiveOfficers(): int
     {
-        return User::role('field_officer')->count();
+        return User::role('field_officer')
+            ->whereIn('cluster', ["M&M", "D'ONE"])
+            ->count();
     }
 
     private function getApprovedCount(): int
     {
-        return ReportSubmission::where('status', 'accepted')->count();
+        return ReportSubmission::where('status', 'accepted')
+            ->whereHas('fieldOfficer', function ($query) {
+                $query->whereIn('cluster', ["M&M", "D'ONE"]);
+            })->count();
     }
 
     private function getPendingCount(): int
     {
-        return ReportSubmission::where('status', 'submitted')->count();
+        return ReportSubmission::where('status', 'submitted')
+            ->whereHas('fieldOfficer', function ($query) {
+                $query->whereIn('cluster', ["M&M", "D'ONE"]);
+            })->count();
     }
 
 
@@ -271,7 +281,7 @@ class ViewController extends Controller
                 'submitted_at' => $sub->created_at->toISOString(),
                 'reviewed_at'  => $sub->reviewed_at?->toISOString(),
                 'status'       => match ($sub->status) {
-                    'approved' => $isLate ? 'submitted_late' : 'submitted_on_time',
+                    'accepted' => $isLate ? 'submitted_late' : 'submitted_on_time',
                     'returned' => 'returned',
                     default    => $isLate ? 'submitted_late' : 'pending',
                 },

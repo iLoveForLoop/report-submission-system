@@ -87,6 +87,20 @@ class User extends Authenticatable implements HasMedia
             ->count();
     }
 
+    public function returnedSubmissionsCount(){
+        return ReportSubmission::query()
+        ->where('field_officer_id', $this->id)
+        ->where('status', 'returned')
+        ->count();
+    }
+
+    protected $appends = ['avatar_url'];
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('avatar') ?: null;
+    }
+
     /**
      * Get the attributes that should be cast.
      *

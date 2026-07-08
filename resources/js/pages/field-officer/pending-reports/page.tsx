@@ -3,7 +3,6 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardHeader,
     CardTitle,
 } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
@@ -92,16 +91,15 @@ export default function PendingReportsPage() {
             );
     }, [pendingReports, query, filter]);
 
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pending Reports" />
 
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-hidden">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-hidden rounded-xl p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <CardTitle className="flex gap-2 items-center text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
-                            <FileText className="h-5 w-5 text-primary dark:text-primary-400" />
+                        <CardTitle className="flex items-center gap-2 text-lg font-semibold text-foreground lg:text-2xl dark:text-white">
+                            <FileText className="dark:text-primary-400 h-5 w-5 text-primary" />
                             Pending Reports
                         </CardTitle>
                         <CardDescription className="dark:text-gray-400">
@@ -116,8 +114,8 @@ export default function PendingReportsPage() {
                         View Programs
                     </Link>
                 </div>
-                <Card className="gap-4 bg-background border">
-                    <CardContent className="space-y-4 px-5 ">
+                <Card className="gap-4 border bg-background">
+                    <CardContent className="space-y-4 px-5">
                         <div className="flex flex-col justify-between md:flex-row md:items-center">
                             <div className="relative w-full md:max-w-sm">
                                 <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -126,19 +124,33 @@ export default function PendingReportsPage() {
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}
                                     placeholder="Search title or program..."
-                                    className="bg-card-elevated w-full rounded-md border border-border py-2 pr-3 pl-9 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/30"
+                                    className="w-full rounded-md border border-border bg-card-elevated py-2 pr-3 pl-9 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/30"
                                 />
                             </div>
 
                             <div className="mt-5 flex flex-wrap gap-2 md:mt-0">
                                 {[
-                                    { key: 'all', label: 'All', icon: FileText },
-                                    { key: 'overdue', label: 'Overdue', icon: AlertTriangle },
-                                    { key: 'due_soon', label: 'Due Soon', icon: Clock3 },
+                                    {
+                                        key: 'all',
+                                        label: 'All',
+                                        icon: FileText,
+                                    },
+                                    {
+                                        key: 'overdue',
+                                        label: 'Overdue',
+                                        icon: AlertTriangle,
+                                    },
+                                    {
+                                        key: 'due_soon',
+                                        label: 'Due Soon',
+                                        icon: Clock3,
+                                    },
                                 ].map((item) => (
                                     <button
                                         key={item.key}
-                                        onClick={() => setFilter(item.key as FilterKey)}
+                                        onClick={() =>
+                                            setFilter(item.key as FilterKey)
+                                        }
                                         className={`flex items-center rounded-md border px-3 py-1.5 text-sm transition-colors ${
                                             filter === item.key
                                                 ? 'border-primary bg-primary/10 text-primary'
@@ -176,7 +188,7 @@ export default function PendingReportsPage() {
                     </CardContent>
                 </Card>
 
-                <div className="grid gap-3 max-h-[48vh] overflow-y-auto pr-3">
+                <div className="grid max-h-[48vh] gap-3 overflow-y-auto pr-3">
                     {filteredReports.length === 0 ? (
                         <Card className="py-8 text-center dark:border-gray-700 dark:bg-gray-800/50">
                             <CardContent>
@@ -196,15 +208,18 @@ export default function PendingReportsPage() {
                                 days < 0
                                     ? 'bg-rose-500/10 text-rose-600 dark:bg-rose-950/30 dark:text-rose-400'
                                     : days <= 3
-                                        ? 'bg-amber-500/10 text-amber-600 dark:bg-amber-950/30 dark:text-amber-400'
-                                        : 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400';
+                                      ? 'bg-amber-500/10 text-amber-600 dark:bg-amber-950/30 dark:text-amber-400'
+                                      : 'bg-emerald-500/10 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400';
 
                             return (
-                                <Card key={report.id} className={`gap-4 py-4 dark:border-gray-700 dark:bg-gray-800/50
-                                    ${days < 0
-                                        ? 'border-l-4 border-red-500 bg-red-50 dark:bg-red-950/20 dark:border-red-500'
-                                        : 'border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-500'
-                                    }`}>
+                                <Card
+                                    key={report.id}
+                                    className={`gap-4 py-4 dark:border-gray-700 dark:bg-gray-800/50 ${
+                                        days < 0
+                                            ? 'border-l-4 border-red-500 bg-red-50 dark:border-red-500 dark:bg-red-950/20'
+                                            : 'border-l-4 border-amber-500 bg-amber-50 dark:border-amber-500 dark:bg-amber-950/20'
+                                    }`}
+                                >
                                     <CardContent className="px-4 dark:text-gray-300">
                                         <div className="flex flex-wrap items-start justify-between gap-3">
                                             <div>
@@ -215,13 +230,23 @@ export default function PendingReportsPage() {
                                                     {report.program?.name}
                                                 </p>
                                             </div>
-                                            <span
-                                                className={`rounded-full px-2.5 py-1 text-xs font-medium ${urgencyClass}`}
-                                            >
-                                                {days < 0
-                                                    ? `${Math.abs(days)} day(s) overdue`
-                                                    : `${days} day(s) left`}
-                                            </span>
+                                            <div className="flex items-center gap-2">
+                                                <span
+                                                    className={`rounded-full bg-gray-200 px-2.5 py-1 text-xs font-medium text-gray-500`}
+                                                >
+                                                    {report.submission_status ===
+                                                    'not_submitted'
+                                                        ? 'Not Submitted'
+                                                        : 'Submission Returned'}
+                                                </span>
+                                                <span
+                                                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${urgencyClass}`}
+                                                >
+                                                    {days < 0
+                                                        ? `${Math.abs(days)} day(s) overdue`
+                                                        : `${days} day(s) left`}
+                                                </span>
+                                            </div>
                                         </div>
 
                                         <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground dark:text-gray-400">

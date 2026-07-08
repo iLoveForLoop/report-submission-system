@@ -22,9 +22,9 @@ class RoleRedirect
 
 
 
-        if ($request->routeIs('dashboard.*')) {
-            return $next($request);
-        }
+        // if ($request->routeIs('dashboard.*')) {
+        //     return $next($request);
+        // }
 
         $user = $request->user();
 

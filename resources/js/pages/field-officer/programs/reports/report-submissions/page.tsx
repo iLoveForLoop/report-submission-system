@@ -1,5 +1,6 @@
 import ViewController from '@/actions/App/Http/Controllers/FieldOfficer/ViewController';
 import Back from '@/components/back';
+import { Icon } from '@/components/icon';
 import AppLayout from '@/layouts/app-layout';
 import { breadcrumbs } from '@/pages/field-officer/dashboard/page';
 import { Program, Report, ReportSubmission } from '@/types';
@@ -11,6 +12,7 @@ import {
     Clock,
     FileText,
     MessageSquare,
+    Timer,
     Upload,
     User,
 } from 'lucide-react';
@@ -41,6 +43,30 @@ const STATUS_MAP = {
         borderColor: 'border-blue-500',
         bgColor: 'bg-blue-500/10 dark:bg-blue-500/20',
         icon: CheckCircle2,
+    },
+};
+
+const TIMELINESS_MAP = {
+    early: {
+        text: 'Early',
+        textColor: 'text-blue-600 dark:text-blue-400',
+        borderColor: 'border-blue-500',
+        bgColor: 'bg-blue-500/10 dark:bg-blue-500/20',
+        icon: Timer,
+    },
+    on_time: {
+        text: 'On Time',
+        textColor: 'text-emerald-600 dark:text-emerald-400',
+        borderColor: 'border-emerald-500',
+        bgColor: 'bg-emerald-500/10 dark:bg-emerald-500/20',
+        icon: CheckCircle2,
+    },
+    late: {
+        text: 'Late',
+        textColor: 'text-amber-600 dark:text-amber-400',
+        borderColor: 'border-amber-500',
+        bgColor: 'bg-amber-500/10 dark:bg-amber-500/20',
+        icon: Clock,
     },
 };
 
@@ -77,6 +103,14 @@ export default function Page() {
         borderColor: 'border-gray-500',
         bgColor: 'bg-gray-500/10 dark:bg-gray-500/20',
         icon: AlertCircle,
+    };
+
+    const timelinessInfo = TIMELINESS_MAP[reportSubmission?.timeliness] ?? {
+        text: 'Unknown',
+        textColor: 'text-gray-600 dark:text-gray-400',
+        borderColor: 'border-gray-500',
+        bgColor: 'bg-gray-500/10 dark:bg-gray-500/20',
+        icon: Clock,
     };
 
     return (
@@ -125,8 +159,27 @@ export default function Page() {
                                             <div
                                                 className={`flex items-center gap-1.5 rounded-2xl px-3 py-1 font-medium ${statusInfo.textColor} ${statusInfo.bgColor} ${statusInfo.borderColor}`}
                                             >
-                                                {/* <CheckCircle2 className="h-4 w-4" /> */}
+                                                <Icon
+                                                    iconNode={statusInfo.icon}
+                                                    className="h-4 w-4"
+                                                />
                                                 <span>{statusInfo.text}</span>
+                                            </div>
+                                            <span className="mx-2 dark:text-gray-600">
+                                                •
+                                            </span>
+                                            <div
+                                                className={`flex items-center gap-1.5 rounded-2xl px-3 py-1 font-medium ${timelinessInfo.textColor} ${timelinessInfo.bgColor} ${timelinessInfo.borderColor}`}
+                                            >
+                                                <Icon
+                                                    iconNode={
+                                                        timelinessInfo.icon
+                                                    }
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>
+                                                    {timelinessInfo.text}
+                                                </span>
                                             </div>
                                         </>
                                     )}

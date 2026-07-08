@@ -126,6 +126,7 @@ export interface ReportSubmission {
     media?: Media[];
     report?: Report; // Added report relationship
     program?: Program;
+    avatar_url?: string
 }
 
 export interface LaravelPaginator<T> {

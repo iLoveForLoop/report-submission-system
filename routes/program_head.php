@@ -30,4 +30,5 @@ Route::middleware(['auth', 'verified', 'role:program_head'])->group(function () 
     // DELETE
     Route::delete('/program-head/programs/manage-users', [UserController::class, 'deleteMultipleUsers'])->name('program-head.programs.delete-multiple-users');
     Route::delete('/program-head/programs/{program}',[ProgramController::class, 'destroy'])->name('program-head.programs.destroy');
+    Route::delete('/program-head/users/{user}',[UserController::class, 'destroy'])->name('program-head.users.destroy');
 });

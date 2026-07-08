@@ -65,7 +65,7 @@ export const developersData: Developer[] = [
     {
         name: 'Jeferson Bayking',
         image: Jeferson,
-        email: 'jefersonbayking@example.com',
+        email: 'jefbay110@gmail.com',
         github: 'https://github.com/iLoveForLoop',
         bio: 'Frontend specialist with focus on user experience and modern web technologies.',
         skills: ['React', 'CSS', 'UI/UX Design', 'JavaScript'],

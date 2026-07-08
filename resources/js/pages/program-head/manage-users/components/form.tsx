@@ -277,9 +277,12 @@ export default function UserForm({ setOpen }: Props) {
                                     className="text-sm lg:text-base"
                                 >
                                     Cluster
-                                    <span className="text-destructive">*</span>
+                                    <span className="text-xs text-gray-500">
+                                        {' '}
+                                        (leave blank if none)
+                                    </span>
                                 </Label>
-                                <Select name="cluster" required>
+                                <Select name="cluster">
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select cluster" />
                                     </SelectTrigger>

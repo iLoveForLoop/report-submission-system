@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('status')->default('draft'); // draft | submitted
             $table->string('timeliness')->nullable();
             $table->string('description')->nullable();
+            $table->timestamp('reviewed_at')->nullable();
 
             $table->text('remarks')->nullable();
             $table->json('data')->nullable();

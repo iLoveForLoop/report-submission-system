@@ -50,7 +50,7 @@ Route::get('/downloads/folder/{report}', function (\App\Models\Report $report) {
 })->middleware('auth');
 
 Route::middleware(['auth', 'verified', 'role.redirect'])->group(function () {
-    Route::get('dashboard', function () {
+    Route::get('/dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 

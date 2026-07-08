@@ -278,7 +278,7 @@ export default function Dashboard() {
             icon: FileCheck,
             accent: 'border-l-green-500',
             valueColor: 'text-green-600 dark:text-green-400',
-            link: '/field-officer/my-reports-submissions',
+            link: '/field-officer/my-reports-submissions?filter=pending',
         },
         {
             title: 'Returned',
@@ -286,7 +286,7 @@ export default function Dashboard() {
             icon: FileWarning,
             accent: 'border-l-red-500',
             valueColor: 'text-red-600 dark:text-red-400',
-            link: '/field-officer/pending-reports',
+            link: '/field-officer/my-reports-submissions?filter=returned',
         },
     ];
 

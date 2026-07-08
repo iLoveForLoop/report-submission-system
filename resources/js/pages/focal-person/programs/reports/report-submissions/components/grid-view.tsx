@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ReportSubmission } from '@/types';
 import {
     CheckCircle2,
@@ -144,6 +144,10 @@ export default function GridView({
                             <Avatar
                                 className={`h-16 w-16 ring-2 ring-offset-2 ring-offset-card ${cfg.ring}`}
                             >
+                                <AvatarImage
+                                    src={submission.field_officer?.avatar_url}
+                                    alt={submission.field_officer?.name}
+                                />
                                 <AvatarFallback className="bg-primary/10 text-lg font-semibold text-primary">
                                     {getInitials(
                                         submission.field_officer?.name,

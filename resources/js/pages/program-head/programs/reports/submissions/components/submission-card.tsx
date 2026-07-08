@@ -1,3 +1,5 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useInitials } from '@/hooks/use-initials';
 import { Media, ReportSubmission } from '@/types';
 import {
     ChevronDown,
@@ -93,12 +95,15 @@ export default function SubmissionCard({
 }: {
     submission: ReportSubmission;
 }) {
+    const getInitials = useInitials();
     const [expanded, setExpanded] = useState(false);
     const cfg = STATUS_CONFIG[submission.status] ?? STATUS_CONFIG.submitted;
     const media: Media[] = submission.media ?? [];
 
     const timeliness = submission.timeliness
-        ? (TIMELINESS_CONFIG[submission.timeliness as keyof typeof TIMELINESS_CONFIG] ?? null)
+        ? (TIMELINESS_CONFIG[
+              submission.timeliness as keyof typeof TIMELINESS_CONFIG
+          ] ?? null)
         : null;
 
     return (
@@ -106,19 +111,30 @@ export default function SubmissionCard({
             className={`relative overflow-hidden rounded-xl border border-[var(--border)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${cfg.bg}`}
         >
             {/* Left Accent Border */}
-            <div className={`absolute left-0 top-0 bottom-0 w-1 ${cfg.accent}`} />
+            <div
+                className={`absolute top-0 bottom-0 left-0 w-1 ${cfg.accent}`}
+            />
 
             <div className="pl-1">
                 {/* Card Header */}
-                <div className={`flex items-start justify-between gap-3 px-5 py-4 ${expanded ? 'border-b border-[var(--border)]' : ''}`}>
+                <div
+                    className={`flex items-start justify-between gap-3 px-5 py-4 ${expanded ? 'border-b border-[var(--border)]' : ''}`}
+                >
                     <div className="min-w-0 flex-1">
                         <div className="mb-2 flex items-center gap-2.5">
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-purple-600 text-sm font-bold text-white">
-                                {submission.field_officer?.first_name?.[0] ?? '?'}
-                            </div>
+                            <Avatar className="h-8 w-8 overflow-hidden rounded-full">
+                                <AvatarImage
+                                    src={submission.avatar_url}
+                                    alt={submission.field_officer.name}
+                                />
+                                <AvatarFallback className="rounded-full bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                                    {getInitials(submission.field_officer.name)}
+                                </AvatarFallback>
+                            </Avatar>
                             <div>
                                 <p className="text-sm font-semibold text-[var(--foreground)]">
-                                    {submission.field_officer?.name ?? 'Unknown Officer'}
+                                    {submission.field_officer?.name ??
+                                        'Unknown Officer'}
                                 </p>
                                 {submission.field_officer?.employee_code && (
                                     <p className="text-xs text-[var(--muted-foreground)]">
@@ -138,7 +154,9 @@ export default function SubmissionCard({
                     <div className="flex flex-col items-end gap-2">
                         <StatusBadge status={submission.status} />
                         {timeliness && (
-                            <span className={`flex items-center gap-1 text-xs font-semibold ${timeliness.cls}`}>
+                            <span
+                                className={`flex items-center gap-1 text-xs font-semibold ${timeliness.cls}`}
+                            >
                                 {timeliness.icon} {timeliness.label}
                             </span>
                         )}
@@ -151,7 +169,7 @@ export default function SubmissionCard({
                         <p className="mb-2 text-xs font-semibold tracking-wider text-[var(--muted-foreground)] uppercase">
                             Attachments ({media.length})
                         </p>
-                        <div className="flex flex-col gap-1.5 bg-card rounded">
+                        <div className="flex flex-col gap-1.5 rounded bg-card">
                             {media.map((file) => {
                                 const FileIcon = getFileIcon(file.mime_type);
                                 return (
@@ -173,7 +191,13 @@ export default function SubmissionCard({
                                         </div>
                                         <div className="flex shrink-0 items-center gap-1.5">
                                             <span
-                                                onClick={(e) => { e.preventDefault(); window.open(file.original_url, '_blank'); }}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    window.open(
+                                                        file.original_url,
+                                                        '_blank',
+                                                    );
+                                                }}
                                                 className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--background)] px-2 py-1 text-xs font-medium text-[var(--foreground)] transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
                                             >
                                                 <Eye className="h-3 w-3" /> View
@@ -181,14 +205,19 @@ export default function SubmissionCard({
                                             <span
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    const link = document.createElement('a');
-                                                    link.href = file.original_url;
+                                                    const link =
+                                                        document.createElement(
+                                                            'a',
+                                                        );
+                                                    link.href =
+                                                        file.original_url;
                                                     link.download = file.name;
                                                     link.click();
                                                 }}
                                                 className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--background)] px-2 py-1 text-xs font-medium text-[var(--foreground)] transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
                                             >
-                                                <Download className="h-3 w-3" /> Download
+                                                <Download className="h-3 w-3" />{' '}
+                                                Download
                                             </span>
                                         </div>
                                     </a>
@@ -201,7 +230,8 @@ export default function SubmissionCard({
                 {/* Footer - The toggle button is back! */}
                 <div className="flex items-center justify-between px-5 py-2.5">
                     <span className="text-xs text-[var(--muted-foreground)]">
-                        Report ID: {submission.report_id.slice(0, 8).toUpperCase()}
+                        Report ID:{' '}
+                        {submission.report_id.slice(0, 8).toUpperCase()}
                     </span>
                     <button
                         onClick={() => setExpanded(!expanded)}
@@ -217,21 +247,29 @@ export default function SubmissionCard({
                 {/* Expanded Details Section */}
                 {expanded && (
                     <div className="border-t border-[var(--border)] px-5 pt-3 pb-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                                 <p className="mb-1 text-xs font-semibold tracking-wider text-[var(--muted-foreground)] uppercase">
                                     Description
                                 </p>
-                                <p className="text-sm text-[var(--foreground)] leading-relaxed">
-                                    {submission.description ?? <em className="text-[var(--muted-foreground)]">None</em>}
+                                <p className="text-sm leading-relaxed text-[var(--foreground)]">
+                                    {submission.description ?? (
+                                        <em className="text-[var(--muted-foreground)]">
+                                            None
+                                        </em>
+                                    )}
                                 </p>
                             </div>
                             <div>
                                 <p className="mb-1 text-xs font-semibold tracking-wider text-[var(--muted-foreground)] uppercase">
                                     Remarks
                                 </p>
-                                <p className="text-sm text-[var(--foreground)] leading-relaxed">
-                                    {submission.remarks ?? <em className="text-[var(--muted-foreground)]">None</em>}
+                                <p className="text-sm leading-relaxed text-[var(--foreground)]">
+                                    {submission.remarks ?? (
+                                        <em className="text-[var(--muted-foreground)]">
+                                            None
+                                        </em>
+                                    )}
                                 </p>
                             </div>
                             <div className="col-span-full">

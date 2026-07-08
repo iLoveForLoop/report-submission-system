@@ -310,6 +310,7 @@ export default function ReportDialog({
                                         </div>
                                     )}
                                 </div>
+                                <InputError message={errors.form_schema} />
                             </div>
 
                             {/* Reference Files Section */}

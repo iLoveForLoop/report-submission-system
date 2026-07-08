@@ -1,0 +1,1 @@
+import{c as a,r as d}from"./app-C1DLbWGR.js";const n="view_mode";function u(){const e=a.c(3),[r,c]=d.useState(m);let t;e[0]===Symbol.for("react.memo_cache_sentinel")?(t=s=>{c(s),localStorage.setItem(n,s)},e[0]=t):t=e[0];const i=t;let o;return e[1]!==r?(o={mode:r,updateMode:i},e[1]=r,e[2]=o):o=e[2],o}function m(){return typeof window<"u"&&localStorage.getItem(n)||"grid"}export{u};

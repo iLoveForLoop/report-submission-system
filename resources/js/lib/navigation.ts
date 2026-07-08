@@ -40,6 +40,10 @@ export function mainNavigationPath(role: string): NavItem[] {
                     title: 'My Submissions ',
                     href: FieldOfficerNavigationPath.myReportSubmissions().url,
                     icon: FileCheck,
+                    badge: {
+                        countKey: 'returned_submissions_count',
+                        variant: 'notification',
+                    },
 
                 },
 

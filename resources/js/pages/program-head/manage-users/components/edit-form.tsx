@@ -285,7 +285,9 @@ export default function EditProfileForm({ user, closeDialog }: Props) {
                             <div className="space-y-2">
                                 <Label className="text-sm">
                                     Cluster{' '}
-                                    <span className="text-destructive">*</span>
+                                    <span className="text-xs text-gray-500">
+                                        (leave blank if none)
+                                    </span>
                                 </Label>
                                 <Select
                                     name="cluster"
@@ -295,6 +297,9 @@ export default function EditProfileForm({ user, closeDialog }: Props) {
                                         <SelectValue placeholder="Select cluster" />
                                     </SelectTrigger>
                                     <SelectContent>
+                                        <SelectItem value="none">
+                                            None
+                                        </SelectItem>
                                         {CLUSTERS.map((c) => (
                                             <SelectItem
                                                 key={c.value}
